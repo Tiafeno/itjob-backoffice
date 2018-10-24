@@ -31,21 +31,15 @@
                 <div>
                     <h5 class="menu-item-title">Customers</h5><small class="menu-item-text">Customers and activities</small></div>
             </a>
-            <a href="javascript:;"><i class="ti-email menu-item-icon"></i>
+            <a class="visited" [routerLink]="['/candidat']" routerLinkActive="router-link-active" ><i class="ti-files menu-item-icon"></i>
                 <div>
-                    <h5 class="menu-item-title">Mailbox
-                        <span class="badge badge-success badge-circle ml-2">7</span>
-                    </h5><small class="menu-item-text">Customers and activities</small></div>
-            </a>
-            <a class="visited" href="javascript:;"><i class="ti-files menu-item-icon"></i>
-                <div>
-                    <h5 class="menu-item-title">Pages
+                    <h5 class="menu-item-title">Candidats
                         <span class="badge badge-pink badge-circle ml-2">4</span>
-                    </h5><small class="menu-item-text">Customers and activities</small></div>
+                    </h5><small class="menu-item-text">Voir les candidats</small></div>
             </a>
-            <a href="javascript:;"><i class="ti-pencil menu-item-icon"></i>
+            <a [routerLink]="['/company']" routerLinkActive="router-link-active" ><i class="ti-pencil menu-item-icon"></i>
                 <div>
-                    <h5 class="menu-item-title">Posts</h5><small class="menu-item-text">Customers and activities</small></div>
+                    <h5 class="menu-item-title">Entreprise</h5><small class="menu-item-text">Voir les entreprises</small></div>
             </a>
             <a href="javascript:;"><i class="ti-calendar menu-item-icon"></i>
                 <div>
