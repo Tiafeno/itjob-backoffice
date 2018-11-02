@@ -8,7 +8,7 @@ export const environment = {
 };
 
 export const config = {
-  jwtAuthUrl: 'http://localhost/managna/wp-json/jwt-auth/v1/token',
-  wpApi: 'http://localhost/managna/wp-json/wp/v2',
-  itApi: 'http://localhost/managna/wp-json/it-api'
+  jwtAuthUrl: 'http://itjob.falicrea.com/wp-json/jwt-auth/v1/token',
+  wpApi: 'http://itjob.falicrea.com/wp-json/wp/v2',
+  itApi: 'http://itjob.falicrea.com/wp-json/it-api'
 };
