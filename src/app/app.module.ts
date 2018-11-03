@@ -16,6 +16,7 @@ import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './services/jwt-interceptor.service';
+import { RequestService } from './services/request.service';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { JwtInterceptorService } from './services/jwt-interceptor.service';
   ],
   providers: [
     ScriptLoaderService,
+    RequestService,
     AuthService,
     AuthGuard,
     LoginGuard,

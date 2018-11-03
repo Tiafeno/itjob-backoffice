@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./candidat.component.css']
 })
 export class CandidatComponent implements OnInit {
-
+  public listsCandidat;
   constructor() { }
 
   ngOnInit() {
+    // Ajouter ici un code pour recuperer les candidats...
   }
 
 }

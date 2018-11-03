@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RequestService } from '../../services/request.service';
 
 @Component({
   selector: 'app-company',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./company.component.css']
 })
 export class CompanyComponent implements OnInit {
-
-  constructor() { }
+  public listsCompany:Array<any> = [];
+  constructor(private requestService: RequestService) { }
 
   ngOnInit() {
+    this.requestService.getCompanyLists()
+      .subscribe(companys => this.listsCompany = companys);
   }
 
 }
