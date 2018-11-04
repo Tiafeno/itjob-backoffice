@@ -1,7 +1,22 @@
 .preloader-backdrop {
-    background-color: transparent;
+  background-color: transparent;
 }
+
 .page-preloader {
-    background-color: #fff;
-    box-shadow: 0 5px 20px #d6dee4;
+  background-color: #fff;
+  box-shadow: 0 5px 20px #d6dee4;
+}
+
+/* You can add global styles to this file, and also import other style files */
+.sidebar-submenu>a.router-link-active {
+  background-color: #5c6bc0;
+  color: #fff;
+}
+
+.sidebar-submenu>a.router-link-active .menu-item-text {
+  color: #fff;
+}
+
+.table-responsive #orders-table_wrapper {
+  width: 100%;
 }

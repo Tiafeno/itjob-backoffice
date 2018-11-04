@@ -17,6 +17,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './services/jwt-interceptor.service';
 import { RequestService } from './services/request.service';
+import { CandidateService } from './services/candidate.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { RequestService } from './services/request.service';
   ],
   providers: [
     ScriptLoaderService,
+    CandidateService,
     RequestService,
     AuthService,
     AuthGuard,
