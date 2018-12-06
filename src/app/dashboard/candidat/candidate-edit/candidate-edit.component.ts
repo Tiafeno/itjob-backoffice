@@ -44,7 +44,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.editor.experiences = _.map(this.Candidate.experiences, (experience, index) => {
       experience.ID = index;
       return experience;
-    };
+    });
     this.editor.trainings = _.map(this.Candidate.trainings, (training, index) => {
       training.ID = index;
       return training;
