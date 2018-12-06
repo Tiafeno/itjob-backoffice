@@ -7,11 +7,16 @@ import { RequestService } from '../../services/request.service';
   styleUrls: ['./company.component.css']
 })
 export class CompanyComponent implements OnInit {
-  public listsCompany:Array<any> = [];
+  public listsCompany: Array<any> = [];
+  public paged: number = 1;
   constructor(private requestService: RequestService) { }
 
   ngOnInit() {
-    this.requestService.getCompanyLists()
+    this.showCompanyLists();
+  }
+
+  showCompanyLists() {
+    this.requestService.getCompanyLists(this.paged)
       .subscribe(companys => this.listsCompany = companys);
   }
 

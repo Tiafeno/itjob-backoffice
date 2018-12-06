@@ -32,20 +32,67 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onEditTraining(tId) {
+    $('#new-mail-modal').modal('show')
+  }
+
   onSubmitForm() {
-    console.log(this.editor);
     return false;
   }
 
   loadForm() {
-    this.editor.experiences = _.clone(this.Candidate.experiences);
-    this.editor.trainings = _.clone(this.Candidate.trainings);
-    console.warn(this.editor);
+    this.editor.experiences = _.map(this.Candidate.experiences, (experience, index) => {
+      experience.ID = index;
+      return experience;
+    };
+    this.editor.trainings = _.map(this.Candidate.trainings, (training, index) => {
+      training.ID = index;
+      return training;
+    });
+    this.editor.Form = {};
+    let privateInformations = _.clone(this.Candidate.privateInformations);
+    let cellphones = privateInformations.cellphone;
+    let args = {
+      ID: this.Candidate.ID,
+      Reference: this.Candidate.reference,
+      Greeting: this.Candidate.greeting,
+      Region: _.isEmpty(this.Candidate.region) || _.isNull(this.Candidate.region) ? '' : this.Candidate.region.term_id,
+      Softwares: this.Candidate.softwares,
+      State: this.Candidate.state,
+      Status: this.Candidate.status,
+      DriveLicences: this.Candidate.driveLicences,
+      Address: privateInformations.address,
+      Cellphones: _.isArray(cellphones) ? cellphones : [],
+      Phone: _.isArray(privateInformations.phone) ? privateInformations.phone : [],
+      Avatar: privateInformations.avatar,
+      Firstname: privateInformations.firstname,
+      Lastname: privateInformations.lastname,
+      Interest: this.Candidate.centerInterest
+    };
+    this.setEditorForm(args);
+
+    console.log(this.editor);
+
+  }
+
+  private setEditorForm(contents) {
+    if (!_.isObject(contents)) return false;
+    let keys = Object.keys(contents);
+    for (let i of keys) {
+      this.editor.Form[i] = contents[i];
+    }
   }
 
   ngAfterViewInit() {
     $('.tagsinput').tagsinput({
       tagClass: 'label label-primary'
+    });
+    // $('.dd').nestable({
+    //   maxDepth: 0
+    // });
+    $('#new-mail-modal').modal({
+      keyboard: false,
+      show: false
     });
   }
 

@@ -18,56 +18,21 @@
         </div>
       </div>
       <div class="table-responsive row">
+
         <table class="table table-bordered table-hover" id="orders-table">
           <thead class="thead-default thead-lg">
             <tr>
               <th>#</th>
-              <th>Order ID</th>
               <th>Réference</th>
               <th>L'emploi recherché</th>
               <th>Status</th>
               <th>Secteur d'activité</th>
               <th>Emploi</th>
               <th>Formation</th>
-              <th class="no-sort"></th>
+              <th class="no-sort">Action</th>
             </tr>
           </thead>
-          <tbody>
 
-            <tr *ngFor="let candidat of listsCandidat; index as i">
-              <td>{{i}}</td>
-              <td>
-                <a [routerLink]="['/candidate', candidat.ID]" routerLinkActive="router-link-active">{{candidat.ID}}</a>
-              </td>
-              <td>{{candidat.reference}}</td>
-              <td>
-                <span *ngFor="let job of candidat.jobSought"> - {{job.name}}</span>
-              </td>
-              <td>
-                <span class="badge badge-success badge-pill">{{candidat.state}}</span>
-              </td>
-              <td>{{candidat.branch_activity.name}}</td>
-              <td>{{candidat.jobNotif}}</td>
-              <td>{{candidat.trainingNotif}}</td>
-              <td>
-                <div class="fab fab-left">
-                  <button class="btn btn-sm btn-secondary btn-icon-only" data-toggle="button">
-                    <i class="fab-icon la la-bars"></i>
-                    <i class="fab-icon-active la la-close"></i>
-                  </button>
-
-                  <ul class="fab-menu">
-                    <li>
-                      <a title="Modifier" class="btn btn-info  font-16" [routerLink]="['/candidate', candidat.ID, 'edit']"
-                        routerLinkActive="router-link-active"><i class="ti-pencil-alt"></i></a>
-                    </li>
-                    <li><a title="Supprimer" class="btn btn-pink font-16" href="javascript:;"><i class="ti-trash"></i></a></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
         </table>
       </div>
     </div>
