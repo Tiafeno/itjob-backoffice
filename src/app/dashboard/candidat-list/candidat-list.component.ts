@@ -33,9 +33,24 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         columns: [
           { data: 'ID' },
           { data: 'reference' },
-          { data: 'jobSought', render: (data, type, row, meta) => _.isEmpty(data) || _.isNull(data) ? '' : data.name },
+          {
+            data: 'jobSought', render: (data, type, row, meta) => {
+              if (_.isEmpty(data) || _.isNull(data)) return '';
+              if (_.isArray(data)) {
+                let jobs = _.map(data, 'name');
+                return _.join(jobs, ', ');
+              } else {
+                return data.name;
+              }
+            }
+          },
           { data: 'state', render: (data) => `<span class="badge badge-info badge-pill">${data}</span>` },
-          { data: 'branch_activity', render: (data) => { return _.isNull(data) || _.isEmpty(data) ? 'Non renseigner' : data.nama; } },
+          {
+            data: 'branch_activity', render: (data) => {
+              if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
+              return data.name;
+            }
+          },
           { data: 'jobNotif', render: (data) => { return data ? 'Oui' : 'Non'; } },
           { data: 'trainingNotif', render: (data) => { return data ? 'Oui' : 'Non'; } },
           {

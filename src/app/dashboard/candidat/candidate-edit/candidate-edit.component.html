@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-lg-8">
 
-          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()">
+          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()" *ngIf="!loadingForm">
             <div class="form-group mb-4">
               <label class="ui-switch switch-icon mr-3 mb-0">
                 <input type="checkbox" checked="">
@@ -16,7 +16,8 @@
             <div class="row">
               <div class="form-group mb-4 col-sm-6">
                 <label>Référence </label>
-                <input class="form-control form-control-solid" [disabled]='true' type="text" placeholder="Référence du candidat">
+                <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
+                  type="text" name="reference" placeholder="Référence du candidat">
               </div>
             </div>
 
@@ -24,18 +25,9 @@
               <div class="col-sm-6 form-group mb-4">
                 <label>Titre</label>
                 <div>
-                  <select class="selectpicker show-tick form-control" title="Madame ou Monsieur" data-style="btn-solid">
-                    <optgroup label="Electronics">
-                      <option>TV & Video</option>
-                      <option>Cameras & Photo</option>
-                      <option>Computers & Tablets</option>
-                    </optgroup>
-                    <optgroup label="Fashion">
-                      <option>Health & Beauty</option>
-                      <option>Shoes</option>
-                      <option>Handbags & Purses</option>
-                      <option>Jewelry and Watches</option>
-                    </optgroup>
+                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur">
+                    <option value="mr">Monsieur</option>
+                    <option value="mrs">Madame</option>
                   </select>
                 </div>
               </div>
@@ -44,11 +36,13 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Nom</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Nom du candidat">
+                <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
+                  type="text" placeholder="Nom du candidat">
               </div>
               <div class="col-sm-6 form-group mb-4">
                 <label>Prénom</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Prénom du candidat">
+                <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
+                  placeholder="Prénom du candidat">
               </div>
             </div>
 
@@ -56,17 +50,16 @@
 
               <div class="col-sm-4 form-group mb-4">
                 <label>Adresse</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Adresse du candidat">
+                <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
+                  type="text" placeholder="Adresse du candidat">
               </div>
 
-              <div class="col-sm-4 form-group mb-4">
+              <div class="col-sm-6 form-group mb-4">
                 <label>Région </label>
                 <div>
-                  <select class="selectpicker show-tick form-control" title="Sélectionner une region" data-style="btn-solid">
-                    <option>USD</option>
-                    <option>Euro</option>
-                    <option>Rouble</option>
-                    <option>Pound</option>
+                  <select class="select2 form-control" name="region" [(ngModel)]="editor.Form.Region" title="Sélectionner une region"
+                    data-style="btn-solid">
+                    <option [value]="region.term_id" *ngFor="let region of Regions">{{region.name}}</option>
                   </select>
                 </div>
               </div>
@@ -75,26 +68,33 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Ville ou code postal</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Ville ou code postal">
+                <select class="select2 form-control" name="town" [(ngModel)]="editor.Form.Town" title="Ville ou code pos"
+                  data-style="btn-solid">
+                  <option [value]="town.term_id" *ngFor="let town of Towns">{{town.name}}</option>
+                </select>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Date de naissance</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Quantity">
+                <div class="input-group date">
+                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
+                    placeholder="Date de naissance">
+                </div>
               </div>
             </div>
 
             <div class="row">
-              <div class="col-sm-4 form-group mb-4">
+              <div class="col-sm-6 form-group mb-4">
                 <label>Status </label>
                 <div>
-                  <select class="selectpicker show-tick form-control" title="Please select" data-style="btn-solid">
-                    <option>USD</option>
-                    <option>Euro</option>
-                    <option>Rouble</option>
-                    <option>Pound</option>
+                  <select class="select2 show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
+                    data-style="btn-solid">
+                    <option value="1">Je cherche un emploi</option>
+                    <option value="2">Je souhaite entretenir mon réseau</option>
+                    <option value="3">Je cherche un stage</option>
                   </select>
                 </div>
               </div>
@@ -109,48 +109,12 @@
 
                 </div>
                 <div class="row">
-                  <div class="col-4">
+                  <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" checked="">
-                        <span class="input-span"></span>A`</label>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" checked="">
-                        <span class="input-span"></span>A</label>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" checked="">
-                        <span class="input-span"></span>B</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" checked="">
-                        <span class="input-span"></span>C</label>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" checked="">
-                        <span class="input-span"></span>D</label>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox">
-                        <span class="input-span"></span>Aucun</label>
+                        <input type="checkbox" name="drive-licence-{{driveLicence.id}}" [(ngModel)]="driveLicence.checked"
+                          [checked]="driveLicence.checked">
+                        <span class="input-span"></span>{{driveLicence.value}}</label>
                     </div>
                   </div>
                 </div>
@@ -162,8 +126,12 @@
               <div class="col-12 mb-4">
                 <div class="form-group">
                   <label>Emploi recherché</label>
-                  <input class="tagsinput form-control form-control-solid" type="text" placeholder="Emploi recherché"
-                    value="Fashion,Dress,Broadway,Autumn collection,Shop">
+                  <div>
+                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Jobs" name="jobs" title="Emploi recherché"
+                      multiple data-style="btn-solid">
+                      <option [value]="job.term_id" *ngFor="let job of Jobs">{{job.name}}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -173,7 +141,10 @@
               <div class="col-12">
                 <div class="form-group">
                   <label>Les langues</label>
-                  <input class="tagsinput form-control form-control-solid" type="text" placeholder="Langue" value="Malagasy, Français, Anglais">
+                  <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Language" name="language"
+                    title="Ajouter une langue" multiple data-style="btn-solid">
+                    <option [value]="language.term_id" *ngFor="let language of Languages">{{language.name}}</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -225,7 +196,12 @@
               <div class="col-12 mb-4">
                 <div class="form-group">
                   <label>Logiciels maitrisés</label>
-                  <input class="tagsinput form-control form-control-solid" type="text" placeholder="Logiciel" value="Oracle,Microsoft Office, Powerpoint">
+                  <div>
+                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Softwares" name="software"
+                      title="Logiciel" multiple data-style="btn-solid">
+                      <option [value]="software.term_id" *ngFor="let software of Softwares">{{software.name}}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -269,7 +245,7 @@
 
             <div class="text-right">
               <button class="btn btn-primary btn-air mr-2" type="submit">Save</button>
-              <button class="btn btn-secondary">Cancel</button>
+              <button class="btn btn-secondary" (click)="showVariable()">Cancel</button>
             </div>
 
           </form>
