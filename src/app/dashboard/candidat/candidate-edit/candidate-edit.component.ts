@@ -15,7 +15,7 @@ declare var Bloodhound: any;
 export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
   public loadingForm: boolean = false;
-  public Candidate: any;
+  public Candidate: any = {};
   public Regions: any = [];
   public Jobs: any = [];
   public Towns: any = [];
@@ -27,6 +27,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
   constructor(private route: ActivatedRoute,
     private candidatService: CandidateService) {
+    this.Candidate.status = true;
     this.editor.Form = {};
     this.editor.Form.Address = {};
   }
@@ -68,10 +69,23 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
     this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
-
-    console.log(this.editor.Training);
-
     $('#edit-training-modal').modal('show')
+  }
+
+  onEditExperience(eId) {
+    let currentExperience = _.find(this.editor.experiences, ['ID', eId]);
+    if (!_.isObject(currentExperience)) return false;
+    this.editor.Experience = _.cloneDeep(currentExperience);
+    let dateBegin = String(this.editor.Experience.exp_dateBegin);
+    let dateEnd = String(this.editor.Experience.exp_dateEnd);
+    moment.locale('fr');
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) :
+      (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) :
+      (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
+    this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
+    $('#edit-experience-modal').modal('show')
   }
 
   onSubmitForm() {
@@ -92,14 +106,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.editor.trainings = _.orderBy(this.editor.trainings, ['training_dateBegin'], ['desc']);
       this.candidatService.updateTraining(this.editor.trainings, this.Candidate.ID)
         .subscribe(response => {
-          console.log(response);
-          //this.editor.trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
+          $('#edit-training-modal').modal('hide');
         });
     } else {
       return false;
     }
+  }
 
-    $('#edit-training-modal').modal('hide')
+  onUpdateExperience(experienceId) {
 
   }
 

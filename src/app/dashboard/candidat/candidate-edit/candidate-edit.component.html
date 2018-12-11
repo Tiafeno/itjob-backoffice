@@ -1,11 +1,16 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
-    <div class="ibox-body">
-      <h5 class="font-strong mb-5">Mise à jour</h5>
+    <div class="ibox-body" *ngIf="!loadingForm">
+      <h5 class="font-strong mb-5">
+        Mise à jour
+        <div *ngIf="Candidate.status !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
+            En attente de validation</span>
+        </div>
+      </h5>
       <div class="row">
         <div class="col-lg-8">
 
-          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()" *ngIf="!loadingForm">
+          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()">
             <div class="form-group mb-4">
               <label class="ui-switch switch-icon mr-3 mb-0">
                 <input type="checkbox" checked="">
@@ -159,7 +164,11 @@
                     <li class="media align-items-center dd-item" [attr.data-index]="i" *ngFor="let training of editor.trainings; let i = index">
                       <div class="media-body d-flex align-items-center dd-handle">
                         <div class="flex-1">
-                          <div class="media-heading">{{training.training_establishment}}</div>
+                          <div class="media-heading">
+                            {{training.training_establishment}}
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!training.validated">En attente
+                              de validation</span>
+                          </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
                         </div>
                         <button (click)="onEditTraining(training.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
@@ -183,7 +192,7 @@
                           <div class="media-heading">{{experience.exp_company}}</div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                         </div>
-                        <button class="btn btn-sm btn-outline-secondary ">Modifier</button>
+                        <button (click)="onEditExperience(experience.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
                       </div>
                     </li>
 
@@ -247,14 +256,13 @@
               <button class="btn btn-primary btn-air mr-2" type="submit">Save</button>
               <button class="btn btn-secondary" (click)="showVariable()">Cancel</button>
             </div>
-
           </form>
 
           <div class="modal fade" id="edit-training-modal">
             <div class="modal-dialog" role="document">
               <form class="modal-content" *ngIf="editor.Training">
                 <div class="modal-header p-4">
-                  <h5 class="modal-title">MODIFICATION</h5>
+                  <h5 class="modal-title">MODIFICATION FORMATION</h5>
                   <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                   </button>
@@ -330,6 +338,92 @@
               </form>
             </div>
           </div>
+
+          <div class="modal fade" id="edit-experience-modal">
+            <div class="modal-dialog" role="document">
+              <form class="modal-content" *ngIf="editor.Experience">
+                <div class="modal-header p-4">
+                  <h5 class="modal-title">MODIFICATION EXPERIENCE</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body p-4">
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_company"
+                      name="university" placeholder="Université/Ecole *">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_positionHeld"
+                      name="diploma" placeholder="Diplôme">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_country"
+                      name="state" placeholder="Pays">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_city"
+                      name="town" placeholder="Ville">
+                  </div>
+                  <div class="form-group mb-4">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="col-sm-12">
+                          <p class="text-uppercase">De <span style="color: red">*</span></p>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Experience.exp_dateBegin.month">
+                              <option [value]="month" *ngFor="let month of Months">{{month}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Experience.exp_dateBegin.year"
+                              required>
+                              <option [value]="year" *ngFor="let year of Years">{{year}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="col-sm-12">
+                          <p class="text-uppercase">à <span style="color: red">*</span></p>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Experience.exp_dateEnd.month">
+                              <option [value]="month" *ngFor="let month of Months">{{month}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Experience.exp_dateEnd.year"
+                              required>
+                              <option [value]="year" *ngFor="let year of Years">{{year}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group mb-4">
+                    <textarea class="form-control form-control-solid" [(ngModel)]="editor.Experience.exp_mission" rows="4"
+                      name="mission" placeholder="Mission"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer justify-content-between bg-primary-50">
+                  <div>
+                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateExperience(editor.Experience.ID)">Enregistrer</button>
+                  </div>
+                  <a class="text-danger" title="Effacer cette experience"><i class="la la-trash font-20"></i></a>
+                </div>
+              </form>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
