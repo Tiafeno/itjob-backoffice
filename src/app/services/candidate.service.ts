@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { config } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class CandidateService {
@@ -19,6 +19,18 @@ export class CandidateService {
     let abranch = this.http.get(`${config.itApi}/taxonomies/branch_activity`, { responseType: 'json' });
     let softwares = this.http.get(`${config.itApi}/taxonomies/software`, { responseType: 'json' });
     return Observable.forkJoin([regions, jobs, city, languages, softwares]);
+  }
+
+  updateTraining(trainings: Array<any>, candidateId: number): Observable<any> {
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${currentUser.token}`
+      })
+    };
+    let formData = new FormData();
+    formData.append('content', JSON.stringify(trainings));
+    return this.http.post<any>(`${config.itApi}/candidate/update/training/${candidateId}`, formData, httpOptions);
   }
 
 }

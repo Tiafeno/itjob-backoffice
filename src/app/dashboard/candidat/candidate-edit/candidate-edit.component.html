@@ -250,57 +250,82 @@
 
           </form>
 
-          <div class="modal fade" id="new-mail-modal">
+          <div class="modal fade" id="edit-training-modal">
             <div class="modal-dialog" role="document">
-              <form class="modal-content">
+              <form class="modal-content" *ngIf="editor.Training">
                 <div class="modal-header p-4">
-                  <h5 class="modal-title">NEW MESSAGE</h5>
+                  <h5 class="modal-title">MODIFICATION</h5>
                   <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                   </button>
                 </div>
                 <div class="modal-body p-4">
-                  <div class="flexbox mb-4">
-                    <span class="btn-icon-only btn-circle bg-primary-50 text-primary mr-3"><i class="ti-support"></i></span>
-                    <div class="flex-1 d-flex">
-                      <div class="flex-1">
-                        <span class="text-muted mr-2">From:</span>
-                        <div>support@example.com</div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Training.training_country"
+                      name="state" placeholder="Pays">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Training.training_city"
+                      name="town" placeholder="Ville">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Training.training_diploma"
+                      name="diploma" placeholder="Diplôme">
+                  </div>
+                  <div class="form-group mb-4">
+                    <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Training.training_establishment"
+                      name="university" placeholder="Université/Ecole *">
+                  </div>
+                  <div class="form-group mb-4">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="col-sm-12">
+                          <p class="text-uppercase">De <span style="color: red">*</span></p>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Training.training_dateBegin.month">
+                              <option [value]="month" *ngFor="let month of Months">{{month}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Training.training_dateBegin.year"
+                              required>
+                              <option [value]="year" *ngFor="let year of Years">{{year}}</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
-                      <div class="dropdown">
-                        <a class="dropdown-toggle font-16" data-toggle="dropdown"><i class="ti-more-alt"></i></a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                          <a class="dropdown-item"><i class="ti-support"></i>support@example.com</a>
-                          <a class="dropdown-item"><i class="ti-shopping-cart"></i>shopping@example.com</a>
-                          <a class="dropdown-item"><i class="ti-help"></i>help@example.com</a>
+                      <div class="col-6">
+                        <div class="col-sm-12">
+                          <p class="text-uppercase">à <span style="color: red">*</span></p>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Training.training_dateEnd.month">
+                              <option [value]="month" *ngFor="let month of Months">{{month}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-group">
+                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Training.training_dateEnd.year"
+                              required>
+                              <option [value]="year" *ngFor="let year of Years">{{year}}</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="form-group mb-4">
-                    <input class="form-control form-control-line" type="text" name="to" placeholder="Recipient">
-                  </div>
-                  <div class="form-group mb-4">
-                    <input class="form-control form-control-line" type="text" name="subject" placeholder="Enter Subject">
-                  </div>
-                  <div class="form-group mb-4">
-                    <textarea class="form-control form-control-line" rows="4" name="message" placeholder="Enter Message"></textarea>
-                  </div>
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3">Submit</button>
-                    <label class="btn btn-sm btn-transparent btn-secondary btn-icon-only btn-circle file-input mb-0"><i
-                        class="la la-paperclip font-20"></i>
-                      <input type="file">
-                    </label>
-                    <label class="btn btn-sm btn-transparent btn-secondary btn-icon-only btn-circle file-input mb-0"><i
-                        class="la la-image font-20"></i>
-                      <input type="file">
-                    </label>
-                    <button class="btn btn-sm btn-transparent btn-secondary btn-icon-only btn-circle"><i class="la la-link font-20"></i></button>
+                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateTraining(editor.Training.ID)">Enregistrer</button>
                   </div>
-                  <a class="text-danger"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>

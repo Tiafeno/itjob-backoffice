@@ -22,6 +22,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Languages: any = [];
   public Softwares: any = [];
   public editor: any = {};
+  public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
   constructor(private route: ActivatedRoute,
     private candidatService: CandidateService) {
     this.editor.Form = {};
@@ -53,11 +56,51 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   onEditTraining(tId) {
-    $('#new-mail-modal').modal('show')
+    let currentTraining = _.find(this.editor.trainings, ['ID', tId]);
+    if (!_.isObject(currentTraining)) return false;
+    this.editor.Training = _.cloneDeep(currentTraining);
+    let dateBegin = String(this.editor.Training.training_dateBegin);
+    let dateEnd = String(this.editor.Training.training_dateEnd);
+    moment.locale('fr');
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) :
+      (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) :
+      (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
+    this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
+
+    console.log(this.editor.Training);
+
+    $('#edit-training-modal').modal('show')
   }
 
   onSubmitForm() {
     return false;
+  }
+
+  onUpdateTraining(trainingId) {
+    let Trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
+    if (!_.isEmpty(this.editor.Training)) {
+
+      let editTraining = _.clone(this.editor.Training);
+      editTraining.training_dateBegin = moment(editTraining.training_dateBegin.month + ' ' + editTraining.training_dateBegin.year).format('MM/DD/YYYY');
+      editTraining.training_dateEnd = moment(editTraining.training_dateEnd.month + ' ' + editTraining.training_dateEnd.year).format('MM/DD/YYYY');
+      if (editTraining.training_dateBegin === "Invalid date" || editTraining.training_dateEnd === "Invalid date") return;
+
+      this.editor.trainings = _.clone(Trainings);
+      this.editor.trainings.push(editTraining);
+      this.editor.trainings = _.orderBy(this.editor.trainings, ['training_dateBegin'], ['desc']);
+      this.candidatService.updateTraining(this.editor.trainings, this.Candidate.ID)
+        .subscribe(response => {
+          console.log(response);
+          //this.editor.trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
+        });
+    } else {
+      return false;
+    }
+
+    $('#edit-training-modal').modal('hide')
+
   }
 
   showVariable() {
@@ -110,10 +153,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Interest: this.Candidate.centerInterest
     };
     this.setEditorForm(args);
-
-    console.log(this.editor);
     this.ngReadyContent();
-
   }
 
   private setEditorForm(contents) {
@@ -127,6 +167,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
   ngReadyContent() {
     this.loadingForm = false;
+    const component = this;
     setTimeout(() => {
       $(".select2").select2({
         element: 'tag label label-success',
@@ -163,11 +204,21 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         }
       });
 
+      $('#edit-training-modal')
+        .on('hidden.bs.modal', function (e) {
+          component.editor.Training = false;
+        })
+        .on('shown.bs.modal', function (e) {
+          $(this).find('.select2').select2({
+            width: "100%"
+          });
+        })
+
       // $('.dd').nestable({
       //   maxDepth: 0
       // });
 
-      $('#new-mail-modal').modal({
+      $('#edit-training-modal').modal({
         keyboard: false,
         show: false
       });
