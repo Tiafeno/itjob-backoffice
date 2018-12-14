@@ -6,31 +6,31 @@
             <div class="dropdown-arrow"></div>
             <div class="mega-toolbar-menu">
                 <div class="d-flex">
-                    <a class="mega-toolbar-item" href="javascript:;">
+                    <a class="mega-toolbar-item"  [routerLink]="['/candidat-lists']">
                         <div class="item-icon"><i class="ti-file"></i></div>
-                        <div class="item-name">Reports</div>
+                        <div class="item-name">Candidats</div>
                         <div class="item-text">Lorem Ipsum is simply dummy.</div>
                         <div class="item-details">74 New</div>
                     </a>
-                    <a class="mega-toolbar-item" href="javascript:;">
+                    <a class="mega-toolbar-item"[routerLink]="['/offer-lists']">
                         <div class="item-icon"><i class="ti-shopping-cart-full"></i></div>
-                        <div class="item-name">Orders</div>
+                        <div class="item-name">Offres</div>
                         <div class="item-text">Lorem Ipsum is simply dummy.</div>
                         <div class="item-details">125 New</div>
                     </a>
                 </div>
                 <div class="d-flex">
-                    <a class="mega-toolbar-item" href="javascript:;">
+                    <a class="mega-toolbar-item" [routerLink]="['/company-lists']">
                         <div class="item-icon"><i class="ti-wallet"></i></div>
-                        <div class="item-name">Profit</div>
+                        <div class="item-name">Entreprises</div>
                         <div class="item-text">Lorem Ipsum is simply dummy.</div>
                         <div class="item-details">+1200<sup>$</sup></div>
                     </a>
-                    <a class="mega-toolbar-item" href="javascript:;">
-                        <div class="item-icon"><i class="ti-support"></i></div>
-                        <div class="item-name">Support</div>
+                    <a class="mega-toolbar-item" [routerLink]="['/users']">
+                        <div class="item-icon"><i class="ti-user"></i></div>
+                        <div class="item-name">Utilisateurs</div>
                         <div class="item-text">Lorem Ipsum is simply dummy.</div>
-                        <div class="item-details">54 New Ticket</div>
+                        <div class="item-details">+1200<sup>$</sup></div>
                     </a>
                 </div>
             </div>
@@ -38,7 +38,7 @@
     </li>
     <li>
         <a class="nav-link search-toggler js-search-toggler" href="javascript:;"><i class="ti-search"></i>
-            <span>Search here...</span>
+            <span>Recherche ici...</span>
         </a>
     </li>
 </ul>
@@ -48,104 +48,7 @@
     <li class="timeout-toggler">
         <a class="nav-link toolbar-icon" data-toggle="modal" data-target="#session-dialog" href="javascript:;"><i class="ti-alarm-clock timeout-toggler-icon rel"><span class="notify-signal"></span></i></a>
     </li>
-    <li class="dropdown dropdown-inbox">
-        <a class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="ti-email"></i>
-            <span class="envelope-badge">7</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right dropdown-menu-media">
-            <div class="dropdown-arrow"></div>
-            <div class="dropdown-header text-center">
-                <div>
-                    <span class="font-18"><strong>7 New</strong> Messages</span>
-                </div>
-                <a class="text-muted font-13" href="javascript:;">view all</a>
-            </div>
-            <div class="p-3">
-                <div class="media-list media-list-divider scroller" data-height="350px" data-color="#71808f">
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u8.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="media-heading">Lynn Weaver<small class="text-muted float-right">Just now</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                            <div class="font-13 mt-1">
-                                <span class="d-inline-flex align-items-center text-primary"><i class="ti-support mr-2"></i>Support</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u6.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Connor Perez<small class="text-muted float-right">18 mins</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                            <div class="font-13 mt-1">
-                                <span class="d-inline-flex align-items-center text-success mr-3"><i class="ti-lock mr-2"></i>Security</span>
-                                <span class="d-inline-flex align-items-center text-pink"><i class="ti-credit-card mr-2"></i>Payment</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u11.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Tyrone Carroll<small class="text-muted float-right">42 mins</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u10.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Stella Obrien<small class="text-muted float-right">1 hrs</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                            <div class="font-13 mt-1">
-                                <span class="d-inline-flex align-items-center text-purple"><i class="ti-settings mr-2"></i>Technical</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u2.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Becky Brooks<small class="text-muted float-right">3 hrs</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u5.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Bob Gonzalez<small class="text-muted float-right">3 hrs</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                            <div class="font-13 mt-1">
-                                <span class="d-inline-flex align-items-center text-primary mr-3"><i class="ti-support mr-2"></i>Support</span>
-                                <span class="d-inline-flex align-items-center text-pink"><i class="ti-shopping-cart mr-2"></i>Shopping</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="media p-3">
-                        <div class="media-img">
-                            <img class="img-circle" src="./assets/img/users/u9.jpg" alt="image" />
-                        </div>
-                        <div class="media-body">
-                            <div class="font-strong">Tammy Newman<small class="text-muted float-right">3 hrs</small></div>
-                            <div class="font-13 text-muted">Your proposal interested me.</div>
-                            <div class="font-13 mt-1">
-                                <span class="d-inline-flex align-items-center text-primary"><i class="ti-ticket mr-2"></i>Client Support</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </li>
+   
     <li class="dropdown dropdown-notification">
         <a class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="ti-bell rel"><span class="notify-signal"></span></i></a>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-media">
@@ -183,47 +86,8 @@
             </div>
         </div>
     </li>
-    <li class="dropdown dropdown-user">
-        <a class="nav-link dropdown-toggle link" data-toggle="dropdown">
-            <span>Super User</span>
-            <img src="./assets/img/users/admin-image.png" alt="image" />
-        </a>
-        <div class="dropdown-menu dropdown-arrow dropdown-menu-right admin-dropdown-menu">
-            <div class="dropdown-arrow"></div>
-            <div class="dropdown-header">
-                <div class="admin-avatar">
-                    <img src="./assets/img/users/admin-image.png" alt="image" />
-                </div>
-                <div>
-                    <h5 class="font-strong text-white">Super User</h5>
-                    <div>
-                        <span class="admin-badge mr-3"><i class="ti-alarm-clock mr-2"></i>30m.</span>
-                        <span class="admin-badge"><i class="ti-lock mr-2"></i>Safe Mode</span>
-                    </div>
-                </div>
-            </div>
-            <div class="admin-menu-features">
-                <a class="admin-features-item" href="javascript:;"><i class="ti-user"></i>
-                    <span>PROFILE</span>
-                </a>
-                <a class="admin-features-item" href="javascript:;"><i class="ti-support"></i>
-                    <span>SUPPORT</span>
-                </a>
-                <a class="admin-features-item" href="javascript:;"><i class="ti-settings"></i>
-                    <span>SETTINGS</span>
-                </a>
-            </div>
-            <div class="admin-menu-content">
-                <div class="text-muted mb-2">Your Wallet</div>
-                <div><i class="ti-wallet h1 mr-3 text-light"></i>
-                    <span class="h1 text-success"><sup>$</sup>12.7k</span>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <a class="text-muted" href="javascript:;">Earnings history</a>
-                    <a class="d-flex align-items-center" (click)="logoutAction()">Logout<i class="ti-shift-right ml-2 font-20"></i></a>
-                </div>
-            </div>
-        </div>
+    <li>
+        <a class="d-flex align-items-center" (click)="logoutAction()">Logout<i class="ti-shift-right ml-2 font-20"></i></a>
     </li>
     <li>
         <a class="nav-link quick-sidebar-toggler">

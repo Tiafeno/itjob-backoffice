@@ -3,7 +3,7 @@
     <div class="ibox-body" *ngIf="!loadingForm">
       <h5 class="font-strong mb-5">
         Mise à jour
-        <div *ngIf="Candidate.status !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
+        <div *ngIf="Candidate.state !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
             En attente de validation</span>
         </div>
       </h5>
@@ -254,7 +254,7 @@
 
             <div class="text-right">
               <button class="btn btn-primary btn-air mr-2" type="submit">Save</button>
-              <button class="btn btn-secondary" (click)="showVariable()">Cancel</button>
+              <button class="btn btn-secondary">Cancel</button>
             </div>
           </form>
 
@@ -331,7 +331,10 @@
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateTraining(editor.Training.ID)">Enregistrer</button>
+                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateTraining(editor.Training.ID)">
+                      <span *ngIf="editor.Training.validated">Enregistrer</span>
+                      <span *ngIf="!editor.Training.validated">Valider</span>
+                    </button>
                   </div>
                   <a class="text-danger" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
                 </div>
@@ -356,6 +359,12 @@
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_positionHeld"
                       name="diploma" placeholder="Diplôme">
+                  </div>
+                  <div class="form-group mb-4" *ngIf="editor.Experience.exp_branch_activity">
+                    <select class="select2 form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
+                      required>
+                      <option [value]="abranch.term_id" *ngFor="let abranch of branchActivitys">{{abranch.name}}</option>
+                    </select>
                   </div>
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_country"
@@ -410,8 +419,10 @@
                     </div>
                   </div>
                   <div class="form-group mb-4">
-                    <textarea class="form-control form-control-solid" [(ngModel)]="editor.Experience.exp_mission" rows="4"
-                      name="mission" placeholder="Mission"></textarea>
+                    <label>Mission</label>
+                    <textarea class="form-control form-control-solid" [(ngModel)]="editor.Experience.exp_mission" name="mission"
+                      id="summernote-experience" data-plugin="summernote" data-air-mode="true" placeholder="Mission">
+                    </textarea>
                   </div>
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">

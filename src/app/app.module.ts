@@ -18,12 +18,15 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './services/jwt-interceptor.service';
 import { RequestService } from './services/request.service';
 import { CandidateService } from './services/candidate.service';
+import { PostuledCandidatesComponent } from './directives/offers/postuled-candidates/postuled-candidates.component';
+import { OfferService } from './services/offer.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     DashboardComponent,
+    PostuledCandidatesComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,6 +39,7 @@ import { CandidateService } from './services/candidate.service';
   providers: [
     ScriptLoaderService,
     CandidateService,
+    OfferService,
     RequestService,
     AuthService,
     AuthGuard,

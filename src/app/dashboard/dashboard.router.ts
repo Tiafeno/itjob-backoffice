@@ -3,11 +3,11 @@ import { Route } from "@angular/router";
 import { HomeComponent } from "./home/home.component";
 import { LayoutComponent } from "../layouts/layout.component";
 import { AuthGuard } from "../guards/auth.guard";
-import { CompanyComponent } from "./company/company.component";
-import { CandidatListComponent } from "./candidat-list/candidat-list.component";
-import { CandidateComponent } from "./candidat/candidate/candidate.component";
+import { CandidatListComponent } from "./candidat/candidat-list/candidat-list.component";
 import { CandidateOverviewComponent } from "./candidat/candidate-overview/candidate-overview.component";
 import { CandidateEditComponent } from "./candidat/candidate-edit/candidate-edit.component";
+import { OfferListsComponent } from "./offers/offer-lists/offer-lists.component";
+import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
 
 export const DashboardRouter: Route[] = [
   {
@@ -16,20 +16,29 @@ export const DashboardRouter: Route[] = [
     canActivate: [AuthGuard],
     children: [
       { path: "home", component: HomeComponent },
-      { path: "company", component: CompanyComponent },
       {
-        path: "candidat-list",
+        path: "candidat-lists",
         component: CandidatListComponent
       },
       {
         path: "candidate/:id",
-        component: CandidateComponent,
         children: [
           { path: '', redirectTo: 'edit', pathMatch: 'full' },
           { path: 'overview', component: CandidateOverviewComponent },
           { path: 'edit', component: CandidateEditComponent },
         ]
       },
+      {
+        path: "offer-lists",
+        component: OfferListsComponent
+      },
+      {
+        path: "offer/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: OfferEditComponent }
+        ]
+      }
     ]
   },
 

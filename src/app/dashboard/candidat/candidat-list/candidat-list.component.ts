@@ -1,9 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { RequestService } from '../../services/request.service';
+import { RequestService } from '../../../services/request.service';
+import { config } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 import * as _ from 'lodash';
-import { config } from '../../../environments/environment';
-import { Router } from '@angular/router';
+import { _switch } from 'rxjs/operator/switch';
 declare var $: any;
 
 @Component({
@@ -14,8 +15,7 @@ declare var $: any;
 export class CandidatListComponent implements OnInit, AfterViewInit {
   public listsCandidat: Array<any>;
   public page: number = 1;
-  constructor(public requestService: RequestService, private router: Router) {
-  }
+  constructor(public requestService: RequestService, private router: Router) {}
 
   ngOnInit() {
     const component = this;
@@ -55,7 +55,20 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           { data: 'trainingNotif', render: (data) => { return data ? 'Oui' : 'Non'; } },
           {
             data: null,
-            render: (data, type, row, meta) => `<span class="text-light mr-3 font-16" data-id="${row.ID}"><i class="ti-pencil"></i></span>`
+            render: (data, type, row, meta) => `
+              <div class="fab fab-left">
+                <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
+                  <i class="fab-icon la la-bars"></i>
+                  <i class="fab-icon-active la la-close"></i>
+                </button>
+
+                <ul class="fab-menu">
+                  <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-candidate" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
+                  <li><button class="btn btn-pink btn-icon-only btn-circle btn-air "><i class="la la-eye-slash"></i></button></li>
+                  <li><button class="btn btn-blue btn-icon-only btn-circle btn-air " ><i class="la la-eye"></i></button></li>
+                </ul>
+              </div>
+            `
           }
         ],
         initComplete: (setting, json) => {
@@ -87,12 +100,12 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         })
         .on('init.dt', (e, settings, json) => {
           let candidatePage = localStorage.getItem('candidate-page');
-          if (!_.isNull(candidateLists)) {
+          if (!_.isNull(candidatePage) && !_.isEmpty(candidatePage)) {
             table.page(parseInt(candidatePage)).draw("page");
           }
         })
 
-      $('#orders-table tbody').on('click', 'span', (e) => {
+      $('#orders-table tbody').on('click', '.edit-candidate', (e) => {
         e.preventDefault();
         let Element = e.currentTarget;
         let data = $(Element).data();
