@@ -1,6 +1,11 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
-    <div class="ibox-body">
+    <div class="ibox-body" *ngIf="loadingForm">
+      <div class="row">
+        <div class="col-4 mb-4">
+          <a class="btn btn-primary btn-sm btn-air mr-2" [routerLink]="['/offer-lists']">Retour</a>
+        </div>
+      </div>
       <h5 class="font-strong mb-5">
         Mise à jour
         <div *ngIf="Offer.offer_status !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
@@ -8,48 +13,111 @@
         </div>
       </h5>
       <div class="row">
-        <div class="col-lg-8">
-
-          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()">
-            <div class="form-group mb-4">
-              <label class="ui-switch switch-icon mr-3 mb-0">
-                <input type="checkbox">
-                <span></span>
-              </label>Activer l'offre pour être visible dans le site
-            </div>
+        <div class="col-lg-7">
+          <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
 
             <div class="row">
-              <div class="form-group mb-4 col-sm-6">
-                <label>Poste occupé </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.postPromote" [disabled]='true'
-                  type="text" name="post" placeholder="Titre de l'offre">
+              <div class="form-group mb-4 col-sm-8">
+                <label class="font-bold">Poste occupé </label>
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.postPromote" type="text" name="post"
+                  placeholder="Titre de l'offre">
+                  <span class="badge badge-default sm">{{Offer.offer_url}}</span>
               </div>
             </div>
 
             <div class="row">
-              <div class="form-group mb-4 col-sm-6">
+              <div class="form-group mb-4 col-sm-4">
                 <label>Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" [disabled]='true'
-                  type="text" name="reference" placeholder="Référence de l'offre">
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" type="text"
+                  name="reference" placeholder="Référence de l'offre">
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Type de contrat</label>
+                <label class="font-bold">Status</label>
                 <div>
-                  <select class="form-control" name="greeting" [(ngModel)]="Editor.contractType" title="Type de contract">
-                    <option value="0">CDD</option>
-                    <option value="1">CDI</option>
-                    <option value="2">Interim</option>
+                  <select class="form-control" name="status" (ngModelChange)="onChangeStatus($event)" [(ngModel)]="Editor.offer_status"
+                    title="Status de l'offre">
+                    <option value="pending">En attente</option>
+                    <option value="publish">Publier</option>
                   </select>
                 </div>
               </div>
             </div>
 
             <div class="row">
+              <div class="form-group col-md-12 mb-4">
+                <label class="ui-switch switch-icon mr-3 mb-0">
+                  <input name="activated" [(ngModel)]="Editor.activated" type="checkbox">
+                  <span></span>
+                </label>Activer l'offre pour être visible dans le site
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 mb-2">
+                <span class="font-bold">Mode de diffusion</span>
+              </div>
+              <div class="col-sm-12 form-group mb-2">
+                <label class="radio radio-blue">
+                  <input type="radio" name="plan" [value]="'sereine'" [(ngModel)]="Editor.rateplan">
+                  <span class="input-span"></span>Mode de diffusion Sereine</label>
+              </div>
+              <div class="col-sm-12 form-group mb-4">
+                <label class="radio radio-blue">
+                  <input type="radio" name="plan" [value]="'standard'" [(ngModel)]="Editor.rateplan">
+                  <span class="input-span"></span>Mode de diffusion Standard</label>
+              </div>
+            </div>
+
+            <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Date limite de candidature</label>
+                <label class="font-bold">Type de contrat</label>
+                <div>
+                  <select class="form-control" name="contract" [(ngModel)]="Editor.contractType" title="Type de contract">
+                    <option value="0">CDD</option>
+                    <option value="1">CDI</option>
+                    <option value="2">Intérim</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group mb-4 col-sm-4">
+                  <label>Salaire net proposé </label>
+                  <input class="form-control form-control-solid" [(ngModel)]="Editor.proposedSalary" type="text" name="proposedsalary"
+                    placeholder="Salaire net proposé">
+                </div>
+
+            </div>
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label>Région</label>
+                <ng-select name="region" [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                  [items]="Regions">
+                </ng-select>
+              </div>
+
+              <div class="col-sm-6 form-group mb-4">
+                <label>Ville ou code postal</label>
+                <ng-select name="town" [items]="Towns" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                  [(ngModel)]="Editor.town" aria-required="true" required>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label>Secteur d'activité</label>
+                <ng-select name="branch_activity" [items]="branchActivitys" bindLabel="name" bindValue="term_id"
+                  [(ngModel)]="Editor.branch_activity" [searchFn]="customSearchFn">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label class="font-bold">Date limite de candidature</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
                   <input class="form-control" name="date_limit" [(ngModel)]="Editor.dateLimit" type="text" value=""
@@ -59,33 +127,63 @@
             </div>
 
             <div class="row">
-
-              <div class="col-12 d-flex mb-2">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une offre d’emploi
-                  est postée sur Itjobmada</span>
+              <div class="col-sm-12">
+                <div class="form-group mb-4">
+                  <label>Profil recherché</label>
+                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.profil" name="profil" id="summernote-profil"
+                    data-plugin="summernote" data-air-mode="true" placeholder="Profil recherché">
+                      </textarea>
+                </div>
               </div>
-
-              <div class="col-12 d-flex">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une formation est
-                  postée sur Itjobmada</span>
+              <div class="col-sm-12">
+                <div class="form-group mb-4">
+                  <label>Mission</label>
+                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.mission" name="mission" id="summernote-mission"
+                    data-plugin="summernote" data-air-mode="true" placeholder="Mission">
+                          </textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group mb-4">
+                  <label>Autre information</label>
+                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.otherInformation" name="otherInformation"
+                    id="summernote-other" data-plugin="summernote" data-air-mode="true" placeholder="Autre information">
+                      </textarea>
+                </div>
               </div>
             </div>
 
             <div class="text-right">
-              <button class="btn btn-primary btn-air mr-2" type="submit">Save</button>
-              <button class="btn btn-secondary">Cancel</button>
+              <input type="hidden" name="ID" [(ngModel)]="Editor.ID">
+              <button class="btn btn-primary btn-air mr-2" type="submit">
+                Enregistrer
+              </button>
+              <button class="btn btn-secondary">Annuler</button>
             </div>
           </form>
-
+        </div>
+        <div class="col-lg-5">
+          <div class="ibox">
+            <div class="ibox-body">
+              <h5 class="font-strong mb-4">{{Offer.__info.title}}</h5>
+              <div class="row align-items-center mb-3">
+                <div class="col-4 text-light">Nom du responsable</div>
+                <div class="col-8">{{Offer.__info.name}}</div>
+              </div>
+              <div class="row align-items-center mb-3">
+                <div class="col-4 text-light">Adress</div>
+                <div class="col-8">{{Offer.__info.address}}</div>
+              </div>
+              <div class="row align-items-center mb-3">
+                <div class="col-4 text-light">Email</div>
+                <div class="col-8">{{Offer.__info.email}}</div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-4 text-light">Numéro de téléphone</div>
+                <div class="col-8">{{Offer.__info.phone}}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

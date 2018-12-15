@@ -11,6 +11,9 @@ import { OfferListsComponent } from './offers/offer-lists/offer-lists.component'
 import { OfferEditComponent } from './offers/offer-edit/offer-edit.component';
 import { CompanyListsComponent } from './company/company-lists/company-lists.component';
 import { CompanyEditComponent } from './company/company-edit/company-edit.component';
+import { Error404Component } from '../pages/error-404/error-404.component';
+import { NgSelectModule, NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
+import { SweetAlert2Module} from '@toverux/ngx-sweetalert2';
 
 @NgModule({
   imports: [
@@ -18,7 +21,9 @@ import { CompanyEditComponent } from './company/company-edit/company-edit.compon
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgSelectModule,
+    SweetAlert2Module,
   ],
   declarations: [
     HomeComponent,
@@ -29,6 +34,15 @@ import { CompanyEditComponent } from './company/company-edit/company-edit.compon
     OfferEditComponent,
     CompanyListsComponent,
     CompanyEditComponent,
+    Error404Component,
+  ],
+  providers: [
+    {
+      provide: NG_SELECT_DEFAULT_CONFIG,
+      useValue: {
+        notFoundText: 'Custom not found'
+      }
+    }
   ]
 })
 export class DashboardModule { }

@@ -4,7 +4,6 @@ import { CandidateService } from '../../../services/candidate.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Helpers } from '../../../helpers';
-import { isEmbeddedView } from '@angular/core/src/view/util';
 declare var $: any;
 declare var Bloodhound: any;
 

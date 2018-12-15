@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { config } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,6 +16,16 @@ export class RequestService {
   }
   public getCandidateLists(page): Observable<any> {
     return this.http.get(`${config.itApi}/candidate/`, { responseType: 'json' });
+  }
+
+  public getHttpOptions(): any {
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${currentUser.token}`
+      })
+    };
+    return httpOptions;
   }
 
 }

@@ -1,0 +1,289 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "my-app": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/cd-themify-icons/index.css",
+              "src/assets/vendors/line-awesome/css/line-awesome.min.css",
+              "node_modules/animate.css/animate.min.css",
+              "node_modules/toastr/build/toastr.min.css",
+              "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
+              "node_modules/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css",
+              "node_modules/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css",
+              "node_modules/datatables.net-fixedheader-bs4/css/fixedHeader.bootstrap4.min.css",
+              "node_modules/jvectormap/jquery-jvectormap.css",
+              "node_modules/summernote/dist/summernote.css",
+              "node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css",
+              "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css",
+              "src/assets/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css",
+              "node_modules/bootstrap-daterangepicker/daterangepicker.css",
+              "node_modules/morris.js/morris.css",
+              "node_modules/bootstrap-select/dist/css/bootstrap-select.min.css",
+              "node_modules/fullcalendar/dist/fullcalendar.min.css",
+              "node_modules/ion-rangeslider/css/ion.rangeSlider.css",
+              "node_modules/ion-rangeslider/css/ion.rangeSlider.skinFlat.css",
+              "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css",
+              "node_modules/multiselect/css/multi-select.css",
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
+              "node_modules/clockpicker/dist/bootstrap-clockpicker.min.css",
+              "node_modules/jquery-minicolors/jquery.minicolors.css",
+              "src/assets/css/main.css",
+              "src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/vendors/jquery-nestable/jquery.nestable.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/jquery-slimscroll/jquery.slimscroll.min.js",
+              "node_modules/toastr/build/toastr.min.js",
+              "src/assets/vendors/idle-timer/idle-timer.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
+              "node_modules/easy-pie-chart/dist/jquery.easypiechart.min.js",
+              "node_modules/peity/jquery.peity.min.js",
+              "node_modules/raphael/raphael.min.js",
+              "node_modules/morris.js/morris.min.js",
+              "node_modules/jquery-sparkline/jquery.sparkline.min.js",
+              "node_modules/jvectormap/jquery-jvectormap.min.js",
+              "node_modules/jvectormap/tests/assets/jquery-jvectormap-world-mill-en.js",
+              "node_modules/jvectormap/tests/assets/jquery-jvectormap-us-aea-en.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js",
+              "node_modules/datatables.net-buttons/js/dataTables.buttons.min.js",
+              "node_modules/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.html5.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.print.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
+              "node_modules/datatables.net-responsive/js/dataTables.responsive.min.js",
+              "node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js",
+              "node_modules/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js",
+              "node_modules/jszip/dist/jszip.min.js",
+              "node_modules/summernote/dist/summernote.js",
+              "node_modules/bootstrap-markdown/js/bootstrap-markdown.js",
+              "node_modules/typeahead.js/dist/typeahead.bundle.min.js",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js",
+              "node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",
+              "src/assets/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js",
+              "node_modules/bootstrap-daterangepicker/daterangepicker.js",
+              "node_modules/jquery-validation/dist/jquery.validate.min.js",
+              "src/assets/vendors/jquery.maskedinput/dist/jquery.maskedinput.min.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
+              "node_modules/fullcalendar/dist/fullcalendar.min.js",
+              "src/assets/vendors/bootstrap-maxlength/src/bootstrap-maxlength.js",
+              "src/assets/vendors/jquery-knob/dist/jquery.knob.min.js",
+              "node_modules/ion-rangeslider/js/ion.rangeSlider.min.js",
+              "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",
+              "node_modules/multiselect/js/jquery.multi-select.js",
+              "node_modules/select2/dist/js/select2.full.min.js",
+              "node_modules/clockpicker/dist/bootstrap-clockpicker.min.js",
+              "node_modules/jquery-minicolors/jquery.minicolors.min.js",
+              "node_modules/clipboard/dist/clipboard.min.js",
+              "src/assets/js/app.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "my-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "my-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "my-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/vendors/jquery-nestable/jquery.nestable.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/jquery-slimscroll/jquery.slimscroll.min.js",
+              "node_modules/toastr/build/toastr.min.js",
+              "src/assets/vendors/idle-timer/idle-timer.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
+              "node_modules/easy-pie-chart/dist/jquery.easypiechart.min.js",
+              "node_modules/peity/jquery.peity.min.js",
+              "node_modules/raphael/raphael.min.js",
+              "node_modules/morris.js/morris.min.js",
+              "node_modules/jquery-sparkline/jquery.sparkline.min.js",
+              "node_modules/jvectormap/jquery-jvectormap.min.js",
+              "node_modules/jvectormap/tests/assets/jquery-jvectormap-world-mill-en.js",
+              "node_modules/jvectormap/tests/assets/jquery-jvectormap-us-aea-en.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js",
+              "node_modules/datatables.net-buttons/js/dataTables.buttons.min.js",
+              "node_modules/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.html5.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.print.min.js",
+              "node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
+              "node_modules/datatables.net-responsive/js/dataTables.responsive.min.js",
+              "node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js",
+              "node_modules/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js",
+              "node_modules/jszip/dist/jszip.min.js",
+              "node_modules/summernote/dist/summernote.js",
+              "node_modules/bootstrap-markdown/js/bootstrap-markdown.js",
+              "node_modules/typeahead.js/dist/typeahead.bundle.min.js",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js",
+              "node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",
+              "src/assets/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js",
+              "node_modules/bootstrap-daterangepicker/daterangepicker.js",
+              "node_modules/jquery-validation/dist/jquery.validate.min.js",
+              "src/assets/vendors/jquery.maskedinput/dist/jquery.maskedinput.min.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
+              "node_modules/fullcalendar/dist/fullcalendar.min.js",
+              "src/assets/vendors/bootstrap-maxlength/src/bootstrap-maxlength.js",
+              "src/assets/vendors/jquery-knob/dist/jquery.knob.min.js",
+              "node_modules/ion-rangeslider/js/ion.rangeSlider.min.js",
+              "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",
+              "node_modules/multiselect/js/jquery.multi-select.js",
+              "node_modules/select2/dist/js/select2.full.min.js",
+              "node_modules/clockpicker/dist/bootstrap-clockpicker.min.js",
+              "node_modules/jquery-minicolors/jquery.minicolors.min.js",
+              "node_modules/clipboard/dist/clipboard.min.js",
+              "src/assets/js/app.js"
+            ],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/cd-themify-icons/index.css",
+              "src/assets/vendors/line-awesome/css/line-awesome.min.css",
+              "node_modules/animate.css/animate.min.css",
+              "node_modules/toastr/build/toastr.min.css",
+              "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
+              "node_modules/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css",
+              "node_modules/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css",
+              "node_modules/datatables.net-fixedheader-bs4/css/fixedHeader.bootstrap4.min.css",
+              "node_modules/jvectormap/jquery-jvectormap.css",
+              "node_modules/summernote/dist/summernote.css",
+              "node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css",
+              "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css",
+              "src/assets/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css",
+              "node_modules/bootstrap-daterangepicker/daterangepicker.css",
+              "node_modules/morris.js/morris.css",
+              "node_modules/bootstrap-select/dist/css/bootstrap-select.min.css",
+              "node_modules/fullcalendar/dist/fullcalendar.min.css",
+              "node_modules/ion-rangeslider/css/ion.rangeSlider.css",
+              "node_modules/ion-rangeslider/css/ion.rangeSlider.skinFlat.css",
+              "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css",
+              "node_modules/multiselect/css/multi-select.css",
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/clockpicker/dist/bootstrap-clockpicker.min.css",
+              "node_modules/jquery-minicolors/jquery.minicolors.css",
+              "src/assets/css/main.css",
+              "src/styles.css"
+            ],
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "my-app-e2e": {
+      "root": "e2e",
+      "sourceRoot": "e2e",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "my-app:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "my-app",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

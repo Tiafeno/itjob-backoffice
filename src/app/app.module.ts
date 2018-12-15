@@ -20,6 +20,9 @@ import { RequestService } from './services/request.service';
 import { CandidateService } from './services/candidate.service';
 import { PostuledCandidatesComponent } from './directives/offers/postuled-candidates/postuled-candidates.component';
 import { OfferService } from './services/offer.service';
+import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -30,10 +33,12 @@ import { OfferService } from './services/offer.service';
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     IndexModule,
     DashboardModule,
     LayoutModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
   providers: [
@@ -44,7 +49,13 @@ import { OfferService } from './services/offer.service';
     AuthService,
     AuthGuard,
     LoginGuard,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
+    {
+      provide: NG_SELECT_DEFAULT_CONFIG,
+      useValue: {
+        notFoundText: 'Custom not found'
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })
