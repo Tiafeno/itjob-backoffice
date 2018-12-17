@@ -1,3 +1,109 @@
-<p>
-  home works!
-</p>
+<div class="page-content fade-in-up">
+  <div class="row mb-4" *ngIf="!loading">
+    <div class="col-lg-4 col-md-6">
+      <div class="card mb-4">
+        <div class="card-body flexbox-b">
+          <div class="easypie mr-4" [attr.data-percent]="Dashboard.candidate.percent" data-bar-color="#18C5A9"
+            data-size="80" data-line-width="8">
+            <span class="easypie-data text-success" style="font-size:28px;"><i class="ti-id-badge"></i></span>
+          </div>
+          <div>
+            <h3 class="font-strong text-success">{{Dashboard.candidate.countActive}}</h3>
+            <div class="text-muted">NOMBRE DES CANDIDATS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card mb-4">
+        <div class="card-body flexbox-b">
+          <div class="easypie mr-4" [attr.data-percent]="Dashboard.company.percent" data-bar-color="#5c6bc0" data-size="80"
+            data-line-width="8">
+            <span class="easypie-data text-primary" style="font-size:32px;"><i class="ti-layout-cta-left"></i></span>
+          </div>
+          <div>
+            <h3 class="font-strong text-primary">{{Dashboard.company.countActive}}</h3>
+            <div class="text-muted">NOMBRE D'ENTREPRISES</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card mb-4">
+        <div class="card-body flexbox-b">
+          <div class="easypie mr-4" [attr.data-percent]="Dashboard.offer.percent" data-bar-color="#ff4081" data-size="80"
+            data-line-width="8">
+            <span class="easypie-data text-pink" style="font-size:32px;"><i class="ti-notepad"></i></span>
+          </div>
+          <div>
+            <h3 class="font-strong text-pink">{{Dashboard.offer.countActive}}</h3>
+            <div class="text-muted">NOMBRE D'OFFRES</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row" *ngIf="!loading">
+    <div class="col-xl-4">
+      <div class="ibox ibox-fullheight" style="min-height:480px;">
+        <div class="ibox-head">
+          <div class="ibox-title">ABONNEMENTS</div>
+          <div class="ibox-tools">
+            <a class="font-18" href="javascript:;"><i class="ti-control-record"></i></a>
+          </div>
+        </div>
+        <div class="ibox-body">
+          <div class="flexbox mb-3">
+            <span class="flexbox">
+              <span>ENTREPRISES A LA UNE</span>
+            </span>
+            <span class="h3 mb-0 text-primary font-strong ml-2">{{Dashboard.company.countFeatured}}</span>
+          </div>
+          <div class="flexbox mb-3">
+            <span class="flexbox">
+              <span>CANDIDATS A LA UNE</span>
+            </span>
+            <span class="h3 mb-0 text-success font-strong ml-2">{{Dashboard.candidate.countFeatured}}</span>
+          </div>
+          <div class="flexbox mb-3">
+            <span class="flexbox">
+              <span>OFFRE SEREINE</span>
+            </span>
+            <span class="h3 mb-0 text-pink font-strong ml-2">{{Dashboard.offer.countFeatured}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8">
+      <div class="ibox ibox-fullheight">
+        <div class="ibox-body">
+          <div class="ibox-body">
+            <div class="d-flex justify-content-between mb-4">
+              <div>
+                <h3 class="m-0">Analyse des visiteurs</h3>
+                <div>Votre analyse de visiteurs de site</div>
+              </div>
+              <ul class="nav nav-pills nav-pills-rounded nav-pills-air" id="chart_tabs">
+                <li class="nav-item ml-1">
+                  <a class="nav-link active" data-toggle="tab" data-id="1" href="javascript:;">Cette semaine</a>
+                </li>
+                <li class="nav-item ml-1">
+                  <a class="nav-link" data-toggle="tab" data-id="2" href="javascript:;">La semaine dernière</a>
+                </li>
+                <li class="nav-item ml-1">
+                  <a class="nav-link" data-toggle="tab" data-id="3" href="javascript:;">L'année dernière</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <canvas id="visitors_chart" style="height:260px;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

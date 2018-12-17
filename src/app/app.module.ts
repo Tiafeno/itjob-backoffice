@@ -23,6 +23,7 @@ import { OfferService } from './services/offer.service';
 import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CompanyService } from './services/company.service';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { FormsModule } from '@angular/forms';
   providers: [
     ScriptLoaderService,
     CandidateService,
+    CompanyService,
     OfferService,
     RequestService,
     AuthService,
@@ -52,7 +54,7 @@ import { FormsModule } from '@angular/forms';
     {
       provide: NG_SELECT_DEFAULT_CONFIG,
       useValue: {
-        notFoundText: 'Custom not found'
+        notFoundText: ''
       }
     }
   ],

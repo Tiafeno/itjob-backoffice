@@ -63,19 +63,13 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           {
-            data: 'isActive', render: (data) => {
-              let status = data ? 'Activer' : "Désactiver";
-              let style = data ? 'primary' : 'danger';
+            data: 'isActive', render: (data, type, row) => {
+              let status = data && row.state === 'publish' ? 'Publier' : row.state === 'pending'  ? "En attente" : "Désactiver";
+              let style = data && row.state === 'publish' ? 'primary' : row.state === 'pending' ? "warning" : "danger";
               return `<span class="badge badge-${style}">${status}</span>`;
             }
           },
           { data: 'reference' },
-          {
-            data: 'state', render: (data) => {
-              let status: string = data === 'publish' ? "Publier" : "En attente";
-              return `<span class="badge badge-default">${status}</span>`;
-            }
-          },
           {
             data: 'branch_activity', render: (data) => {
               if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
@@ -192,7 +186,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         });
 
         function createSearch() {
-          searchs = `${searchKey}|${searchStatus}|${searchPublication}`;
+          searchs = `${searchKey}|${searchStatus}`;
           table.search(searchs, true, false).draw();
         }
       

@@ -7,6 +7,10 @@ import { CandidateOverviewComponent } from "./candidat/candidate-overview/candid
 import { CandidateEditComponent } from "./candidat/candidate-edit/candidate-edit.component";
 import { OfferListsComponent } from "./offers/offer-lists/offer-lists.component";
 import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
+import { CompanyListsComponent } from './company/company-lists/company-lists.component';
+import { CompanyEditComponent } from './company/company-edit/company-edit.component';
+import { UserListsComponent } from './users/user-lists/user-lists.component';
+import { UserEditComponent } from './users/user-edit/user-edit.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -36,6 +40,28 @@ export const DashboardRouter: Route[] = [
         children: [
           { path: "", redirectTo: 'edit', pathMatch: 'full' },
           { path: 'edit', component: OfferEditComponent }
+        ]
+      },
+      {
+        path: "company-lists",
+        component: CompanyListsComponent
+      },
+      {
+        path: "company/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: CompanyEditComponent }
+        ]
+      },
+      {
+        path: "user-lists",
+        component: UserListsComponent
+      },
+      {
+        path: "user/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: UserEditComponent }
         ]
       }
     ]

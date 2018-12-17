@@ -18,6 +18,14 @@ export class RequestService {
     return this.http.get(`${config.itApi}/candidate/`, { responseType: 'json' });
   }
 
+  public collectDashboard(): Observable<any> {
+    return this.http.get(`${config.itApi}/dashboard/?ref=collect`, { responseType: 'json' });
+  }
+
+  public collectHeader(): Observable<any> {
+    return this.http.get(`${config.itApi}/dashboard/?ref=header`, { responseType: 'json' });
+  }
+
   public getHttpOptions(): any {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const httpOptions = {

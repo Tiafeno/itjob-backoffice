@@ -1,3 +1,68 @@
-<p>
-  company-lists works!
-</p>
+<div class="page-content fade-in-up">
+    <div class="ibox">
+      <div class="ibox-body">
+        <h5 class="font-strong mb-4">LES ENTREPRISES</h5>
+        <div class="flexbox mb-4">
+          <div class="row">
+            <div class="col-8">
+              <div class="container mb-4">
+                <div class="row justify-content-start">
+                  <div class="col-4">
+                    <div class="flexbox">
+                      <select class="selectpicker show-tick form-control" id="type-status" title="Status"
+                        data-style="btn-solid" data-width="200px">
+                        <option value="">Tout</option>
+                        <option value="1">Publier</option>
+                        <option value="0">Désactiver</option>
+                        <option value="pending">En attente</option>
+                        
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                      <div class="flexbox">
+                        <select class="selectpicker show-tick form-control" id="type-account" title="Compte"
+                          data-style="btn-solid" data-width="200px">
+                          <option value="">Tout</option>
+                          <option value="0">Standard</option>
+                          <option value="1">Premium</option>
+                          <option value="2">En attente</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-4">
+              <div class="flexbox">
+                <div class="input-group-icon input-group-icon-left mr-3">
+                  <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+                  <input class="form-control form-control-solid" id="key-search" type="text"
+                    placeholder="Rechercher ...">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="table-responsive row">
+  
+          <table class="table table-bordered table-hover" id="orders-table">
+            <thead class="thead-default thead-lg">
+              <tr>
+                <th>#</th>
+                <th>Entreprise</th>
+                <th>Type de compte</th>
+                <th>Date d'ajout</th>
+                <th>Status</th>
+                <th>Secteur d'activité</th>
+                <th>Région</th>
+              </tr>
+            </thead>
+  
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

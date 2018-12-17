@@ -2,35 +2,37 @@
 <ul class="nav navbar-toolbar">
     <li class="dropdown mega-menu">
         <a class="nav-link dropdown-toggle toolbar-icon ml-3" data-toggle="dropdown" href="javascript:;"><i class="ti-view-grid"></i></a>
-        <div class="dropdown-menu">
+        <div class="dropdown-menu" *ngIf="Header">
             <div class="dropdown-arrow"></div>
             <div class="mega-toolbar-menu">
                 <div class="d-flex">
                     <a class="mega-toolbar-item"  [routerLink]="['/candidat-lists']">
-                        <div class="item-icon"><i class="ti-file"></i></div>
+                        <div class="item-icon"><i class="ti-id-badge"></i></div>
                         <div class="item-name">Candidats</div>
-                        <div class="item-text">Lorem Ipsum is simply dummy.</div>
-                        <div class="item-details">74 New</div>
+                        <div class="item-text">Tous les candidats</div>
+                        <div class="item-details" *ngIf="Header.candidate !== 0">{{Header.candidate}} en attente</div>
+                        <div class="item-details" *ngIf="Header.candidate === 0">0 en attente</div>
                     </a>
                     <a class="mega-toolbar-item"[routerLink]="['/offer-lists']">
-                        <div class="item-icon"><i class="ti-shopping-cart-full"></i></div>
+                        <div class="item-icon"><i class="ti-notepad"></i></div>
                         <div class="item-name">Offres</div>
-                        <div class="item-text">Lorem Ipsum is simply dummy.</div>
-                        <div class="item-details">125 New</div>
+                        <div class="item-text">Tous les offres</div>
+                        <div class="item-details" *ngIf="Header.offers !== 0">{{Header.offers}} en attente</div>
+                        <div class="item-details" *ngIf="Header.offers === 0">0 en attente</div>
                     </a>
                 </div>
                 <div class="d-flex">
                     <a class="mega-toolbar-item" [routerLink]="['/company-lists']">
-                        <div class="item-icon"><i class="ti-wallet"></i></div>
+                        <div class="item-icon"><i class="ti-layout-cta-left"></i></div>
                         <div class="item-name">Entreprises</div>
-                        <div class="item-text">Lorem Ipsum is simply dummy.</div>
-                        <div class="item-details">+1200<sup>$</sup></div>
+                        <div class="item-text">Tous les entreprises</div>
+                        <div class="item-details" *ngIf="Header.company !== 0">{{Header.company}} en attente</div>
+                        <div class="item-details" *ngIf="Header.company === 0">0 en attente</div>
                     </a>
-                    <a class="mega-toolbar-item" [routerLink]="['/users']">
+                    <a class="mega-toolbar-item" [routerLink]="['/user-lists']">
                         <div class="item-icon"><i class="ti-user"></i></div>
                         <div class="item-name">Utilisateurs</div>
-                        <div class="item-text">Lorem Ipsum is simply dummy.</div>
-                        <div class="item-details">+1200<sup>$</sup></div>
+                        <div class="item-text">Gestionnaire back office</div>
                     </a>
                 </div>
             </div>
@@ -46,52 +48,17 @@
 <!-- START TOP-RIGHT TOOLBAR-->
 <ul class="nav navbar-toolbar">
     <li class="timeout-toggler">
-        <a class="nav-link toolbar-icon" data-toggle="modal" data-target="#session-dialog" href="javascript:;"><i class="ti-alarm-clock timeout-toggler-icon rel"><span class="notify-signal"></span></i></a>
+        <a class="nav-link toolbar-icon" data-toggle="modal" data-target="#session-dialog" href="javascript:;">
+            <i class="ti-alarm-clock timeout-toggler-icon rel"><span class="notify-signal"></span></i>
+        </a>
     </li>
    
-    <li class="dropdown dropdown-notification">
-        <a class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="ti-bell rel"><span class="notify-signal"></span></i></a>
-        <div class="dropdown-menu dropdown-menu-right dropdown-menu-media">
-            <div class="dropdown-arrow"></div>
-            <div class="dropdown-header text-center">
-                <div>
-                    <span class="font-18"><strong>14 New</strong> Notifications</span>
-                </div>
-                <a class="text-muted font-13" href="javascript:;">view all</a>
-            </div>
-            <div class="p-3">
-                <ul class="timeline scroller" data-height="320px">
-                    <li class="timeline-item"><i class="ti-check timeline-icon"></i>2 Issue fixed<small class="float-right text-muted ml-2 nowrap">Just now</small></li>
-                    <li class="timeline-item"><i class="ti-announcement timeline-icon"></i>
-                        <span>7 new feedback
-                            <span class="badge badge-warning badge-pill ml-2">important</span>
-                        </span><small class="float-right text-muted">5 mins</small></li>
-                    <li class="timeline-item"><i class="ti-truck timeline-icon"></i>25 new orders sent<small class="float-right text-muted ml-2 nowrap">24 mins</small></li>
-                    <li class="timeline-item"><i class="ti-shopping-cart timeline-icon"></i>12 New orders<small class="float-right text-muted ml-2 nowrap">45 mins</small></li>
-                    <li class="timeline-item"><i class="ti-user timeline-icon"></i>18 new users registered<small class="float-right text-muted ml-2 nowrap">1 hrs</small></li>
-                    <li class="timeline-item"><i class="ti-harddrives timeline-icon"></i>
-                        <span>Server Error
-                            <span class="badge badge-success badge-pill ml-2">resolved</span>
-                        </span><small class="float-right text-muted">2 hrs</small></li>
-                    <li class="timeline-item"><i class="ti-info-alt timeline-icon"></i>
-                        <span>System Warning
-                            <a class="text-purple ml-2">Check</a>
-                        </span><small class="float-right text-muted ml-2 nowrap">12:07</small></li>
-                    <li class="timeline-item"><i class="fa fa-file-excel-o timeline-icon"></i>The invoice is ready<small class="float-right text-muted ml-2 nowrap">12:30</small></li>
-                    <li class="timeline-item"><i class="ti-shopping-cart timeline-icon"></i>5 New Orders<small class="float-right text-muted ml-2 nowrap">13:45</small></li>
-                    <li class="timeline-item"><i class="ti-arrow-circle-up timeline-icon"></i>Production server up<small class="float-right text-muted ml-2 nowrap">1 days ago</small></li>
-                    <li class="timeline-item"><i class="ti-harddrives timeline-icon"></i>Server overloaded 91%<small class="float-right text-muted ml-2 nowrap">2 days ago</small></li>
-                    <li class="timeline-item"><i class="ti-info-alt timeline-icon"></i>Server error<small class="float-right text-muted ml-2 nowrap">2 days ago</small></li>
-                </ul>
-            </div>
-        </div>
+    <li>
+        <a class="d-flex align-items-center" (click)="logoutAction()">Déconnexion <i class="ti-shift-right ml-2 font-20"></i></a>
     </li>
     <li>
-        <a class="d-flex align-items-center" (click)="logoutAction()">Logout<i class="ti-shift-right ml-2 font-20"></i></a>
-    </li>
-    <li>
-        <a class="nav-link quick-sidebar-toggler">
-            <span class="ti-align-right"></span>
+        <a class="nav-link quick-sidebar-toggler toolbar-icon">
+            <i class="ti-align-right rel"><span class="notify-signal"></span></i>
         </a>
     </li>
 </ul>

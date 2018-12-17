@@ -56,18 +56,11 @@ export class OfferListsComponent implements OnInit {
           { data: 'ID' },
           { data: 'postPromote', render: (data, type, row, meta) => data },
           { data: 'reference' },
-          {
-            data: 'offer_status', render: (data) => {
-              let status:string = data === 'publish' ? "Publier" : "En attente";
-              let style:string = data === 'publish' ? 'success' : 'warning'
-              return `<span class="badge badge-${style}">${status}</span>`
-            }
-          },
           { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
           {
-            data: 'activated', render: (data) => {
-              let status = data ? 'Activer' : "Désactiver";
-              let style = data ? 'primary' : 'danger';
+            data: 'activated', render: (data, type, row) => {
+              let status = data && row.offer_status === 'publish' ? 'Publier' : row.offer_status === 'pending'  ? "En attente" : "Désactiver";
+              let style = data && row.offer_status === 'publish'? 'primary' :  row.offer_status === 'pending' ? "warning" : "danger";
               return `<span class="badge badge-${style}">${status}</span>`;
             }
           },
@@ -196,7 +189,7 @@ export class OfferListsComponent implements OnInit {
       });
 
       function createSearch() {
-        searchs = `${searchKey}|${searchStatus}|${searchPublication}`;
+        searchs = `${searchKey}|${searchStatus}`;
         table.search(searchs, true, false).draw();
       }
     }, 600);
