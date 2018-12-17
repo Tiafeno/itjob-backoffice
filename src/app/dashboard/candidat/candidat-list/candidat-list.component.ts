@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { RequestService } from '../../../services/request.service';
 import { config } from '../../../../environments/environment';
+import { CandidateService } from '../../../services/candidate.service';
 import { Router } from '@angular/router';
 
+import swal from 'sweetalert2';
+import * as moment from 'moment';
 import * as _ from 'lodash';
 import { _switch } from 'rxjs/operator/switch';
 declare var $: any;
@@ -15,13 +17,30 @@ declare var $: any;
 export class CandidatListComponent implements OnInit, AfterViewInit {
   public listsCandidat: Array<any>;
   public page: number = 1;
-  constructor(public requestService: RequestService, private router: Router) {}
+  constructor(public candidateService: CandidateService, private router: Router) { }
 
   ngOnInit() {
     const component = this;
+    let searchs = "";
+    let searchPublication = " ";
+    let searchStatus = " ";
+    let searchKey = " ";
     // Ajouter ici un code pour recuperer les candidats...
     setTimeout(() => {
+      moment.locale('fr');
       const candidateLists = $('#orders-table');
+      candidateLists
+        .on('page.dt', () => {
+          let info = table.page.info();
+          localStorage.setItem('candidate-page', info.page);
+        })
+        .on('init.dt', (e, settings, json) => {
+          let candidatePage: string = localStorage.getItem('candidate-page');
+          let pageNum: number = parseInt(candidatePage);
+          if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
+            table.page(pageNum).draw("page");
+          }
+        });
       const table = candidateLists.DataTable({
         pageLength: 20,
         fixedHeader: true,
@@ -32,7 +51,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         serverSide: true,
         columns: [
           { data: 'ID' },
-          { data: 'reference' },
           {
             data: 'jobSought', render: (data, type, row, meta) => {
               if (_.isEmpty(data) || _.isNull(data)) return '';
@@ -44,15 +62,31 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
               }
             }
           },
-          { data: 'state', render: (data) => `<span class="badge badge-info badge-pill">${data}</span>` },
+          {
+            data: 'isActive', render: (data) => {
+              let status = data ? 'Activer' : "Désactiver";
+              let style = data ? 'primary' : 'danger';
+              return `<span class="badge badge-${style}">${status}</span>`;
+            }
+          },
+          { data: 'reference' },
+          {
+            data: 'state', render: (data) => {
+              let status: string = data === 'publish' ? "Publier" : "En attente";
+              return `<span class="badge badge-default">${status}</span>`;
+            }
+          },
           {
             data: 'branch_activity', render: (data) => {
               if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
               return data.name;
             }
           },
-          { data: 'jobNotif', render: (data) => { return data ? 'Oui' : 'Non'; } },
-          { data: 'trainingNotif', render: (data) => { return data ? 'Oui' : 'Non'; } },
+          {
+            data: 'dateAdd', render: (data) => {
+              return moment(data, 'j F, Y').fromNow();
+            }
+          },
           {
             data: null,
             render: (data, type, row, meta) => `
@@ -64,8 +98,8 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
 
                 <ul class="fab-menu">
                   <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-candidate" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
-                  <li><button class="btn btn-pink btn-icon-only btn-circle btn-air "><i class="la la-eye-slash"></i></button></li>
-                  <li><button class="btn btn-blue btn-icon-only btn-circle btn-air " ><i class="la la-eye"></i></button></li>
+                  <li><button class="btn btn-pink btn-icon-only btn-circle btn-air status-candidate" data-status="false" data-id="${row.ID}"><i class="la la-eye-slash"></i></button></li>
+                  <li><button class="btn btn-blue btn-icon-only btn-circle btn-air status-candidate"  data-status="true" data-id="${row.ID}"><i class="la la-eye"></i></button></li>
                 </ul>
               </div>
             `
@@ -93,33 +127,75 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
 
       });
 
-      candidateLists
-        .on('page.dt', () => {
-          let info = table.page.info();
-          localStorage.setItem('candidate-page', info.page);
+      $('#orders-table tbody')
+        .on('click', '.edit-candidate', (e) => {
+          e.preventDefault();
+          let data = $(e.currentTarget).data();
+          component.router.navigate(['/candidate', data.id, 'edit']);
         })
-        .on('init.dt', (e, settings, json) => {
-          let candidatePage = localStorage.getItem('candidate-page');
-          if (!_.isNull(candidatePage) && !_.isEmpty(candidatePage)) {
-            table.page(parseInt(candidatePage)).draw("page");
+        .on('click', '.status-candidate', (e) => {
+          e.preventDefault();
+          let trElement = $(e.currentTarget).parents('tr');
+          let DATA = table.row(trElement).data();
+
+          let elData = $(e.currentTarget).data();
+          let statusChange: boolean = elData.status;
+          let candidateId: number = elData.id;
+          let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
+          let cancelButton: string = "Annuler";
+          if (DATA.activated === statusChange) {
+            swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} un candidat qui es déjà ${confirmButton.toLowerCase()}.`, 'warning');
+            return false;
           }
+          swal({
+            title: '',
+            text: `Vous voulez vraiment ${confirmButton.toLowerCase()} ce candidat?`,
+            type: statusChange ? 'warning' : 'error',
+            showCancelButton: true,
+            confirmButtonText: confirmButton,
+            cancelButtonText: cancelButton
+          }).then((result) => {
+            if (result.value) {
+              component.candidateService
+                .activated(candidateId, statusChange)
+                .subscribe(response => {
+                  swal(
+                    '',
+                    `Candidat ${confirmButton.toLowerCase()} avec succès`,
+                    'success'
+                  )
+                  table.ajax.reload(null, false);
+                })
+              // For more information about handling dismissals please visit
+              // https://sweetalert2.github.io/#handling-dismissals
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+
+            }
+          })
         })
 
-      $('#orders-table tbody').on('click', '.edit-candidate', (e) => {
-        e.preventDefault();
-        let Element = e.currentTarget;
-        let data = $(Element).data();
-        component.router.navigate(['/candidate', data.id, 'edit']);
-      });
+        $('#key-search').on('keypress', function (event) {
+          if (event.which === 13) {
+            searchKey = this.value;
+            createSearch();
+          }
+        });
+  
+        $("#type-publication").on('change', function(event) {
+          searchPublication = this.value;
+          createSearch();
+        });
+  
+        $("#type-status").on('change', function(event) {
+          searchStatus = this.value;
+          createSearch();
+        });
 
-      $('#key-search').on('keypress', function (event) {
-        if (event.which === 13)
-          table.search(this.value).draw();
-      });
-
-      $('#type-filter').on('change', function () {
-        table.column(4).search($(this).val()).draw();
-      });
+        function createSearch() {
+          searchs = `${searchKey}|${searchStatus}|${searchPublication}`;
+          table.search(searchs, true, false).draw();
+        }
+      
     }, 600);
   }
 

@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { CandidateService } from '../../../services/candidate.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import swal from 'sweetalert2';
 import { Helpers } from '../../../helpers';
+import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -71,15 +73,17 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
     currentDriveLicences = _.map(currentDriveLicences, _.unary(parseInt));
     let dLicences = [
-      { id: 0, value: 'A`', checked: false },
-      { id: 1, value: 'A', checked: false },
-      { id: 2, value: 'B', checked: false },
-      { id: 3, value: 'C', checked: false },
-      { id: 4, value: 'D', checked: false },
+      { id: 0, value: 'A`', name: 'a_', checked: false },
+      { id: 1, value: 'A', name: 'a', checked: false },
+      { id: 2, value: 'B', name: 'b', checked: false },
+      { id: 3, value: 'C', name: 'c', checked: false },
+      { id: 4, value: 'D', name: 'd', checked: false },
     ];
-    let currentJobs = _.isObject(this.Candidate.jobSought) ? _.map(this.Candidate.jobSought, 'term_id') : '';
+    let jobSought = this.Candidate.jobSought;
+    let currentJobs = _.isArray(jobSought) ? _.map(jobSought, 'term_id') : (_.isObject(jobSought) ? jobSought.name : '');
     let args = {
       ID: this.Candidate.ID,
+      isActive: this.Candidate.isActive,
       Reference: this.Candidate.reference,
       Greeting: _.isObject(this.Candidate.greeting) ? this.Candidate.greeting.value : this.Candidate.greeting,
       Region: !_.isObject(this.Candidate.region) ? '' : this.Candidate.region.term_id,
@@ -89,10 +93,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
         dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
         return dLicence;
-      }) : '',
+      }) : dLicences,
       Town: _.isObject(pI.address.country) ? pI.address.country.term_id : '',
       Address: pI.address,
-      Jobs: currentJobs,
+      Jobs: _.isArray(currentJobs) ? currentJobs : false,
+      _oldJob: !_.isArray(currentJobs) ? currentJobs : false,
       Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
       Cellphones: _.isArray(cellphones) ? cellphones : [],
       Phone: _.isArray(pI.phone) ? pI.phone : [],
@@ -100,13 +105,15 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Firstname: pI.firstname,
       Lastname: pI.lastname,
       Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : '',
-      Interest: this.Candidate.centerInterest
+      Interest: this.Candidate.centerInterest,
+      Divers: this.Candidate.centerInterest.various,
+      Project: this.Candidate.centerInterest.projet
     };
     this.setEditorForm(args);
     this.ngReadyContent();
   }
 
-  
+
   onEditTraining(tId) {
     let currentTraining = _.find(this.editor.trainings, ['ID', tId]);
     if (!_.isObject(currentTraining)) return false;
@@ -213,8 +220,28 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubmitForm() {
-    return false;
+  onSubmitForm(editForm: NgForm) {
+    if (editForm.valid) {
+      let driveLicences = [
+          { id: 0, value: editForm.value.a },
+          { id: 1, value: editForm.value.a_ },
+          { id: 2, value: editForm.value.b },
+          { id: 3, value: editForm.value.c },
+          { id: 4, value: editForm.value.d }
+        ];
+      delete editForm.value.a;
+      delete editForm.value.a_;
+      delete editForm.value.b;
+      delete editForm.value.c;
+      delete editForm.value.d;
+      let Form = _.clone(editForm.value);
+      Form.driveLicences = _.filter(driveLicences, ['value', true]);
+      console.log(Form);
+      this.candidatService.saveCandidate(Form)
+      .subscribe(response => {
+        
+      });
+    }
   }
 
   private setEditorForm(contents) {
@@ -309,6 +336,20 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         autoclose: true
       });
     }, 1500);
+  }
+
+  customSearchFn(term: string, item: any) {
+    var inTerm = [];
+    term = term.toLocaleLowerCase();
+    var paramTerms = $.trim(term).split(' ');
+    $.each(paramTerms, (index, value) => {
+      if (item.name.toLocaleLowerCase().indexOf($.trim(value).toLowerCase()) > -1) {
+        inTerm.push(true);
+      } else {
+        inTerm.push(false);
+      }
+    });
+    return _.every(inTerm, (boolean) => boolean === true);
   }
 
   ngAfterViewInit() {

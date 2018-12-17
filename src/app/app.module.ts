@@ -29,7 +29,6 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     IndexComponent,
     DashboardComponent,
-    PostuledCandidatesComponent,
   ],
   imports: [
     BrowserModule,

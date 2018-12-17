@@ -14,6 +14,7 @@ import { CompanyEditComponent } from './company/company-edit/company-edit.compon
 import { Error404Component } from '../pages/error-404/error-404.component';
 import { NgSelectModule, NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { SweetAlert2Module} from '@toverux/ngx-sweetalert2';
+import { PostuledCandidatesComponent } from '../directives/offers/postuled-candidates/postuled-candidates.component';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { SweetAlert2Module} from '@toverux/ngx-sweetalert2';
     CompanyListsComponent,
     CompanyEditComponent,
     Error404Component,
+    PostuledCandidatesComponent
   ],
   providers: [
     {

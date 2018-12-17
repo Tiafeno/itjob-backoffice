@@ -1,5 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  SITE_URL: 'http://itjob.falicrea.com'
 };
 
 export const config = {

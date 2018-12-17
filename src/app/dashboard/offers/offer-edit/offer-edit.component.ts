@@ -11,7 +11,7 @@ declare var $: any;
   styleUrls: ['./offer-edit.component.css']
 })
 export class OfferEditComponent implements OnInit {
-  private ID: number;
+  public ID: number;
   public loadingForm: boolean = false;
   public Offer: Object = {};
   public Editor: any = {};
@@ -131,7 +131,6 @@ export class OfferEditComponent implements OnInit {
   onSubmitForm(editForm: NgForm): boolean {
     if (editForm.valid) {
       const Value = editForm.value;
-      console.info(Value);
       this.offerServices
         .saveOffer(Value)
         .subscribe(response => {

@@ -10,7 +10,12 @@ export class CandidateService {
   constructor(private http: HttpClient, private requestService: RequestService) { }
 
   getCandidate(id: number): Observable<any> {
-    return this.http.get(`${config.itApi}/candidate/${id}`, { responseType: 'json' });
+    return this.http.get(`${config.itApi}/candidate/${id}?ref=collect`, { responseType: 'json' });
+  }
+
+  activated(id: number, status: boolean): Observable<any> {
+    let activated = status ? 1 : 0;
+    return this.http.get(`${config.itApi}/candidate/${id}?ref=activated&status=${activated}`, { responseType: 'json' });
   }
 
   collectDataEditor(): Observable<any[]> {
@@ -34,5 +39,11 @@ export class CandidateService {
     let formData = new FormData();
     formData.append('content', JSON.stringify(experiences));
     return this.http.post<any>(`${config.itApi}/candidate/update/experience/${candidateId}`, formData, this.requestService.getHttpOptions());
+  }
+
+  saveCandidate(candidat: any): Observable<any> {
+    let formData = new FormData();
+    formData.append('candidat', JSON.stringify(candidat));
+    return this.http.post<any>(`${config.itApi}/candidate/${candidat.ID}`, formData, this.requestService.getHttpOptions());
   }
 }

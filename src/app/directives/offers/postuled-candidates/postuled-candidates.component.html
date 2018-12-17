@@ -1,3 +1,31 @@
-<p>
-  postuled-candidates works!
-</p>
+<div class="ibox-fullheight">
+  <div class="ibox-head">
+    <div class="ibox-title">Les candidats ayant été sélectionnés/postulés</div>
+  </div>
+  <div class="ibox-body">
+    <ul class="media-list media-list-divider mr-2 scroller" data-height="470px">
+      <li class="media align-items-center" *ngFor="let request of Requests">
+        <div class="media-body d-flex align-items-center">
+          <div class="flex-1">
+            <div class="media-heading">
+              {{request.candidate.title}}
+              <span class="badge badge-default ml-2" *ngIf="request.status === 'pending'">En attent</span>
+              <span class="badge badge-success ml-2" *ngIf="request.status === 'validated'">Valider</span>
+              <span class="badge badge-danger ml-2" *ngIf="request.status === 'reject'">Réjeter</span>
+            </div>
+            <small class="text-muted">{{request.candidate.privateInformations.firstname}}
+              {{request.candidate.privateInformations.lastname}}</small>
+            <div>
+              <span class="badge badge-default" *ngIf="request.type === 'apply'">Interesser</span>
+              <span class="badge badge-default" *ngIf="request.type === 'interested'">Sélectionner</span>
+            </div>
+
+          </div>
+          <button class="btn btn-sm btn-outline-primary" (click)="onValidate(request.id_request, $event)" *ngIf="request.status === 'pending'">Valider</button>
+          <button class="btn btn-sm ml-2 btn-outline-danger" (click)="onReject(request.id_request, $event)" *ngIf="request.status === 'pending'">Rejeter</button>
+        </div>
+      </li>
+    </ul>
+    <div *ngIf="!Requests">Néant</div>
+  </div>
+</div>

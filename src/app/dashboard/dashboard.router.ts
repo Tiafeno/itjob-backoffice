@@ -1,4 +1,3 @@
-import { DashboardComponent } from "./dashboard.component";
 import { Route } from "@angular/router";
 import { HomeComponent } from "./home/home.component";
 import { LayoutComponent } from "../layouts/layout.component";

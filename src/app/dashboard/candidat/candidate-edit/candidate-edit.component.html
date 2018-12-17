@@ -1,8 +1,14 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
     <div class="ibox-body" *ngIf="!loadingForm">
+      <div class="row">
+        <div class="col-4">
+          <a class="btn btn-primary btn-sm btn-air mr-2" [routerLink]="['/candidat-lists']">Retour</a>
+          <a class="btn btn-secondary btn-sm btn-air mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
+            candidat</a>
+        </div>
+      </div>
       <h5 class="font-strong mb-5">
-        Mise à jour
         <div *ngIf="Candidate.state !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
             En attente de validation</span>
         </div>
@@ -10,10 +16,10 @@
       <div class="row">
         <div class="col-lg-8">
 
-          <form #editForm="ngForm" (ngSubmit)="onSubmitForm()">
+          <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
             <div class="form-group mb-4">
               <label class="ui-switch switch-icon mr-3 mb-0">
-                <input type="checkbox" checked="">
+                <input type="checkbox" name="activated" [(ngModel)]="editor.Form.isActive" [checked]="editor.Form.isActive">
                 <span></span>
               </label>Activer le candidat pour être visible dans le site
             </div>
@@ -60,23 +66,19 @@
               </div>
 
               <div class="col-sm-6 form-group mb-4">
-                <label>Région </label>
-                <div>
-                  <select class="select2 form-control" name="region" [(ngModel)]="editor.Form.Region" title="Sélectionner une region"
-                    data-style="btn-solid">
-                    <option [value]="region.term_id" *ngFor="let region of Regions">{{region.name}}</option>
-                  </select>
-                </div>
+                <label>Région</label>
+                <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
+                  [searchFn]="customSearchFn" [items]="Regions"> 
+                </ng-select>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Ville ou code postal</label>
-                <select class="select2 form-control" name="town" [(ngModel)]="editor.Form.Town" title="Ville ou code pos"
-                  data-style="btn-solid">
-                  <option [value]="town.term_id" *ngFor="let town of Towns">{{town.name}}</option>
-                </select>
+                <ng-select name="town" [items]="Towns" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                  [(ngModel)]="editor.Form.Town" aria-required="true" required>
+                </ng-select>
               </div>
             </div>
 
@@ -114,10 +116,10 @@
 
                 </div>
                 <div class="row">
-                  <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences">
+                  <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" name="drive-licence-{{driveLicence.id}}" [(ngModel)]="driveLicence.checked"
+                        <input type="checkbox" name="{{driveLicence.name}}" [(ngModel)]="driveLicence.checked"
                           [checked]="driveLicence.checked">
                         <span class="input-span"></span>{{driveLicence.value}}</label>
                     </div>
@@ -136,6 +138,8 @@
                       multiple data-style="btn-solid">
                       <option [value]="job.term_id" *ngFor="let job of Jobs">{{job.name}}</option>
                     </select>
+
+                    <p class="text-muted" *ngIf="editor.Form._oldJob">{{editor.Form._oldJob}}</p>
                   </div>
                 </div>
               </div>
@@ -146,7 +150,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <label>Les langues</label>
-                  <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Language" name="language"
+                  <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Language" name="languages"
                     title="Ajouter une langue" multiple data-style="btn-solid">
                     <option [value]="language.term_id" *ngFor="let language of Languages">{{language.name}}</option>
                   </select>
@@ -206,7 +210,7 @@
                 <div class="form-group">
                   <label>Logiciels maitrisés</label>
                   <div>
-                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Softwares" name="software"
+                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Softwares" name="softwares"
                       title="Logiciel" multiple data-style="btn-solid">
                       <option [value]="software.term_id" *ngFor="let software of Softwares">{{software.name}}</option>
                     </select>
@@ -219,19 +223,20 @@
               <div class="col-md-6 mb-4">
                 <h5 class="font-strong text-uppercase mb-4">Centre d'intérêt</h5>
                 <label>Divers</label>
-                <input class="form-control form-control-solid" type="text" placeholder="Divers">
+                <input class="form-control form-control-solid" type="text" name="divers" [(ngModel)]="editor.Form.Divers"
+                  placeholder="Divers">
               </div>
               <div class="col-md-12">
 
                 <div class="form-group mb-4">
                   <label>Projet personnel</label>
-                  <textarea class="form-control form-control-solid" rows="4" placeholder="Ajouter une projet personnel"></textarea>
+                  <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
+                    placeholder="Ajouter une projet personnel"></textarea>
                 </div>
               </div>
             </div>
 
-            <div class="row">
-
+            <!-- <div class="row">
               <div class="col-12 d-flex mb-2">
                 <label class="ui-switch switch-icon switch-solid-info switch-small">
                   <input type="checkbox" checked="">
@@ -250,11 +255,11 @@
                 <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une formation est
                   postée sur Itjobmada</span>
               </div>
-            </div>
+            </div> -->
 
-            <div class="text-right">
-              <button class="btn btn-primary btn-air mr-2" type="submit">Save</button>
-              <button class="btn btn-secondary">Cancel</button>
+            <div class="text-right mt-4">
+              <input type="hidden" name="ID" [(ngModel)]="editor.Form.ID">
+              <button class="btn btn-primary btn-air mr-2" type="submit">Enregistrer</button>
             </div>
           </form>
 

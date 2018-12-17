@@ -12,6 +12,15 @@ export class OfferService {
   getOffer(id: number): Observable<any> {
     return this.http.get(`${config.itApi}/offer/${id}?ref=collect`, { responseType: 'json' });
   }
+
+  getRequest(id: number): Observable<any> {
+    return this.http.get(`${config.itApi}/offer/${id}?ref=request`, { responseType: 'json' });
+  }
+
+  updateRequest(offerId: number, requestId: number, status: string): Observable<any> {
+    return this.http.get(`${config.itApi}/offer/${offerId}?ref=update_request&status=${status}&id_request=${requestId}`, { responseType: 'json' });
+  }
+
   activated(id: number, status: boolean): Observable<any> {
     let activated = status ? 1 : 0;
     return this.http.get(`${config.itApi}/offer/${id}?ref=activated&status=${activated}`, { responseType: 'json' });

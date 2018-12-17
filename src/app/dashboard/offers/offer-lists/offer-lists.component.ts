@@ -22,6 +22,10 @@ export class OfferListsComponent implements OnInit {
   ngOnInit() {
     moment.locale('fr');
     const component = this;
+    let searchs = "";
+    let searchPublication = " ";
+    let searchStatus = " ";
+    let searchKey = " ";
     // Ajouter ici un code pour recuperer les candidats...
     setTimeout(() => {
       const offerLists = $('#orders-table');
@@ -32,15 +36,17 @@ export class OfferListsComponent implements OnInit {
         })
         .on('init.dt', (e, settings, json) => {
           setTimeout(() => {
-            let offerPage = localStorage.getItem('offer-page');
-            if (_.isNumber(offerPage)) {
-              table.page(parseInt(offerPage)).draw("page");
+            let offerPage: string = localStorage.getItem('offer-page');
+            let pageNum: number = parseInt(offerPage);
+            if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
+              table.page(pageNum).draw("page");
             }
           }, 800);
         });
 
       const table = offerLists.DataTable({
         pageLength: 20,
+        page: 0,
         fixedHeader: true,
         responsive: false,
         "sDom": 'rtip',
@@ -52,8 +58,9 @@ export class OfferListsComponent implements OnInit {
           { data: 'reference' },
           {
             data: 'offer_status', render: (data) => {
-              let status = data === 'publish' ? "Publier" : "En attente de validation";
-              return `<span class="badge badge-default">${status}</span>`
+              let status:string = data === 'publish' ? "Publier" : "En attente";
+              let style:string = data === 'publish' ? 'success' : 'warning'
+              return `<span class="badge badge-${style}">${status}</span>`
             }
           },
           { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
@@ -125,18 +132,25 @@ export class OfferListsComponent implements OnInit {
       $('#orders-table tbody')
         .on('click', '.edit-offer', (e) => {
           e.preventDefault();
-          let Element = e.currentTarget;
-          let data = $(Element).data();
+          let data = $(e.currentTarget).data();
           component.router.navigate(['/offer', parseInt(data.id)]);
         })
         .on('click', '.status-offer', (e) => {
           e.preventDefault();
+          let El = e.currentTarget;
+          let trElement = $(El).parents('tr');
+          let DATA = table.row(trElement).data();
+
           let Element = e.currentTarget;
           let data = $(Element).data();
           let statusChange: boolean = data.status;
           let offerId: number = data.id;
           let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
           let cancelButton: string = "Annuler";
+          if (DATA.activated === statusChange) {
+            swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} une offre qui es déja ${confirmButton.toLowerCase()}.`, 'warning');
+            return false;
+          }
           swal({
             title: '',
             text: `Vous voulez vraiment ${confirmButton.toLowerCase()} cette offre?`,
@@ -150,10 +164,11 @@ export class OfferListsComponent implements OnInit {
                 .activated(offerId, statusChange)
                 .subscribe(response => {
                   swal(
-                    'Deleted!',
-                    'Your imaginary file has been deleted.',
+                    '',
+                    'Offre mis à jour avec succès',
                     'success'
                   )
+                  table.ajax.reload(null, false);
                 })
               // For more information about handling dismissals please visit
               // https://sweetalert2.github.io/#handling-dismissals
@@ -164,13 +179,26 @@ export class OfferListsComponent implements OnInit {
         });
 
       $('#key-search').on('keypress', function (event) {
-        if (event.which === 13)
-          table.search(this.value).draw();
+        if (event.which === 13) {
+          searchKey = this.value;
+          createSearch();
+        }
       });
 
-      $('#type-status').on('change', function () {
-        table.column(4).search($(this).val()).draw();
+      $("#type-publication").on('change', function(event) {
+        searchPublication = this.value;
+        createSearch();
       });
+
+      $("#type-status").on('change', function(event) {
+        searchStatus = this.value;
+        createSearch();
+      });
+
+      function createSearch() {
+        searchs = `${searchKey}|${searchStatus}|${searchPublication}`;
+        table.search(searchs, true, false).draw();
+      }
     }, 600);
   }
 
