@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { Helpers } from '../../../helpers';
 import { NgForm } from '@angular/forms';
+import { RequestService } from '../../../services/request.service';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -17,6 +18,9 @@ declare var Bloodhound: any;
 export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
   public loadingForm: boolean = false;
+  public loadingSave: boolean = false;
+  public townLoading: boolean = false;
+  public areaLoading: boolean = false;
   public Candidate: any = {};
   public Regions: any = [];
   public Jobs: any = [];
@@ -28,8 +32,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
-  constructor(private route: ActivatedRoute,
-    private candidatService: CandidateService) {
+  constructor(
+    private route: ActivatedRoute,
+    private candidatService: CandidateService,
+    private requestServices: RequestService
+  ) {
     this.Candidate.status = true;
     this.editor.Form = {};
     this.editor.Form.Address = {};
@@ -48,10 +55,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
             .subscribe(responseList => {
               this.Regions = _.cloneDeep(responseList[0]);
               this.Jobs = _.cloneDeep(responseList[1]);
-              this.Towns = _.cloneDeep(responseList[2]);
-              this.Languages = _.cloneDeep(responseList[3]);
-              this.Softwares = _.cloneDeep(responseList[4]);
-              this.branchActivitys = _.cloneDeep(responseList[5]);
+              this.Languages = _.cloneDeep(responseList[2]);
+              this.Softwares = _.cloneDeep(responseList[3]);
+
+              this.townLoadingFn();
+              this.areaLoadingFn();
 
               this.loadForm();
             })
@@ -69,7 +77,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       return training;
     });
     let pI = _.clone(this.Candidate.privateInformations);
-    let cellphones = pI.cellphone;
+    let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
     currentDriveLicences = _.map(currentDriveLicences, _.unary(parseInt));
     let dLicences = [
@@ -88,7 +96,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Greeting: _.isObject(this.Candidate.greeting) ? this.Candidate.greeting.value : this.Candidate.greeting,
       Region: !_.isObject(this.Candidate.region) ? '' : this.Candidate.region.term_id,
       Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : '',
-      State: this.Candidate.state,
+      State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending'  ? "pending" : 0),
       Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : "",
       DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
         dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
@@ -99,8 +107,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Jobs: _.isArray(currentJobs) ? currentJobs : false,
       _oldJob: !_.isArray(currentJobs) ? currentJobs : false,
       Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
-      Cellphones: _.isArray(cellphones) ? cellphones : [],
-      Phone: _.isArray(pI.phone) ? pI.phone : [],
+      Cellphones: _.map(cellphones, (cel, index) => { return {value: cel, id: index} }),
       Avatar: pI.avatar,
       Firstname: pI.firstname,
       Lastname: pI.lastname,
@@ -113,6 +120,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.ngReadyContent();
   }
 
+  onAddedCellphone() {
+    let index = this.editor.Form.Cellphones.length;
+    this.editor.Form.Cellphones.push({value: '', id: index});
+  }
+
+  onRemoveCellphone(cellId: number) {
+    this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, {id: cellId});
+  }
 
   onEditTraining(tId) {
     let currentTraining = _.find(this.editor.trainings, ['ID', tId]);
@@ -222,25 +237,19 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
   onSubmitForm(editForm: NgForm) {
     if (editForm.valid) {
-      let driveLicences = [
-          { id: 0, value: editForm.value.a },
-          { id: 1, value: editForm.value.a_ },
-          { id: 2, value: editForm.value.b },
-          { id: 3, value: editForm.value.c },
-          { id: 4, value: editForm.value.d }
-        ];
-      delete editForm.value.a;
-      delete editForm.value.a_;
-      delete editForm.value.b;
-      delete editForm.value.c;
-      delete editForm.value.d;
+      this.loadingSave = true;
+      let driveLicences = {a_:0, a:1, b:2, c:3, d:4};
       let Form = _.clone(editForm.value);
-      Form.driveLicences = _.filter(driveLicences, ['value', true]);
-      console.log(Form);
-      this.candidatService.saveCandidate(Form)
-      .subscribe(response => {
-        
+      Form.cellphones = Object.values(Form.cellphones);
+      Form.drivelicences = _.map(Form.drivelicences, (value: any, key) =>{
+        return value ? driveLicences[key] : '';
       });
+      Form.drivelicences = _.without(Form.drivelicences, '');
+      this.candidatService.saveCandidate(Form.ID, Form)
+        .subscribe(response => {
+          swal("Modification", "La modification a été effectuée", "success");
+          this.loadingSave = false;
+        });
     }
   }
 
@@ -251,6 +260,22 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.editor.Form[i] = contents[i];
     }
     Helpers.setLoading(false);
+  }
+
+  townLoadingFn() {
+    this.townLoading = true;
+    this.requestServices.getTown().subscribe(x => {
+      this.Towns = _.cloneDeep(x);
+      this.townLoading = false;
+    })
+  }
+
+  areaLoadingFn() {
+    this.areaLoading = true;
+    this.requestServices.getArea().subscribe(x => {
+      this.branchActivitys = _.cloneDeep(x)
+      this.areaLoading = false;
+    })
   }
 
   ngReadyContent() {

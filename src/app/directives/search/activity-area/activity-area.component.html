@@ -1,0 +1,6 @@
+
+<select class="form-control" (change)="onChoose(Area)" [(ngModel)]="Area" name="activity_area" style="padding:.5rem .75rem" title="Veuillez choisir"
+  data-style="btn-solid">
+  <option value="0">Tous les secteur d'activité</option>
+  <option [value]="area.term_id" *ngFor="let area of branchActivitys">{{area.name}}</option>
+</select>

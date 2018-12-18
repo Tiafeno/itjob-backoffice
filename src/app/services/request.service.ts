@@ -26,6 +26,14 @@ export class RequestService {
     return this.http.get(`${config.itApi}/dashboard/?ref=header`, { responseType: 'json' });
   }
 
+  getTown(): Observable<any> {
+    return this.http.get(`${config.itApi}/taxonomies/city`, { responseType: 'json' });
+  }
+
+  getArea(): Observable<any> {
+    return this.http.get(`${config.itApi}/taxonomies/branch_activity`, { responseType: 'json' });
+  }
+
   public getHttpOptions(): any {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const httpOptions = {

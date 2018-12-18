@@ -1,29 +1,36 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
     <div class="ibox-body" *ngIf="!loadingForm">
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-4">
           <a class="btn btn-primary btn-sm btn-air mr-2" [routerLink]="['/candidat-lists']">Retour</a>
           <a class="btn btn-secondary btn-sm btn-air mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
             candidat</a>
         </div>
       </div>
-      <h5 class="font-strong mb-5">
-        <div *ngIf="Candidate.state !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
-            En attente de validation</span>
-        </div>
+      <h5 class="font-strong mb-3">
+        <div *ngIf="editor.Form.State === 0 || editor.Form.State === '0'"><span class="badge badge-pill badge-pink">Candidat
+            désactiver</span></div>
+        <div *ngIf="editor.Form.State === 'pending'"><span class="badge badge-pill badge-warning">En attente de
+            validation</span></div>
       </h5>
       <div class="row">
         <div class="col-lg-8">
 
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
-            <div class="form-group mb-4">
-              <label class="ui-switch switch-icon mr-3 mb-0">
-                <input type="checkbox" name="activated" [(ngModel)]="editor.Form.isActive" [checked]="editor.Form.isActive">
-                <span></span>
-              </label>Activer le candidat pour être visible dans le site
-            </div>
 
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label class="font-bold">Status</label>
+                <div>
+                  <select class="form-control" name="activated" [(ngModel)]="editor.Form.State" title="Status de l'offre">
+                    <option value="pending">En attente</option>
+                    <option value="1">Publier</option>
+                    <option value="0">Désactiver</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="form-group mb-4 col-sm-6">
                 <label>Référence </label>
@@ -68,7 +75,7 @@
               <div class="col-sm-6 form-group mb-4">
                 <label>Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [items]="Regions"> 
+                  [searchFn]="customSearchFn" [items]="Regions">
                 </ng-select>
               </div>
             </div>
@@ -76,9 +83,28 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Ville ou code postal</label>
-                <ng-select name="town" [items]="Towns" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                  [(ngModel)]="editor.Form.Town" aria-required="true" required>
+                <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
+                  [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
                 </ng-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label>Numéro de téléphone</label>
+                <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
+                  <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
+                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text"
+                      placeholder="Numére de votre cellulaire">
+                    <span class="input-group-btn">
+                      <button class="btn btn-sm" (click)="onRemoveCellphone(cellphone.id)">Retirer</button>
+                    </span>
+                  </div>
+
+                </div>
+                <div>
+                  <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-primary">Ajouter</button>
+                </div>
               </div>
             </div>
 
@@ -97,7 +123,7 @@
               <div class="col-sm-6 form-group mb-4">
                 <label>Status </label>
                 <div>
-                  <select class="select2 show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
+                  <select class="show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
                     data-style="btn-solid">
                     <option value="1">Je cherche un emploi</option>
                     <option value="2">Je souhaite entretenir mon réseau</option>
@@ -113,9 +139,9 @@
                   <div class="col-sm-12">
                     <label>Permis <span style="color: red">*</span></label>
                   </div>
-
                 </div>
-                <div class="row">
+
+                <div class="row" ngModelGroup="drivelicences" #drivelicencesCtrl="ngModelGroup">
                   <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
@@ -259,7 +285,7 @@
 
             <div class="text-right mt-4">
               <input type="hidden" name="ID" [(ngModel)]="editor.Form.ID">
-              <button class="btn btn-primary btn-air mr-2" type="submit">Enregistrer</button>
+              <button class="btn btn-primary btn-air mr-2" [disabled]="loadingSave" type="submit">Enregistrer</button>
             </div>
           </form>
 

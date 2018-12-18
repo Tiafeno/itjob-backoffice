@@ -5,11 +5,11 @@
 
 export const environment = {
   production: false,
-  SITE_URL: 'http://itjob.falicrea.com'
+  SITE_URL: 'http://localhost/itjobmada'
 };
 
 export const config = {
-  jwtAuthUrl: 'http://itjob.falicrea.com/wp-json/jwt-auth/v1/token',
-  wpApi: 'http://itjob.falicrea.com/wp-json/wp/v2',
-  itApi: 'http://itjob.falicrea.com/wp-json/it-api'
+  jwtAuthUrl: 'http://localhost/itjobmada/wp-json/jwt-auth/v1/token',
+  wpApi: 'http://localhost/itjobmada/wp-json/wp/v2',
+  itApi: 'http://localhost/itjobmada/wp-json/it-api'
 };

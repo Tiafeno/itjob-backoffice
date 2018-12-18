@@ -6,6 +6,7 @@ import swal from 'sweetalert2';
 import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 import { OfferService } from '../../../services/offer.service';
+import { Helpers } from '../../../helpers';
 declare var $: any;
 @Component({
   selector: 'app-offer-lists',
@@ -14,24 +15,38 @@ declare var $: any;
 })
 export class OfferListsComponent implements OnInit {
   public listsOffers: Array<any> = [];
+  public Helper: any;
+  private table: any;
+  public sStatus: string = "";
+  public sKey: string = "";
+  public sActivityArea: number = 0;
+  public sDate: string = "";
   constructor(
     private router: Router,
     private offerService: OfferService
-  ) { }
+  ) {
+    this.Helper = Helpers
+   }
+
+  onChoosed(areaId: number) {
+    this.sActivityArea = areaId;
+    this.createSearch();
+  }
+
+  public createSearch() {
+    let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}`;
+    this.table.search(searchs, true, false).draw();
+  }
 
   ngOnInit() {
     moment.locale('fr');
     const component = this;
-    let searchs = "";
-    let searchPublication = " ";
-    let searchStatus = " ";
-    let searchKey = " ";
     // Ajouter ici un code pour recuperer les candidats...
     setTimeout(() => {
       const offerLists = $('#orders-table');
       offerLists
         .on('page.dt', () => {
-          let info = table.page.info();
+          let info = component.table.page.info();
           localStorage.setItem('offer-page', info.page);
         })
         .on('init.dt', (e, settings, json) => {
@@ -39,14 +54,18 @@ export class OfferListsComponent implements OnInit {
             let offerPage: string = localStorage.getItem('offer-page');
             let pageNum: number = parseInt(offerPage);
             if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
-              table.page(pageNum).draw("page");
+              component.table.page(pageNum).draw("page");
             }
           }, 800);
+        }).on('xhr.dt', function (e, settings, json, xhr) {
+          console.log(json);
+          component.Helper.setLoading(false);
+          // Note no return - manipulate the data directly in the JSON object.
         });
 
-      const table = offerLists.DataTable({
+      component.table = offerLists.DataTable({
         pageLength: 20,
-        page: 0,
+        page: 1,
         fixedHeader: true,
         responsive: false,
         "sDom": 'rtip',
@@ -59,8 +78,8 @@ export class OfferListsComponent implements OnInit {
           { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
           {
             data: 'activated', render: (data, type, row) => {
-              let status = data && row.offer_status === 'publish' ? 'Publier' : row.offer_status === 'pending'  ? "En attente" : "Désactiver";
-              let style = data && row.offer_status === 'publish'? 'primary' :  row.offer_status === 'pending' ? "warning" : "danger";
+              let status = data && row.offer_status === 'publish' ? 'Publier' : (row.offer_status === 'pending' ? "En attente" : "Désactiver");
+              let style = data && row.offer_status === 'publish'? 'primary' :  (row.offer_status === 'pending' ? "warning" : "danger");
               return `<span class="badge badge-${style}">${status}</span>`;
             }
           },
@@ -111,6 +130,7 @@ export class OfferListsComponent implements OnInit {
           },
           type: 'POST',
           beforeSend: function (xhr) {
+            component.Helper.setLoading(true);
             let currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser && currentUser.token) {
               xhr.setRequestHeader("Authorization",
@@ -132,7 +152,7 @@ export class OfferListsComponent implements OnInit {
           e.preventDefault();
           let El = e.currentTarget;
           let trElement = $(El).parents('tr');
-          let DATA = table.row(trElement).data();
+          let DATA = component.table.row(trElement).data();
 
           let Element = e.currentTarget;
           let data = $(Element).data();
@@ -161,7 +181,7 @@ export class OfferListsComponent implements OnInit {
                     'Offre mis à jour avec succès',
                     'success'
                   )
-                  table.ajax.reload(null, false);
+                  component.table.ajax.reload(null, false);
                 })
               // For more information about handling dismissals please visit
               // https://sweetalert2.github.io/#handling-dismissals
@@ -171,27 +191,65 @@ export class OfferListsComponent implements OnInit {
           })
         });
 
-      $('#key-search').on('keypress', function (event) {
-        if (event.which === 13) {
-          searchKey = this.value;
-          createSearch();
-        }
-      });
-
-      $("#type-publication").on('change', function(event) {
-        searchPublication = this.value;
-        createSearch();
-      });
-
-      $("#type-status").on('change', function(event) {
-        searchStatus = this.value;
-        createSearch();
-      });
-
-      function createSearch() {
-        searchs = `${searchKey}|${searchStatus}`;
-        table.search(searchs, true, false).draw();
-      }
+        $('#key-search').on('keypress', function (event) {
+          component.sKey = this.value;
+          if (event.which === 13) {
+            component.createSearch();
+          }
+        });
+  
+        $("#type-status").on('change', function (event) {
+          component.sStatus = this.value;
+          component.createSearch();
+        });
+  
+        $('#daterange')
+          .daterangepicker({
+            locale: {
+              format: 'DD/MM/YYYY',
+              "applyLabel": "Confirmer",
+              "cancelLabel": "Annuler",
+              "fromLabel": "De",
+              "toLabel": "A",
+              "customRangeLabel": "Aléatoire",
+              "daysOfWeek": [
+                "Dim",
+                "Lun",
+                "Mar",
+                "Mer",
+                "Jeu",
+                "Ven",
+                "San"
+              ],
+              "monthNames": [
+                "Janvier",
+                "Février",
+                "Mars",
+                "Avril",
+                "Mai",
+                "Juin",
+                "Juillet",
+                "Août",
+                "Septembre",
+                "Octobre",
+                "Novembre",
+                "Décembre"
+              ],
+              "firstDay": 1
+            }
+          })
+          .on('apply.daterangepicker', function (ev, picker) {
+            let startDate = picker.startDate.format('YYYY-MM-DD');
+            let endDate = picker.endDate.format('YYYY-MM-DD');
+            component.sDate = `${startDate}x${endDate}`;
+            component.createSearch();
+          })
+          .on('cancel.daterangepicker', function (ev, picker) {
+            $('#daterange').val('');
+            component.sDate = '';
+            component.createSearch();
+          });
+        $(".select2").select2();
     }, 600);
   }
 

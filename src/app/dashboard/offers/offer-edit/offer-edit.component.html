@@ -9,9 +9,8 @@
       </div>
       <h5 class="font-strong mb-3">
         {{Editor.postPromote}}
-        <div *ngIf="Offer.offer_status !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
-            En attente de validation</span>
-        </div>
+        <div *ngIf="Editor.offer_status === 'pending'"><span class="badge badge-pill badge-warning"> En attente de validation</span></div>
+        <div *ngIf="Editor.offer_status === 0 || Editor.offer_status === '0'"><span class="badge badge-pill badge-pink">Candidat désactiver</span></div>
       </h5>
       <div class="row">
         <div class="col-lg-7">
@@ -28,8 +27,8 @@
             <div class="row">
               <div class="form-group mb-4 col-sm-4">
                 <label>Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" type="text"
-                  name="reference" placeholder="Référence de l'offre">
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" type="text" name="reference"
+                  placeholder="Référence de l'offre">
               </div>
             </div>
 
@@ -40,18 +39,10 @@
                   <select class="form-control" name="status" (ngModelChange)="onChangeStatus($event)" [(ngModel)]="Editor.offer_status"
                     title="Status de l'offre">
                     <option value="pending">En attente</option>
-                    <option value="publish">Publier</option>
+                    <option value="1">Publier</option>
+                    <option value="0">Désactiver</option>
                   </select>
                 </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="form-group col-md-12 mb-4">
-                <label class="ui-switch switch-icon mr-3 mb-0">
-                  <input name="activated" [(ngModel)]="Editor.activated" type="checkbox">
-                  <span></span>
-                </label>Activer l'offre pour être visible dans le site
               </div>
             </div>
 
@@ -84,23 +75,21 @@
               </div>
 
               <div class="form-group mb-4 col-sm-4">
-                  <label>Salaire net proposé </label>
-                  <input class="form-control form-control-solid" [(ngModel)]="Editor.proposedSalary" type="text" name="proposedsalary"
-                    placeholder="Salaire net proposé">
-                </div>
-
+                <label>Salaire net proposé </label>
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.proposedSalary" type="text" name="proposedsalary"
+                  placeholder="Salaire net proposé">
+              </div>
             </div>
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Région</label>
-                <ng-select name="region" [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                <ng-select name="region"  [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
                   [items]="Regions">
                 </ng-select>
               </div>
-
               <div class="col-sm-6 form-group mb-4">
                 <label>Ville ou code postal</label>
-                <ng-select name="town" [items]="Towns" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
                   [(ngModel)]="Editor.town" aria-required="true" required>
                 </ng-select>
               </div>
@@ -109,7 +98,7 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label>Secteur d'activité</label>
-                <ng-select name="branch_activity" [items]="branchActivitys" bindLabel="name" bindValue="term_id"
+                <ng-select name="branch_activity" [items]="branchActivitys" [loading]="areaLoading" bindLabel="name" bindValue="term_id"
                   [(ngModel)]="Editor.branch_activity" [searchFn]="customSearchFn">
                 </ng-select>
               </div>

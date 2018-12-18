@@ -4,6 +4,7 @@ import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
+import { RequestService } from '../../../services/request.service';
 declare var $: any;
 @Component({
   selector: 'app-offer-edit',
@@ -13,14 +14,17 @@ declare var $: any;
 export class OfferEditComponent implements OnInit {
   public ID: number;
   public loadingForm: boolean = false;
+  public townLoading: boolean = false;
+  public areaLoading: boolean = false;
   public Offer: Object = {};
   public Editor: any = {};
-  public Towns: any = {};
+  public Towns: any = [];
   public Regions: any = {};
-  public branchActivitys: any = {};
+  public branchActivitys: any = [];
   constructor(
     private route: ActivatedRoute,
-    private offerServices: OfferService
+    private offerServices: OfferService,
+    private requestServices: RequestService
   ) { }
 
   ngOnInit() {
@@ -36,22 +40,39 @@ export class OfferEditComponent implements OnInit {
     });
   }
 
+  townLoadingFn() {
+    this.townLoading = true;
+    this.requestServices.getTown().subscribe(x => {
+      this.Towns = _.cloneDeep(x);
+      this.townLoading = false;
+    })
+  }
+
+  areaLoadingFn() {
+    this.areaLoading = true;
+    this.requestServices.getArea().subscribe(x => {
+      this.branchActivitys = _.cloneDeep(x)
+      this.areaLoading = false;
+    })
+  }
+
   loadForm(Offer: any) {
     this.offerServices.collectDataEditor()
       .subscribe(observer => {
+        this.townLoadingFn();
+        this.areaLoadingFn();
+
         this.Regions = _.cloneDeep(observer[0]);
-        this.Towns = _.cloneDeep(observer[1]);
-        this.branchActivitys = _.cloneDeep(observer[2]);
         this.Editor = Offer;
         let contract = this.Editor.contractType;
         let region = this.Editor.region;
         let abranch = this.Editor.branch_activity;
         let town = this.Editor.town;
-
         this.Editor.contractType = !_.isNull(contract) && !_.isEmpty(contract) ? contract.value : '';
         this.Editor.region = _.isObject(region) ? region.term_id : '';
         this.Editor.branch_activity = _.isObject(abranch) ? abranch.term_id : '';
         this.Editor.town = _.isObject(town) ? town.term_id : '';
+        this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending'  ? "pending" : 0);
         // Load script
         Helpers.setLoading(false);
         this.loadingForm = true;

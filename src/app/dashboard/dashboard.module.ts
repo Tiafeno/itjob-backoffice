@@ -17,6 +17,7 @@ import { SweetAlert2Module} from '@toverux/ngx-sweetalert2';
 import { PostuledCandidatesComponent } from '../directives/offers/postuled-candidates/postuled-candidates.component';
 import { UserListsComponent } from './users/user-lists/user-lists.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { ActivityAreaComponent } from '../directives/search/activity-area/activity-area.component';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
     Error404Component,
     PostuledCandidatesComponent,
     UserListsComponent,
-    UserEditComponent
+    UserEditComponent,
+    ActivityAreaComponent
   ],
   providers: [
     {

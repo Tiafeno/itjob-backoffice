@@ -21,12 +21,10 @@ export class CandidateService {
   collectDataEditor(): Observable<any[]> {
     let regions = this.http.get(`${config.itApi}/taxonomies/region`, { responseType: 'json' });
     let jobs = this.http.get(`${config.itApi}/taxonomies/job_sought`, { responseType: 'json' });
-    let city = this.http.get(`${config.itApi}/taxonomies/city`, { responseType: 'json' });
     let languages = this.http.get(`${config.itApi}/taxonomies/language`, { responseType: 'json' });
-    let abranchs = this.http.get(`${config.itApi}/taxonomies/branch_activity`, { responseType: 'json' });
     let softwares = this.http.get(`${config.itApi}/taxonomies/software`, { responseType: 'json' });
 
-    return Observable.forkJoin([regions, jobs, city, languages, softwares, abranchs]);
+    return Observable.forkJoin([regions, jobs, languages, softwares]);
   }
 
   updateTraining(trainings: Array<any>, candidateId: number): Observable<any> {
@@ -41,9 +39,9 @@ export class CandidateService {
     return this.http.post<any>(`${config.itApi}/candidate/update/experience/${candidateId}`, formData, this.requestService.getHttpOptions());
   }
 
-  saveCandidate(candidat: any): Observable<any> {
+  saveCandidate(candidat_id:number, candidat: any): Observable<any> {
     let formData = new FormData();
     formData.append('candidat', JSON.stringify(candidat));
-    return this.http.post<any>(`${config.itApi}/candidate/${candidat.ID}`, formData, this.requestService.getHttpOptions());
+    return this.http.post<any>(`${config.itApi}/candidate/${candidat_id}`, formData, this.requestService.getHttpOptions());
   }
 }

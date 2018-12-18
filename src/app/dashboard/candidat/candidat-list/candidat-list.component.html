@@ -1,56 +1,52 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
     <div class="ibox-body">
+
       <h5 class="font-strong mb-4">LES CANDIDATS</h5>
-      <div class="flexbox mb-4">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="container mb-4">
-                <div class="row justify-content-start">
-                  <div class="col-6">
-                    <div class="flexbox">
-                      <label class="mb-0 mr-2">Status:</label>
-                      <select class="selectpicker show-tick form-control" id="type-status" title="Veuillez choisir"
-                        data-style="btn-solid" data-width="200px">
-                        <option value="">Tout</option>
-                        <option value="pending">En attente</option>
-                        <option value="1">Publier</option>
-                        <option value="0">Désactiver</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-  
-            <div class="col-md-6">
-              <div class="flexbox">
-                <div class="input-group-icon input-group-icon-left mr-3">
-                  <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
-                  <input class="form-control form-control-solid" id="key-search" type="text"
-                    placeholder="Rechercher ...">
-                </div>
-              </div>
+      <div class="mb-4">
+        <form class="form-inline form-success mb-4" action="javascript:;">
+          <div class=" mb-2 mr-sm-2 mb-sm-0">
+            <select class=" select2 form-control" id="type-status" title="Veuillez choisir" data-style="btn-solid">
+              <option value="">Tous les status</option>
+              <option value="pending">En attente</option>
+              <option value="1">Publier</option>
+              <option value="0">Désactiver</option>
+            </select>
+          </div>
+
+          <label class="sr-only" for="ex-pass">Email</label>
+          <app-activity-area class=" mb-2 mr-sm-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+          <div class="form-group mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
+              <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
             </div>
           </div>
+          <div class="form-check mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+              <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
+            </div>
+          </div>
+        </form>
+
+
+        <div class="table-responsive row">
+          <table class="table table-bordered table-hover" id="orders-table">
+            <thead class="thead-default thead-lg">
+              <tr>
+                <th>#</th>
+                <th>L'emploi recherché</th>
+                <th>Status</th>
+                <th>Réference</th>
+                <th>Secteur d'activité</th>
+                <th>Date d'inscription</th>
+                <th class="no-sort">Action</th>
+              </tr>
+            </thead>
+
+          </table>
         </div>
-      <div class="table-responsive row">
-
-        <table class="table table-bordered table-hover" id="orders-table">
-          <thead class="thead-default thead-lg">
-            <tr>
-              <th>#</th>
-              <th>L'emploi recherché</th>
-              <th>Status</th>
-              <th>Réference</th>
-              <th>Secteur d'activité</th>
-              <th>Date d'inscription</th>
-              <th class="no-sort">Action</th>
-            </tr>
-          </thead>
-
-        </table>
       </div>
     </div>
   </div>
-</div>
