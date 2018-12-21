@@ -322,7 +322,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
           $(this).find('.select2').select2({
             width: "100%"
           });
-
         });
 
       $('#edit-experience-modal')

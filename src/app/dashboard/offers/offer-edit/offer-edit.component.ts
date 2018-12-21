@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, Route } from '@angular/router';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
+import swal from 'sweetalert2';
 import { RequestService } from '../../../services/request.service';
 declare var $: any;
 @Component({
@@ -14,6 +15,7 @@ declare var $: any;
 export class OfferEditComponent implements OnInit {
   public ID: number;
   public loadingForm: boolean = false;
+  public loadingSave: boolean = false;
   public townLoading: boolean = false;
   public areaLoading: boolean = false;
   public Offer: Object = {};
@@ -23,6 +25,7 @@ export class OfferEditComponent implements OnInit {
   public branchActivitys: any = [];
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private offerServices: OfferService,
     private requestServices: RequestService
   ) { }
@@ -73,6 +76,7 @@ export class OfferEditComponent implements OnInit {
         this.Editor.branch_activity = _.isObject(abranch) ? abranch.term_id : '';
         this.Editor.town = _.isObject(town) ? town.term_id : '';
         this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending'  ? "pending" : 0);
+        this.Editor.rateplan = _.isNull(Offer.rateplan) || _.isEmpty(Offer.rateplan) ? 'standard' : Offer.rateplan;
         // Load script
         Helpers.setLoading(false);
         this.loadingForm = true;
@@ -151,11 +155,20 @@ export class OfferEditComponent implements OnInit {
 
   onSubmitForm(editForm: NgForm): boolean {
     if (editForm.valid) {
+      this.loadingSave = true;
       const Value = editForm.value;
       this.offerServices
         .saveOffer(Value)
         .subscribe(response => {
-
+          swal({
+            title: "Modification",
+            text: 'La modification a été effectuée',
+            icon: "success",
+          } as any)
+          .then(name => {
+            this.loadingSave = false;
+            this.router.navigate([this.router.url]);
+          });
         });
 
     } else {

@@ -25,9 +25,9 @@
             </div>
 
             <div class="row">
-              <div class="form-group mb-4 col-sm-4">
+              <div class="form-group mb-4 col-sm-8">
                 <label>Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" type="text" name="reference"
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" [disabled]='true' type="text" name="reference"
                   placeholder="Référence de l'offre">
               </div>
             </div>
@@ -144,7 +144,7 @@
 
             <div class="text-right">
               <input type="hidden" name="ID" [(ngModel)]="Editor.ID">
-              <button class="btn btn-primary btn-air mr-2" type="submit">
+              <button class="btn btn-primary btn-air mr-2" [disabled]="loadingSave" type="submit">
                 Enregistrer
               </button>
               <button class="btn btn-secondary">Annuler</button>

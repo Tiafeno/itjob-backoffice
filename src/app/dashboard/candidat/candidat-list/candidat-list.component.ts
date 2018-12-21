@@ -40,6 +40,13 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
     this.table.search(searchs, true, false).draw();
   }
 
+  public resetFilterSearch() {
+    $('.page-content').find('input').val('');
+    $('.page-content').find('select:not("#activity_area_search")').val('');
+    $('.page-content').find('.selectpicker').selectpicker("refresh");
+    this.table.search("", true, false).draw();
+  }
+
   ngOnInit() {
     const component = this;
     // Ajouter ici un code pour recuperer les candidats...

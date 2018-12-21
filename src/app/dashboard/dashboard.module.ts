@@ -18,6 +18,7 @@ import { PostuledCandidatesComponent } from '../directives/offers/postuled-candi
 import { UserListsComponent } from './users/user-lists/user-lists.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { ActivityAreaComponent } from '../directives/search/activity-area/activity-area.component';
+import { SwitcherComponent } from '../directives/account/switcher/switcher.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { ActivityAreaComponent } from '../directives/search/activity-area/activi
     PostuledCandidatesComponent,
     UserListsComponent,
     UserEditComponent,
-    ActivityAreaComponent
+    ActivityAreaComponent,
+    SwitcherComponent
   ],
   providers: [
     {

@@ -33,6 +33,13 @@ export class OfferListsComponent implements OnInit {
     this.createSearch();
   }
 
+  public resetFilterSearch() {
+    $('.page-content').find('input').val('');
+    $('.page-content').find('select:not("#activity_area_search")').val('');
+    $('.page-content').find('.selectpicker').selectpicker("refresh");
+    this.table.search("", true, false).draw();
+  }
+
   public createSearch() {
     let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}`;
     this.table.search(searchs, true, false).draw();
@@ -160,7 +167,7 @@ export class OfferListsComponent implements OnInit {
           let offerId: number = data.id;
           let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
           let cancelButton: string = "Annuler";
-          if (DATA.activated === statusChange) {
+          if (DATA.activated === statusChange && DATA.offer_status === 'publish') {
             swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} une offre qui es déja ${confirmButton.toLowerCase()}.`, 'warning');
             return false;
           }
