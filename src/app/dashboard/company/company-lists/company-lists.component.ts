@@ -7,6 +7,7 @@ import swal from 'sweetalert';
 import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 import { SwitcherComponent } from '../../../directives/account/switcher/switcher.component';
+import { CompanyEditComponent } from '../company-edit/company-edit.component';
 declare var $: any;
 @Component({
   selector: 'app-company-lists',
@@ -23,9 +24,9 @@ export class CompanyListsComponent implements OnInit {
   public TABLE: any;
 
   @ViewChild(SwitcherComponent) private switcher: SwitcherComponent;
+  @ViewChild(CompanyEditComponent) private companyEdit: CompanyEditComponent
 
   constructor(
-    private router: Router,
     private companyService: CompanyService
   ) { }
 
@@ -205,14 +206,14 @@ export class CompanyListsComponent implements OnInit {
       $('#orders-table tbody')
         .on('click', '.edit-company', (e) => {
           e.preventDefault();
-          let data = $(e.currentTarget).data();
-          component.router.navigate(['/company', parseInt(data.id)]);
+          let el = $(e.currentTarget).parents('tr');
+          let DATA = component.TABLE.row(el).data();
+          component.companyEdit.onOpen(DATA);
         })
         .on('click', '.edit-status', (e) => {
           e.preventDefault();
-          let El = e.currentTarget;
-          let trElement = $(El).parents('tr');
-          let DATA = component.TABLE.row(trElement).data();
+          let el = $(e.currentTarget).parents('tr');
+          let DATA = component.TABLE.row(el).data();
           let currentStatus: any = DATA.isActive && DATA.post_status === 'publish' ? 1 : (DATA.post_status === 'pending' ? 'pending' : 0);
           let Element = e.currentTarget;
           let data = $(Element).data();
@@ -233,7 +234,6 @@ export class CompanyListsComponent implements OnInit {
               switch (value) {
                 case "activated":
                 case "disabled":
-                  console.log(value);
                   let status: boolean = value === 'activated' ? true : false;
                   component.companyService
                     .activated(companyId, status)

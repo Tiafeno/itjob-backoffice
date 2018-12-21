@@ -47,22 +47,8 @@ export const DashboardRouter: Route[] = [
         component: CompanyListsComponent
       },
       {
-        path: "company/:id",
-        children: [
-          { path: "", redirectTo: 'edit', pathMatch: 'full' },
-          { path: 'edit', component: CompanyEditComponent }
-        ]
-      },
-      {
         path: "user-lists",
         component: UserListsComponent
-      },
-      {
-        path: "user/:id",
-        children: [
-          { path: "", redirectTo: 'edit', pathMatch: 'full' },
-          { path: 'edit', component: UserEditComponent }
-        ]
       }
     ]
   },

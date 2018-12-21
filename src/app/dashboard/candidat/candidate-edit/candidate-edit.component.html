@@ -215,7 +215,6 @@
                 <div class="ibox-body pl-0">
                   <h5 class="font-strong text-uppercase mb-4">Expériences professionnelles</h5>
                   <ul class="media-list media-list-divider mr-2">
-
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
                         <div class="flex-1">
@@ -225,7 +224,6 @@
                         <button (click)="onEditExperience(experience.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
                       </div>
                     </li>
-
                   </ul>
                 </div>
               </div>
@@ -253,7 +251,6 @@
                   placeholder="Divers">
               </div>
               <div class="col-md-12">
-
                 <div class="form-group mb-4">
                   <label>Projet personnel</label>
                   <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
