@@ -9,8 +9,8 @@ declare var $:any;
   styleUrls: ['./switcher.component.css']
 })
 export class SwitcherComponent implements OnInit, AfterViewInit  {
-  private account:number = 0;
-  private currentAccount:number = 0;
+  public account:number = 0;
+  public currentAccount:number = 0;
   private postId:number = 0;
   public loading: boolean = false;
   public warning: boolean = false;

@@ -85,7 +85,9 @@
               <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
                 <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire">
                 <span class="input-group-btn ml-2">
-                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero"><i class="la la-close"></i></button>
+                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
+                    <i class="la la-close"></i>
+                  </button>
                 </span>
               </div>
 

@@ -65,7 +65,7 @@ export class OfferEditComponent implements OnInit {
         this.townLoadingFn();
         this.areaLoadingFn();
 
-        this.Regions = _.cloneDeep(observer[0]);
+        this.Regions = _.cloneDeep(observer[0].body);
         this.Editor = Offer;
         let contract = this.Editor.contractType;
         let region = this.Editor.region;

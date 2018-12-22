@@ -3,9 +3,10 @@
     <div class="ibox-body" *ngIf="!loadingForm">
       <div class="row mb-4">
         <div class="col-4">
-          <a class="btn btn-primary btn-sm btn-air mr-2" [routerLink]="['/candidat-lists']">Retour</a>
-          <a class="btn btn-secondary btn-sm btn-air mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
-            candidat</a>
+          <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/candidat-lists']">Retour</a>
+          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
+            candidat
+          </a>
         </div>
       </div>
       <h5 class="font-strong mb-3">
@@ -33,7 +34,7 @@
             </div>
             <div class="row">
               <div class="form-group mb-4 col-sm-6">
-                <label>Référence </label>
+                <label class="font-bold">Référence </label>
                 <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
                   type="text" name="reference" placeholder="Référence du candidat">
               </div>
@@ -41,9 +42,9 @@
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Titre</label>
+                <label class="font-bold">Titre</label>
                 <div>
-                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur">
+                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur" required>
                     <option value="mr">Monsieur</option>
                     <option value="mrs">Madame</option>
                   </select>
@@ -53,12 +54,12 @@
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Nom</label>
+                <label class="font-bold">Nom</label>
                 <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
-                  type="text" placeholder="Nom du candidat">
+                  type="text" placeholder="Nom du candidat" required>
               </div>
               <div class="col-sm-6 form-group mb-4">
-                <label>Prénom</label>
+                <label class="font-bold">Prénom</label>
                 <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
                   placeholder="Prénom du candidat">
               </div>
@@ -67,22 +68,22 @@
             <div class="row">
 
               <div class="col-sm-4 form-group mb-4">
-                <label>Adresse</label>
+                <label class="font-bold">Adresse</label>
                 <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
-                  type="text" placeholder="Adresse du candidat">
+                  type="text" placeholder="Adresse du candidat" required>
               </div>
 
               <div class="col-sm-6 form-group mb-4">
-                <label>Région</label>
+                <label class="font-bold">Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [items]="Regions">
+                  [searchFn]="customSearchFn" [items]="Regions" required>
                 </ng-select>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Ville ou code postal</label>
+                <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
                   [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
                 </ng-select>
@@ -91,40 +92,43 @@
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Numéro de téléphone</label>
+                <label class="font-bold">Numéro de téléphone</label>
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
                     <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text"
-                      placeholder="Numére de votre cellulaire">
-                    <span class="input-group-btn">
-                      <button class="btn btn-sm" (click)="onRemoveCellphone(cellphone.id)">Retirer</button>
+                      placeholder="Numére de votre cellulaire" required>
+                    <span class="input-group-btn ml-2">
+                      <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
+                          <i class="la la-close"></i>
+                        </button>
                     </span>
+                    
                   </div>
 
                 </div>
                 <div>
-                  <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-primary">Ajouter</button>
+                  <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-success">Ajouter un numéro</button>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Date de naissance</label>
+                <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
                   <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
-                    placeholder="Date de naissance">
+                    placeholder="Date de naissance" required>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Status </label>
+                <label class="font-bold">Status </label>
                 <div>
                   <select class="show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
-                    data-style="btn-solid">
+                    data-style="btn-solid" required>
                     <option value="1">Je cherche un emploi</option>
                     <option value="2">Je souhaite entretenir mon réseau</option>
                     <option value="3">Je cherche un stage</option>
@@ -137,7 +141,7 @@
               <div class="col-6 mb-4">
                 <div class="row">
                   <div class="col-sm-12">
-                    <label>Permis <span style="color: red">*</span></label>
+                    <label class="font-bold">Permis <span style="color: red">*</span></label>
                   </div>
                 </div>
 
@@ -158,12 +162,11 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="form-group">
-                  <label>Emploi recherché</label>
+                  <label class="font-bold">Emploi recherché</label>
                   <div>
-                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Jobs" name="jobs" title="Emploi recherché"
-                      multiple data-style="btn-solid">
-                      <option [value]="job.term_id" *ngFor="let job of Jobs">{{job.name}}</option>
-                    </select>
+                    <ng-select [(ngModel)]="editor.Form.Jobs" [multiple]="true" name="jobs" bindLabel="name" bindValue="term_id"
+                     [items]="Jobs" required>
+                    </ng-select>
 
                     <p class="text-muted" *ngIf="editor.Form._oldJob">{{editor.Form._oldJob}}</p>
                   </div>
@@ -175,11 +178,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
-                  <label>Les langues</label>
-                  <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Language" name="languages"
-                    title="Ajouter une langue" multiple data-style="btn-solid">
-                    <option [value]="language.term_id" *ngFor="let language of Languages">{{language.name}}</option>
-                  </select>
+                  <label class="font-bold">Les langues</label>
+                  <ng-select [(ngModel)]="editor.Form.Language" name="languages" bindLabel="name" bindValue="term_id"
+                     [multiple]='true' [items]="Languages" required>
+                  </ng-select>
                 </div>
               </div>
             </div>
@@ -188,7 +190,7 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body dd pl-0">
-                  <h5 class="font-strong text-uppercase">Formations / Diplômes</h5>
+                  <h5 class="font-bold text-uppercase">Formations / Diplômes</h5>
                   <ul class="media-list media-list-divider dd-list mr-2">
 
                     <li class="media align-items-center dd-item" [attr.data-index]="i" *ngFor="let training of editor.trainings; let i = index">
@@ -201,7 +203,7 @@
                           </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
                         </div>
-                        <button (click)="onEditTraining(training.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
+                        <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
 
@@ -213,7 +215,7 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body pl-0">
-                  <h5 class="font-strong text-uppercase mb-4">Expériences professionnelles</h5>
+                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles</h5>
                   <ul class="media-list media-list-divider mr-2">
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
@@ -221,7 +223,7 @@
                           <div class="media-heading">{{experience.exp_company}}</div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                         </div>
-                        <button (click)="onEditExperience(experience.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
+                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
                   </ul>
@@ -232,12 +234,11 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="form-group">
-                  <label>Logiciels maitrisés</label>
+                  <label class="font-bold">Logiciels maitrisés</label>
                   <div>
-                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Softwares" name="softwares"
-                      title="Logiciel" multiple data-style="btn-solid">
-                      <option [value]="software.term_id" *ngFor="let software of Softwares">{{software.name}}</option>
-                    </select>
+                    <ng-select [(ngModel)]="editor.Form.Softwares" name="softwares" bindValue="term_id" bindLabel="name"
+                       [multiple]='true' [items]='Softwares'>
+                    </ng-select>
                   </div>
                 </div>
               </div>
@@ -246,13 +247,13 @@
             <div class="row">
               <div class="col-md-6 mb-4">
                 <h5 class="font-strong text-uppercase mb-4">Centre d'intérêt</h5>
-                <label>Divers</label>
+                <label class="font-bold">Divers</label>
                 <input class="form-control form-control-solid" type="text" name="divers" [(ngModel)]="editor.Form.Divers"
                   placeholder="Divers">
               </div>
               <div class="col-md-12">
                 <div class="form-group mb-4">
-                  <label>Projet personnel</label>
+                  <label class="font-bold">Projet personnel</label>
                   <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
                     placeholder="Ajouter une projet personnel"></textarea>
                 </div>

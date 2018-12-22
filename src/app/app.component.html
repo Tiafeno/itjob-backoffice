@@ -58,117 +58,38 @@
 <!-- END SESSION TIMEOUT MODAL -->
     
 <!-- QUICK SIDEBAR-->
-<div class="quick-sidebar" *ngIf="false">
+<div class="quick-sidebar">
   <ul class="nav nav-tabs tabs-line">
-    <li class="nav-item"><a class="nav-link active" href="#tab-2" data-toggle="tab"><i class="ti-settings"></i>
+    <li class="nav-item"><a class="nav-link" href="#tab-2" data-toggle="tab"><i class="ti-settings"></i>
         <div>Paramètres</div></a></li>
-    <li class="nav-item"><a class="nav-link" href="#tab-3" data-toggle="tab"><i class="ti-comments"></i>
+    <li class="nav-item"><a class="nav-link active" href="#tab-3" data-toggle="tab"><i class="ti-comments"></i>
         <div>Notifications</div></a></li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane active" id="tab-2">
+    <div class="tab-pane" id="tab-2">
       <div class="scroller">
-        <div class="font-bold mb-4 mt-2">APP SETTINGS</div>
-        <div class="settings-item">Show notifications
+        <div class="font-bold mb-4 mt-2">LES PARAMÈTRES DU SYSTÈME</div>
+        <div class="settings-item">Activer l'envoi de mail
           <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Enable autologout
-          <label class="ui-switch switch-icon">
-            <input type="checkbox" checked><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Show recent activity
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Chat history
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Users activity
-          <label class="ui-switch switch-icon">
-            <input type="checkbox" checked><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Orders history
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="settings-item">SMS Alerts
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="font-bold mb-4">SYSTEM SETTINGS</div>
-        <div class="settings-item">Error Reporting
-          <label class="ui-switch switch-icon">
-            <input type="checkbox" checked><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Server logs
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
-          </label>
-        </div>
-        <div class="settings-item">Global search
-          <label class="ui-switch switch-icon">
-            <input type="checkbox"><span></span>
+            <input type="checkbox" checked="true"><span></span>
           </label>
         </div>
       </div>
     </div>
-    <div class="tab-pane" id="tab-3">
-      <div class="log-tabs"><a class="active" href="javascript:;" data-type="all" data-toggle="tooltip" data-original-title="All logs"><i class="ti-view-grid"></i></a><a href="javascript:;" data-type="server" data-toggle="tooltip" data-original-title="Server logs"><i class="ti-harddrives"></i></a><a href="javascript:;" data-type="app" data-toggle="tooltip" data-original-title="App logs"><i class="ti-pulse"></i></a></div>
+    <div class="tab-pane active" id="tab-3">
+      <div class="log-tabs">
+        <a class="active" href="javascript:;" data-type="all" data-toggle="tooltip" data-original-title="All logs"><i class="ti-view-grid"></i></a>
+        <a href="javascript:;" data-type="server" data-toggle="tooltip" data-original-title="Server logs"><i class="ti-harddrives"></i></a>
+        <a href="javascript:;" data-type="app" data-toggle="tooltip" data-original-title="App logs"><i class="ti-pulse"></i></a>
+      </div>
       <div class="logs">
         <div class="scroller">
           <ul class="logs-list">
-            <li class="log-item" data-type="app"><i class="ti-check log-icon text-success"></i>
-              <div><a>2 Issue fixed</a><small class="float-right text-muted">Just now</small></div>
+            <li class="log-item" data-type="app" *ngFor="let notification of Notifications">
+              <i class="la la-circle log-icon text-success"></i>
+              <div><a [href]="notification.url">{{notification.title}}</a><small class="float-right text-muted">{{notification.date_create}}</small></div>
             </li>
-            <li class="log-item" data-type="app"><i class="ti-announcement log-icon"></i>
-              <div><a>7 new feedback</a><span class="badge badge-warning badge-pill ml-1">important</span><small class="float-right text-muted">5 mins</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-check log-icon text-success"></i>
-              <div><a>Production server up</a><small class="float-right text-muted">24 mins</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="ti-shopping-cart log-icon"></i>
-              <div><a>12 New orders</a><small class="float-right text-muted">45 mins</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-info-alt log-icon text-danger"></i>
-              <div><a>Server error</a><span class="badge badge-primary badge-pill ml-1">resolved</span><small class="float-right text-muted">1 hrs</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-harddrives log-icon text-danger"></i>
-              <div><a>Server overloaded 91%</a><small class="float-right text-muted">2 hrs</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="ti-user log-icon"></i>
-              <div><a>18 new users registered</a><small class="float-right text-muted">12.07</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="ti-shopping-cart log-icon"></i>
-              <div><a>5 New orders</a><span class="badge badge-success badge-pill ml-1">pending</span><small class="float-right text-muted">12.30</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-info-alt log-icon text-danger"></i>
-              <div><a>System error</a><small class="float-right text-muted">13.45</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="fa fa-file-excel-o log-icon"></i>
-              <div><a>The invoice is ready</a><small class="float-right text-muted">16.30</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-server log-icon text-danger"></i>
-              <div><a>Database overloaded 92%</a><small class="float-right text-muted">17.15</small></div>
-            </li>
-            <li class="log-item" data-type="server"><i class="ti-check log-icon text-success"></i>
-              <div><a>Production server up</a><small class="float-right text-muted">18.05</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="ti-user log-icon"></i>
-              <div><a>12 new users registered</a><small class="float-right text-muted">18.22</small></div>
-            </li>
-            <li class="log-item" data-type="app"><i class="ti-shopping-cart log-icon"></i>
-              <div><a>8 New orders</a><small class="float-right text-muted">20.00</small></div>
-            </li>
+            <li *ngIf="Notifications.length <= 0">Aucune notification</li>
           </ul>
         </div>
       </div>

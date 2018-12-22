@@ -1,7 +1,9 @@
 import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { Helpers } from "./helpers";
+import { RequestService } from './services/request.service';
 
+import * as _ from 'lodash';
 @Component({
   selector: 'body',
   templateUrl: './app.component.html',
@@ -11,13 +13,22 @@ import { Helpers } from "./helpers";
 
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'app';
-  constructor(private _router: Router) { }
+  public Notifications: any = [];
+  constructor(
+    private router: Router,
+    private requestService: RequestService
+  ) { }
 
   ngOnInit() {
 
-    this._router.events.subscribe((route) => {
+    this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         Helpers.setLoading(true);
+        this.requestService.collectNotice().subscribe(response => {
+          if (response.success) {
+            this.Notifications = _.cloneDeep(response.body);
+          }
+        });
       }
       if (route instanceof NavigationEnd) {
         window.scrollTo(0, 0);

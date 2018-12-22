@@ -245,6 +245,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         return value ? driveLicences[key] : '';
       });
       Form.drivelicences = _.without(Form.drivelicences, '');
+      console.log(Form);
       this.candidatService.saveCandidate(Form.ID, Form)
         .subscribe(response => {
           swal("Modification", "La modification a été effectuée", "success");

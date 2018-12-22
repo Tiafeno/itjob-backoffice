@@ -27,8 +27,7 @@ export class OfferService {
   }
 
   collectDataEditor(): Observable<any[]> {
-    let regions = this.http.get(`${config.itApi}/taxonomies/region`, { responseType: 'json' });
-
+    let regions = this.http.get(`${config.itApi}/taxonomies/region`, { responseType: 'json', observe: 'response' });
     return Observable.forkJoin([regions]);
   }
 
