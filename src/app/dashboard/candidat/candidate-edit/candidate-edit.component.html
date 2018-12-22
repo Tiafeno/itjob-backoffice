@@ -44,7 +44,8 @@
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Titre</label>
                 <div>
-                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur" required>
+                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur"
+                    required>
                     <option value="mr">Monsieur</option>
                     <option value="mrs">Madame</option>
                   </select>
@@ -66,7 +67,14 @@
             </div>
 
             <div class="row">
+              <div class="col-sm-6 mb-4">
+                <label class="font-bold">Adresse email</label>
+                <input class="form-control form-control-solid" name="email" [disabled]="true" [(ngModel)]="editor.Form.Email"
+                  type="text" placeholder="Adresse Email" required>
+              </div>
+            </div>
 
+            <div class="row">
               <div class="col-sm-4 form-group mb-4">
                 <label class="font-bold">Adresse</label>
                 <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
@@ -95,14 +103,15 @@
                 <label class="font-bold">Numéro de téléphone</label>
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
-                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text"
-                      placeholder="Numére de votre cellulaire" required>
+                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
+                      required>
                     <span class="input-group-btn ml-2">
-                      <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
-                          <i class="la la-close"></i>
-                        </button>
+                      <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
+                        title="Enlever ce numero">
+                        <i class="la la-close"></i>
+                      </button>
                     </span>
-                    
+
                   </div>
 
                 </div>
@@ -165,7 +174,7 @@
                   <label class="font-bold">Emploi recherché</label>
                   <div>
                     <ng-select [(ngModel)]="editor.Form.Jobs" [multiple]="true" name="jobs" bindLabel="name" bindValue="term_id"
-                     [items]="Jobs" required>
+                      [items]="Jobs" required>
                     </ng-select>
 
                     <p class="text-muted" *ngIf="editor.Form._oldJob">{{editor.Form._oldJob}}</p>
@@ -180,7 +189,7 @@
                 <div class="form-group">
                   <label class="font-bold">Les langues</label>
                   <ng-select [(ngModel)]="editor.Form.Language" name="languages" bindLabel="name" bindValue="term_id"
-                     [multiple]='true' [items]="Languages" required>
+                    [multiple]='true' [items]="Languages" required>
                   </ng-select>
                 </div>
               </div>
@@ -220,7 +229,10 @@
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
                         <div class="flex-1">
-                          <div class="media-heading">{{experience.exp_company}}</div>
+                          <div class="media-heading">
+                            {{experience.exp_company}}
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En attente de validation</span>
+                          </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                         </div>
                         <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
@@ -237,7 +249,7 @@
                   <label class="font-bold">Logiciels maitrisés</label>
                   <div>
                     <ng-select [(ngModel)]="editor.Form.Softwares" name="softwares" bindValue="term_id" bindLabel="name"
-                       [multiple]='true' [items]='Softwares'>
+                      [multiple]='true' [items]='Softwares'>
                     </ng-select>
                   </div>
                 </div>
@@ -360,12 +372,12 @@
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateTraining(editor.Training.ID)">
+                    <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
                       <span *ngIf="editor.Training.validated">Enregistrer</span>
-                      <span *ngIf="!editor.Training.validated">Valider</span>
+                      <span *ngIf="!editor.Training.validated">Valider & Enregistrer</span>
                     </button>
                   </div>
-                  <a class="text-danger" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>
@@ -456,9 +468,12 @@
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateExperience(editor.Experience.ID)">Enregistrer</button>
+                    <button class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                      <span *ngIf="editor.Experience.validated">Enregistrer</span>
+                      <span *ngIf="!editor.Experience.validated">Valider & Enregistrer</span>
+                    </button>
                   </div>
-                  <a class="text-danger" title="Effacer cette experience"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>

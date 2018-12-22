@@ -19,6 +19,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
   public loadingForm: boolean = false;
   public loadingSave: boolean = false;
+  public loadingSaveExperience: boolean = false;
+  public loadingSaveTraining: boolean = false;
   public townLoading: boolean = false;
   public areaLoading: boolean = false;
   public Candidate: any = {};
@@ -96,7 +98,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Greeting: _.isObject(this.Candidate.greeting) ? this.Candidate.greeting.value : this.Candidate.greeting,
       Region: !_.isObject(this.Candidate.region) ? '' : this.Candidate.region.term_id,
       Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : '',
-      State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending'  ? "pending" : 0),
+      State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending' ? "pending" : 0),
       Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : "",
       DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
         dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
@@ -107,10 +109,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Jobs: _.isArray(currentJobs) ? currentJobs : false,
       _oldJob: !_.isArray(currentJobs) ? currentJobs : false,
       Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
-      Cellphones: _.map(cellphones, (cel, index) => { return {value: cel, id: index} }),
+      Cellphones: _.map(cellphones, (cel, index) => { return { value: cel, id: index } }),
       Avatar: pI.avatar,
       Firstname: pI.firstname,
       Lastname: pI.lastname,
+      Email: pI.author.data.user_email,
       Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : '',
       Interest: this.Candidate.centerInterest,
       Divers: this.Candidate.centerInterest.various,
@@ -122,11 +125,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
   onAddedCellphone() {
     let index = this.editor.Form.Cellphones.length;
-    this.editor.Form.Cellphones.push({value: '', id: index});
+    this.editor.Form.Cellphones.push({ value: '', id: index });
   }
 
   onRemoveCellphone(cellId: number) {
-    this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, {id: cellId});
+    this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, { id: cellId });
   }
 
   onEditTraining(tId) {
@@ -214,8 +217,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onUpdateExperience(experienceId) {
+  onUpdateExperience(experienceId: any) {
     if (!_.isEmpty(this.editor.Experience) && _.isNumber(experienceId)) {
+      this.loadingSaveExperience = true;
       let Experiences = _.reject(this.editor.experiences, ['ID', experienceId]);
       let editExperience = _.clone(this.editor.Experience);
       editExperience.validated = true;
@@ -229,19 +233,42 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.candidatService.updateExperience(this.editor.experiences, this.Candidate.ID)
         .subscribe(response => {
           $('#edit-experience-modal').modal('hide');
+          this.loadingSaveExperience = false;
         });
-    } else {
-      return false;
     }
+  }
+
+  onDeleteExperience(experienceId: any) {
+    let id: number = parseInt(experienceId);
+    let Experiences: any = _.reject(this.editor.experiences, ['ID', id]);
+    this.loadingSaveExperience = true;
+    this.candidatService.updateExperience(Experiences, this.Candidate.ID)
+      .subscribe(response => {
+        $('#edit-experience-modal').modal('hide');
+        this.editor.experiences = _.cloneDeep(Experiences);
+        this.loadingSaveExperience = false;
+      });
+  }
+
+  onDeleteTraining(trainingId: any) {
+    let id:number = parseInt(trainingId);
+    let Training: any = _.reject(this.editor.trainings, ['ID', id]);
+    this.loadingSaveTraining = true;
+    this.candidatService.updateTraining(Training, this.Candidate.ID)
+      .subscribe(response => {
+        $('#edit-training-modal').modal('hide');
+        this.editor.trainings = _.cloneDeep(Training);
+        this.loadingSaveTraining = false;
+      });
   }
 
   onSubmitForm(editForm: NgForm) {
     if (editForm.valid) {
       this.loadingSave = true;
-      let driveLicences = {a_:0, a:1, b:2, c:3, d:4};
+      let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 };
       let Form = _.clone(editForm.value);
       Form.cellphones = Object.values(Form.cellphones);
-      Form.drivelicences = _.map(Form.drivelicences, (value: any, key) =>{
+      Form.drivelicences = _.map(Form.drivelicences, (value: any, key) => {
         return value ? driveLicences[key] : '';
       });
       Form.drivelicences = _.without(Form.drivelicences, '');

@@ -18,7 +18,7 @@
 
             <div class="row">
               <div class="form-group mb-4 col-sm-8">
-                <label>Poste occupé </label>
+                <label class="font-bold">Poste occupé </label>
                 <input class="form-control form-control-solid" [(ngModel)]="Editor.postPromote" type="text" name="post"
                   placeholder="Titre de l'offre">
               </div>
@@ -26,7 +26,7 @@
 
             <div class="row">
               <div class="form-group mb-4 col-sm-8">
-                <label>Référence </label>
+                <label class="font-bold">Référence </label>
                 <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" [disabled]='true' type="text" name="reference"
                   placeholder="Référence de l'offre">
               </div>
@@ -75,20 +75,20 @@
               </div>
 
               <div class="form-group mb-4 col-sm-4">
-                <label>Salaire net proposé </label>
+                <label class="font-bold">Salaire net proposé </label>
                 <input class="form-control form-control-solid" [(ngModel)]="Editor.proposedSalary" type="text" name="proposedsalary"
                   placeholder="Salaire net proposé">
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Région</label>
+                <label class="font-bold">Région</label>
                 <ng-select name="region"  [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
                   [items]="Regions">
                 </ng-select>
               </div>
               <div class="col-sm-6 form-group mb-4">
-                <label>Ville ou code postal</label>
+                <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
                   [(ngModel)]="Editor.town" aria-required="true" required>
                 </ng-select>
@@ -97,7 +97,7 @@
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Secteur d'activité</label>
+                <label class="font-bold">Secteur d'activité</label>
                 <ng-select name="branch_activity" [items]="branchActivitys" [loading]="areaLoading" bindLabel="name" bindValue="term_id"
                   [(ngModel)]="Editor.branch_activity" [searchFn]="customSearchFn">
                 </ng-select>
@@ -118,7 +118,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group mb-4">
-                  <label>Profil recherché</label>
+                  <label class="font-bold">Profil recherché</label>
                   <textarea class="form-control form-control-solid" [(ngModel)]="Editor.profil" name="profil" id="summernote-profil"
                     data-plugin="summernote" data-air-mode="true" placeholder="Profil recherché">
                       </textarea>
@@ -126,7 +126,7 @@
               </div>
               <div class="col-sm-12">
                 <div class="form-group mb-4">
-                  <label>Mission</label>
+                  <label class="font-bold">Mission</label>
                   <textarea class="form-control form-control-solid" [(ngModel)]="Editor.mission" name="mission" id="summernote-mission"
                     data-plugin="summernote" data-air-mode="true" placeholder="Mission">
                           </textarea>
@@ -134,7 +134,7 @@
               </div>
               <div class="col-sm-12">
                 <div class="form-group mb-4">
-                  <label>Autre information</label>
+                  <label class="font-bold">Autre information</label>
                   <textarea class="form-control form-control-solid" [(ngModel)]="Editor.otherInformation" name="otherInformation"
                     id="summernote-other" data-plugin="summernote" data-air-mode="true" placeholder="Autre information">
                       </textarea>
