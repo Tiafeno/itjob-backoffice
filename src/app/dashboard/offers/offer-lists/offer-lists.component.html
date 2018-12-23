@@ -12,12 +12,13 @@
               <option value="0">Désactiver</option>
             </select>
           </div>
-          <div class="col-md-4 form-group mb-2 mb-sm-0">
-              <div class="input-group-icon input-group-icon-left mr-3">
-                <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
-                <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
-              </div>
-            </div>
+          <div class="col-md-4">
+            <select class="selectpicker form-control " id="type-rateplan" title="Tous les types" data-style="btn-solid">
+              <option value="">Tous les types</option>
+              <option value="sereine">Premium</option>
+              <option value="standard">Standard</option>
+            </select>
+          </div>
           <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
         </div>
 
@@ -28,6 +29,13 @@
               <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
             </div>
           </div>
+          <div class="col-md-4 form-group mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
+              <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
+            </div>
+          </div>
+
           <div class="col-md-4">
             <button type="button" (click)="resetFilterSearch()" class="btn btn-sm btn-info">Reinitialiser les filtres</button>
           </div>
@@ -42,6 +50,7 @@
               <th>#</th>
               <th>Poste occupé</th>
               <th>Réference</th>
+              <th>Type</th>
               <th>Date limite</th>
               <th>Status</th>
               <th>Secteur d'activité</th>

@@ -19,6 +19,7 @@ import { UserListsComponent } from './users/user-lists/user-lists.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { ActivityAreaComponent } from '../directives/search/activity-area/activity-area.component';
 import { SwitcherComponent } from '../directives/account/switcher/switcher.component';
+import { StatusChangerComponent } from '../directives/account/status-changer/status-changer.component';
 
 @NgModule({
   imports: [
@@ -44,7 +45,8 @@ import { SwitcherComponent } from '../directives/account/switcher/switcher.compo
     UserListsComponent,
     UserEditComponent,
     ActivityAreaComponent,
-    SwitcherComponent
+    SwitcherComponent,
+    StatusChangerComponent
   ],
   providers: [
     {

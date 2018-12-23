@@ -21,6 +21,7 @@ export class OfferListsComponent implements OnInit {
   public sKey: string = "";
   public sActivityArea: number = 0;
   public sDate: string = "";
+  public sRateplan: string = "";
   constructor(
     private router: Router,
     private offerService: OfferService
@@ -41,7 +42,7 @@ export class OfferListsComponent implements OnInit {
   }
 
   public createSearch() {
-    let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}`;
+    let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}|${this.sRateplan}`;
     this.table.search(searchs, true, false).draw();
   }
 
@@ -82,6 +83,13 @@ export class OfferListsComponent implements OnInit {
         { data: 'ID' },
         { data: 'postPromote', render: (data, type, row, meta) => data },
         { data: 'reference' },
+        {
+          data: 'rateplan', render: (data, type, row) => {
+            let plan:string = data === 'sereine' ? 'Premium' : 'Standard';
+            let style:string = data === 'sereine' ? 'blue' : 'secondary';
+            return `<span class="badge badge-${style}">${plan}</span>`;
+          }
+        },
         { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
         {
           data: 'activated', render: (data, type, row) => {
@@ -207,6 +215,11 @@ export class OfferListsComponent implements OnInit {
 
     $("#type-status").on('change', function (event) {
       component.sStatus = this.value;
+      component.createSearch();
+    });
+
+    $("#type-rateplan").on('change', function (event) {
+      component.sRateplan = this.value;
       component.createSearch();
     });
 

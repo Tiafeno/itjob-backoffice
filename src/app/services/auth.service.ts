@@ -19,6 +19,7 @@ export class AuthService {
       }));
   }
 
+  // Ajouter une function await pour vérifier la validation de l'autorisation
   public isLogged(): boolean {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {

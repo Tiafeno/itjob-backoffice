@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 })
 
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'app';
+  title = 'ITJobMada';
   public Notifications: any = [];
   constructor(
     private router: Router,

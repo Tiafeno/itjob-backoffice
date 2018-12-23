@@ -19,19 +19,6 @@
         <div class="col-lg-8">
 
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
-
-            <div class="row">
-              <div class="col-sm-6 form-group mb-4">
-                <label class="font-bold">Status</label>
-                <div>
-                  <select class="form-control" name="activated" [(ngModel)]="editor.Form.State" title="Status de l'offre">
-                    <option value="pending">En attente</option>
-                    <option value="1">Publier</option>
-                    <option value="0">Désactiver</option>
-                  </select>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="form-group mb-4 col-sm-6">
                 <label class="font-bold">Référence </label>

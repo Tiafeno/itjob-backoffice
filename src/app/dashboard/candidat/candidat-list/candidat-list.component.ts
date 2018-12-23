@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { config } from '../../../../environments/environment';
 import { CandidateService } from '../../../services/candidate.service';
 import { Router } from '@angular/router';
@@ -7,15 +7,18 @@ import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Helpers } from '../../../helpers';
+import { StatusChangerComponent } from '../../../directives/account/status-changer/status-changer.component';
 declare var $: any;
 
 @Component({
   selector: 'app-candidat',
   templateUrl: './candidat-list.component.html',
-  styleUrls: ['./candidat-list.component.css']
+  styleUrls: ['./candidat-list.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CandidatListComponent implements OnInit, AfterViewInit {
   public listsCandidat: Array<any>;
+  public posttype: string = 'company';
   public page: number = 1;
   public Helper: any;
   private table: any;
@@ -23,11 +26,18 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   public sKey: string = "";
   public sActivityArea: number = 0;
   public sDate: string = "";
+
+  @ViewChild(StatusChangerComponent) private statusChanger: StatusChangerComponent;
+
   constructor(
     public candidateService: CandidateService,
     private router: Router
   ) {
     this.Helper = Helpers
+  }
+
+  reloadDatatable(): void {
+    this.table.ajax.reload(null, false);
   }
 
   onChoosed(areaId: number) {
@@ -69,7 +79,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         
       })
       .on('xhr.dt', function (e, settings, json, xhr) {
-        component.Helper.setLoading(false);
         // Note no return - manipulate the data directly in the JSON object.
       });
     component.table = candidateLists
@@ -95,10 +104,16 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           {
+            data: 'privateInformations.firstname'
+          },
+          {
+            data: 'privateInformations.lastname'
+          },
+          {
             data: 'isActive', render: (data, type, row) => {
               let status = data && row.state === 'publish' ? 'Publier' : (row.state === 'pending' ? "En attente" : "Désactiver");
               let style = data && row.state === 'publish' ? 'primary' : (row.state === 'pending' ? "warning" : "danger");
-              return `<span class="badge badge-${style}">${status}</span>`;
+              return `<span class="badge update-status badge-${style}">${status}</span>`;
             }
           },
           { data: 'reference' },
@@ -115,20 +130,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           },
           {
             data: null,
-            render: (data, type, row, meta) => `
-              <div class="fab fab-left">
-                <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
-                  <i class="fab-icon la la-bars"></i>
-                  <i class="fab-icon-active la la-close"></i>
-                </button>
-
-                <ul class="fab-menu">
-                  <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-candidate" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
-                  <li><button class="btn btn-pink btn-icon-only btn-circle btn-air status-candidate" data-status="false" data-id="${row.ID}"><i class="la la-eye-slash"></i></button></li>
-                  <li><button class="btn btn-blue btn-icon-only btn-circle btn-air status-candidate"  data-status="true" data-id="${row.ID}"><i class="la la-eye"></i></button></li>
-                </ul>
-              </div>
-            `
+            render: (data, type, row, meta) => `<span data-id='${row.ID}' class='edit-candidate badge badge-blue'>Modifier</span>`
           }
         ],
         initComplete: (setting, json) => {
@@ -143,7 +145,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           },
           type: 'POST',
           beforeSend: function (xhr) {
-            component.Helper.setLoading(true);
             let currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser && currentUser.token) {
               xhr.setRequestHeader("Authorization",
@@ -162,15 +163,15 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
       })
       .on('click', '.status-candidate', (e) => {
         e.preventDefault();
-        let trElement = $(e.currentTarget).parents('tr');
-        let DATA = component.table.row(trElement).data();
+        let el = $(e.currentTarget).parents('tr');
+        let DATA = component.table.row(el).data();
 
         let elData = $(e.currentTarget).data();
-        let statusChange: boolean = elData.status;
+        let statusChange: boolean = elData.isActive;
         let candidateId: number = elData.id;
         let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
         let cancelButton: string = "Annuler";
-        if (DATA.activated === statusChange) {
+        if (DATA.isActive === statusChange) {
           swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} un candidat qui es déjà ${confirmButton.toLowerCase()}.`, 'warning');
           return false;
         }
@@ -199,6 +200,13 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
 
           }
         })
+      })
+      .on('click', '.update-status', e => {
+        e.preventDefault();
+        let el = $(e.currentTarget).parents('tr');
+        let DATA = component.table.row(el).data();
+        let status:any = DATA.isActive && DATA.state === 'publish' ? 1 : (DATA.state === 'pending' ? 'pending' : 0);
+        component.statusChanger.onOpenDialog(DATA.ID, status);
       })
 
     $('#key-search').on('keypress', function (event) {

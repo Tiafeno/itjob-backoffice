@@ -252,6 +252,7 @@ export class CompanyListsComponent implements OnInit {
 
       })
       .on('click', '.update-account', e => {
+        e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
         let DATA = component.TABLE.row(el).data();
         component.switcher.onOpenDialog(DATA.ID, DATA.account);

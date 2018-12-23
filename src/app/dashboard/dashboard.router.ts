@@ -8,9 +8,7 @@ import { CandidateEditComponent } from "./candidat/candidate-edit/candidate-edit
 import { OfferListsComponent } from "./offers/offer-lists/offer-lists.component";
 import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
 import { CompanyListsComponent } from './company/company-lists/company-lists.component';
-import { CompanyEditComponent } from './company/company-edit/company-edit.component';
 import { UserListsComponent } from './users/user-lists/user-lists.component';
-import { UserEditComponent } from './users/user-edit/user-edit.component';
 
 export const DashboardRouter: Route[] = [
   {
