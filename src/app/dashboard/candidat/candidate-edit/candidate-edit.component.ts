@@ -7,6 +7,9 @@ import swal from 'sweetalert2';
 import { Helpers } from '../../../helpers';
 import { NgForm } from '@angular/forms';
 import { RequestService } from '../../../services/request.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { config } from '../../../../environments/environment';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -31,10 +34,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Softwares: any = [];
   public branchActivitys: any = [];
   public editor: any = {};
+  public avatar: any = {};
+  public inputAvatar: FileList;
+  public apiUploadEndPoint: string = `${config.itApi}/upload/`;
   public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
   constructor(
+    private Http: HttpClient,
     private route: ActivatedRoute,
     private candidatService: CandidateService,
     private requestServices: RequestService
@@ -78,6 +85,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       training.ID = index;
       return training;
     });
+    this.avatar.preview = this.Candidate.privateInformations.avatar ? this.Candidate.privateInformations.avatar[0] : '';
+    this.avatar.value = '';
     let pI = _.clone(this.Candidate.privateInformations);
     let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
@@ -251,7 +260,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteTraining(trainingId: any) {
-    let id:number = parseInt(trainingId);
+    let id: number = parseInt(trainingId);
     let Training: any = _.reject(this.editor.trainings, ['ID', id]);
     this.loadingSaveTraining = true;
     this.candidatService.updateTraining(Training, this.Candidate.ID)
@@ -260,6 +269,19 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         this.editor.trainings = _.cloneDeep(Training);
         this.loadingSaveTraining = false;
       });
+  }
+
+  onFileChange(ev: any) {
+    if (ev.target.files && ev.target.files[0]) {
+      var reader = new FileReader();
+      this.inputAvatar = ev.target.files;
+      const component = this;
+      reader.onload = function (e: any) {
+        component.avatar.preview = e.target.result;
+      }
+      reader.readAsDataURL(ev.target.files[0]);
+      console.log(this.inputAvatar);
+    }
   }
 
   onSubmitForm(editForm: NgForm) {
@@ -272,12 +294,42 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         return value ? driveLicences[key] : '';
       });
       Form.drivelicences = _.without(Form.drivelicences, '');
-      this.candidatService.saveCandidate(Form.ID, Form)
-        .subscribe(response => {
-          swal("Modification", "La modification a été effectuée", "success");
-          this.loadingSave = false;
-        });
+
+      if (_.isObject(this.inputAvatar) && this.inputAvatar.length > 0) {
+        let file: File = this.inputAvatar[0];
+        let formData: FormData = new FormData();
+        formData.append('upload', file);
+        let headers = new Headers();
+        headers.append('Content-Type', 'multipart/form-data');
+        headers.append('Accept', 'application/json');
+        this.Http.post(`${this.apiUploadEndPoint}`, formData)
+          .subscribe(
+            data => {
+              let response: any = data;
+              if (response.success) {
+                // Success upload
+                this.saveCandidate(Form, response.attachment_id);
+              } else {
+                this.loadingSave = false;
+                swal('Erreur', "Une erreur s'est produite", 'warning');
+              }
+            },
+            error => console.log(error)
+          )
+      } else {
+        this.saveCandidate(Form);
+      }
     }
+  }
+
+  private saveCandidate(Form: any, attachment_id?:number) {
+    if (!_.isUndefined(attachment_id))
+      Form.attachment_id = attachment_id;
+    this.candidatService.saveCandidate(Form.ID, Form)
+      .subscribe(response => {
+        swal("Modification", "La modification a été effectuée", "success");
+        this.loadingSave = false;
+      });
   }
 
   private setEditorForm(contents) {

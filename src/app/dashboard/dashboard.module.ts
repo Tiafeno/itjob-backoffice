@@ -20,6 +20,7 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { ActivityAreaComponent } from '../directives/search/activity-area/activity-area.component';
 import { SwitcherComponent } from '../directives/account/switcher/switcher.component';
 import { StatusChangerComponent } from '../directives/account/status-changer/status-changer.component';
+import { UploadfileDirective } from '../directives/candidat/uploadfile.directive';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import { StatusChangerComponent } from '../directives/account/status-changer/sta
     UserEditComponent,
     ActivityAreaComponent,
     SwitcherComponent,
-    StatusChangerComponent
+    StatusChangerComponent,
+    UploadfileDirective
   ],
   providers: [
     {
@@ -55,6 +57,9 @@ import { StatusChangerComponent } from '../directives/account/status-changer/sta
         notFoundText: 'Custom not found'
       }
     }
+  ],
+  exports: [
+    UploadfileDirective
   ]
 })
 export class DashboardModule { }

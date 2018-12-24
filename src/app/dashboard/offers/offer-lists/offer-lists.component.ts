@@ -66,7 +66,6 @@ export class OfferListsComponent implements OnInit {
           }
         }, 600);
       }).on('xhr.dt', function (e, settings, json, xhr) {
-        console.log(json);
         component.Helper.setLoading(false);
         // Note no return - manipulate the data directly in the JSON object.
       });

@@ -4,8 +4,7 @@
       <div class="row mb-4">
         <div class="col-4">
           <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/candidat-lists']">Retour</a>
-          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
-            candidat
+          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Visualiser
           </a>
         </div>
       </div>
@@ -19,23 +18,41 @@
         <div class="col-lg-8">
 
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
-            <div class="row">
-              <div class="form-group mb-4 col-sm-6">
-                <label class="font-bold">Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
-                  type="text" name="reference" placeholder="Référence du candidat">
+            <div class="row mb-4">
+              <div class="form-group col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12 mb-4">
+                    <label class="font-bold">Référence </label>
+                    <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
+                      type="text" name="reference" placeholder="Référence du candidat">
+                  </div>
+                  <div class="col-sm-12">
+                    <label class="font-bold">Titre</label>
+                    <div>
+                      <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur"
+                        required>
+                        <option value="mr">Monsieur</option>
+                        <option value="mrs">Madame</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-sm-6 form-group mb-4">
-                <label class="font-bold">Titre</label>
-                <div>
-                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur"
-                    required>
-                    <option value="mr">Monsieur</option>
-                    <option value="mrs">Madame</option>
-                  </select>
+              <div class="col-sm-6 form-group">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="d-flex align-items-center">
+                      <img [src]="avatar.preview" alt="image" width="90">
+                      <div class="text-left ml-4">
+                        <div class="h1" appUploadfile><i class="la la-camera text-primary"></i>
+                          <div style="display: none">
+                              <input type="file" name="avatar" (change)="onFileChange($event)"/>
+                          </div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,7 +235,8 @@
                         <div class="flex-1">
                           <div class="media-heading">
                             {{experience.exp_company}}
-                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En attente de validation</span>
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En
+                              attente de validation</span>
                           </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                         </div>
@@ -364,7 +382,8 @@
                       <span *ngIf="!editor.Training.validated">Valider & Enregistrer</span>
                     </button>
                   </div>
-                  <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i
+                      class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>
@@ -460,7 +479,8 @@
                       <span *ngIf="!editor.Experience.validated">Valider & Enregistrer</span>
                     </button>
                   </div>
-                  <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i
+                      class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>
