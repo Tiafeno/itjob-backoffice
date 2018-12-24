@@ -21,6 +21,7 @@ import { ActivityAreaComponent } from '../directives/search/activity-area/activi
 import { SwitcherComponent } from '../directives/account/switcher/switcher.component';
 import { StatusChangerComponent } from '../directives/account/status-changer/status-changer.component';
 import { UploadfileDirective } from '../directives/candidat/uploadfile.directive';
+import { FeaturedSwitcherComponent } from '../directives/candidat/featured-switcher/featured-switcher.component';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { UploadfileDirective } from '../directives/candidat/uploadfile.directive
     ActivityAreaComponent,
     SwitcherComponent,
     StatusChangerComponent,
+    FeaturedSwitcherComponent,
     UploadfileDirective
   ],
   providers: [

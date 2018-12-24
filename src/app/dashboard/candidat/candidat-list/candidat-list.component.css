@@ -4,6 +4,7 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 .update-status,
-.edit-candidate {
+.edit-candidate,
+.update-featured {
   cursor: pointer;
 }

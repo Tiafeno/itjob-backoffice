@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Helpers } from '../../../helpers';
 import { StatusChangerComponent } from '../../../directives/account/status-changer/status-changer.component';
+import { FeaturedSwitcherComponent } from '../../../directives/candidat/featured-switcher/featured-switcher.component';
 declare var $: any;
 
 @Component({
@@ -28,7 +29,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   public sDate: string = "";
 
   @ViewChild(StatusChangerComponent) private statusChanger: StatusChangerComponent;
-
+  @ViewChild(FeaturedSwitcherComponent) private featuredSwitcher: FeaturedSwitcherComponent;
   constructor(
     public candidateService: CandidateService,
     private router: Router
@@ -76,7 +77,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             component.table.ajax.reload(null, false);
           }
         }, 600);
-        
+
       })
       .on('xhr.dt', function (e, settings, json, xhr) {
         // Note no return - manipulate the data directly in the JSON object.
@@ -93,17 +94,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         columns: [
           { data: 'ID' },
           {
-            data: 'jobSought', render: (data, type, row, meta) => {
-              if (_.isEmpty(data) || _.isNull(data)) return '';
-              if (_.isArray(data)) {
-                let jobs = _.map(data, 'name');
-                return _.join(jobs, ', ');
-              } else {
-                return data.name;
-              }
-            }
-          },
-          {
             data: 'privateInformations.firstname'
           },
           {
@@ -117,6 +107,13 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           { data: 'reference' },
+          {
+            data: 'featured', render: (data) => {
+              let value:string = data ? 'à la une' : 'standard';
+              let style:string = data ? 'primary' : 'secondary'; 
+              return `<span class="badge update-featured badge-${style} text-uppercase">${value}</span>`;
+            }
+          },
           {
             data: 'branch_activity', render: (data) => {
               if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
@@ -205,8 +202,15 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
         let DATA = component.table.row(el).data();
-        let status:any = DATA.isActive && DATA.state === 'publish' ? 1 : (DATA.state === 'pending' ? 'pending' : 0);
+        let status: any = DATA.isActive && DATA.state === 'publish' ? 1 : (DATA.state === 'pending' ? 'pending' : 0);
         component.statusChanger.onOpenDialog(DATA.ID, status);
+      })
+      .on('click', '.update-featured', e => {
+        e.preventDefault();
+        let el = $(e.currentTarget).parents('tr');
+        let DATA = component.table.row(el).data();
+        let position: number = DATA.featured;
+        component.featuredSwitcher.onOpen(DATA.ID, position);
       })
 
     $('#key-search').on('keypress', function (event) {

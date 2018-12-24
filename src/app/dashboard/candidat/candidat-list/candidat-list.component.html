@@ -1,5 +1,6 @@
 <div class="page-content fade-in-up">
   <app-status-changer  (refresh)="reloadDatatable()" [posttype]="posttype"></app-status-changer>
+  <app-featured-switcher (refresh)="reloadDatatable()"></app-featured-switcher>
   <div class="ibox">
     <div class="ibox-body">
       <h5 class="font-strong mb-4">LES CANDIDATS</h5>
@@ -30,8 +31,15 @@
                 <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
               </div>
             </div>
+            <div class="col-md-4 mb-2 mb-sm-0">
+              <select class="selectpicker form-control " id="position" title="Tous les positions" data-style="btn-solid">
+                <option value="">Tous les positions</option>
+                <option value="1">A la une</option>
+                <option value="0">Standard</option>
+              </select>
+            </div>
             <div class="col-md-4">
-              <button type="button" (click)="resetFilterSearch()" class="btn btn-sm btn-info">Reinitialiser les filtres</button>
+              <button type="button" (click)="resetFilterSearch()" class="btn btn-info">Reinitialiser les filtres</button>
             </div>
           </div>
         </form>
@@ -41,11 +49,11 @@
             <thead class="thead-default thead-lg">
               <tr>
                 <th>#</th>
-                <th>L'emploi recherché</th>
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Status</th>
                 <th>Réference</th>
+                <th>Position</th>
                 <th>Secteur d'activité</th>
                 <th>Date d'inscription</th>
                 <th class="no-sort">Action</th>
