@@ -9,7 +9,7 @@ import * as _ from 'lodash';
   templateUrl: './app-header.component.html',
 })
 export class AppHeader implements AfterViewInit {
-  public Header: any = {candidate: 0, company: 0, offers: 0};
+  public Header: any = { candidate: 0, company: 0, offers: 0 };
   public loading: boolean = false;
   constructor(
     private authservice: AuthService,
@@ -18,12 +18,21 @@ export class AppHeader implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    this.loading = true;
-    this.requestservices.collectHeader()
-    .subscribe(response => {
-      this.Header = _.cloneDeep(response);
-      this.loading = false;
-    });
+    if (this.authservice.isLogged()) {
+      this.loading = true;
+      this.requestservices.collectHeader()
+        .subscribe(
+          response => {
+            this.Header = _.cloneDeep(response);
+            this.loading = false;
+          },
+          error => {
+            if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
+              this.authservice.logout();
+            }
+          });
+    }
+
   }
 
   logoutAction() {

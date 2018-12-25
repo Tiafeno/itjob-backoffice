@@ -4,6 +4,7 @@ import { Helpers } from "./helpers";
 import { RequestService } from './services/request.service';
 
 import * as _ from 'lodash';
+import { AuthService } from './services/auth.service';
 @Component({
   selector: 'body',
   templateUrl: './app.component.html',
@@ -16,19 +17,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   public Notifications: any = [];
   constructor(
     private router: Router,
-    private requestService: RequestService
+    private requestService: RequestService,
+    private Auth: AuthService
   ) { }
 
   ngOnInit() {
 
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
-        Helpers.setLoading(true);
-        this.requestService.collectNotice().subscribe(response => {
-          if (response.success) {
-            this.Notifications = _.cloneDeep(response.body);
-          }
-        });
+        if (this.Auth.isLogged()) {
+          Helpers.setLoading(true);
+          this.requestService.collectNotice().subscribe(
+            response => {
+              if (response.success) {
+                this.Notifications = _.cloneDeep(response.body);
+              }
+            },
+            error => {
+              if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
+                this.Auth.logout();
+              }
+            });
+        }
       }
       if (route instanceof NavigationEnd) {
         window.scrollTo(0, 0);
