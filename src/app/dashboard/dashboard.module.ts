@@ -22,6 +22,7 @@ import { SwitcherComponent } from '../directives/account/switcher/switcher.compo
 import { StatusChangerComponent } from '../directives/account/status-changer/status-changer.component';
 import { UploadfileDirective } from '../directives/candidat/uploadfile.directive';
 import { FeaturedSwitcherComponent } from '../directives/candidat/featured-switcher/featured-switcher.component';
+import { ArchivedCandidateComponent } from '../directives/candidat/archived-candidate/archived-candidate.component';
 
 @NgModule({
   imports: [
@@ -50,6 +51,7 @@ import { FeaturedSwitcherComponent } from '../directives/candidat/featured-switc
     SwitcherComponent,
     StatusChangerComponent,
     FeaturedSwitcherComponent,
+    ArchivedCandidateComponent,
     UploadfileDirective
   ],
   providers: [

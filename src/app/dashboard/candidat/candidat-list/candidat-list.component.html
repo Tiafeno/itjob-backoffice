@@ -1,6 +1,7 @@
 <div class="page-content fade-in-up">
-  <app-status-changer  (refresh)="reloadDatatable()" [posttype]="posttype"></app-status-changer>
+  <app-status-changer (refresh)="reloadDatatable()" [posttype]="posttype"></app-status-changer>
   <app-featured-switcher (refresh)="reloadDatatable()"></app-featured-switcher>
+  <app-archived-candidate  (refresh)="reloadDatatable()" [helper]="Helper"></app-archived-candidate>
   <div class="ibox">
     <div class="ibox-body">
       <h5 class="font-strong mb-4">LES CANDIDATS</h5>
@@ -43,8 +44,25 @@
             </div>
           </div>
         </form>
+        <div class="flexbox px-4 py-3 bg-primary-50">
+          <div class="flexbox-b">
+            <div id="inbox-actions">
+              <button class="btn btn-sm btn-transparent btn-primary btn-icon-only btn-circle" 
+              data-action="archived" [disabled]="!selected" (click)="onArchived()" data-toggle="tooltip" data-original-title="Archiver">
+                <i class="la la-archive"></i>
+              </button>
+              <button class="btn btn-sm btn-transparent btn-danger btn-icon-only btn-circle" 
+              data-action="delete" [disabled]="!selected" data-toggle="tooltip" data-original-title="Effacer">
+                <i class="la la-trash-o"></i>
+              </button>
+              <button class="btn btn-secondary btn-fix"  (click)="archivedCandidate.openArchivedLists()">
+                  <span class="btn-icon"><i class="la la-archive"></i>Les candidats archivés</span>
+              </button>
+          </div>
+          </div>
+        </div>
 
-        <div class="table-responsive row">
+        <div class="row">
           <table class="table table-bordered table-hover" id="orders-table">
             <thead class="thead-default thead-lg">
               <tr>
@@ -59,7 +77,6 @@
                 <th class="no-sort">Action</th>
               </tr>
             </thead>
-
           </table>
         </div>
       </div>

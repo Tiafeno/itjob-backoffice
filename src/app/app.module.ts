@@ -28,7 +28,7 @@ import { CompanyService } from './services/company.service';
   declarations: [
     AppComponent,
     IndexComponent,
-    DashboardComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

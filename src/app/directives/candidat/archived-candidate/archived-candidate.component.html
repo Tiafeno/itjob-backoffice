@@ -1,0 +1,48 @@
+<div class="modal fade" id="archived-candidate-modal">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header p-4">
+          <h5 class="modal-title">Les candidats archivés</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body p-4">
+            <div class="flexbox px-4 py-3 bg-primary-50">
+                <div class="flexbox-b">
+                  <div id="inbox-actions">
+                    <button class="btn btn-sm btn-transparent btn-primary btn-icon-only btn-circle" 
+                    data-action="archived" [disabled]="!selected" (click)="reject()" data-toggle="tooltip" data-original-title="Achever">
+                      <i class="la la-check-circle-o"></i>
+                    </button>
+                </div>
+                </div>
+              </div>
+
+          <div class="row">
+            <table class="table table-bordered table-hover" id="archived-table">
+              <thead class="thead-default thead-lg">
+                <tr>
+                  <th>#</th>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Status</th>
+                  <th>Réference</th>
+                  <th>Position</th>
+                  <th class="no-sort">Modifier</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+  
+        </div>
+        <div class="modal-footer justify-content-between bg-primary-50">
+          <div>
+            <button class="btn btn-primary mr-3" data-dismiss="modal" type="button">
+              <span>Fermer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

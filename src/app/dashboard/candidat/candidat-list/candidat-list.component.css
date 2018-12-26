@@ -8,3 +8,11 @@ div.dataTables_wrapper div.dataTables_processing {
 .update-featured {
   cursor: pointer;
 }
+
+tr.selected {
+  background-color: rgba(227, 230, 231, 0.57);
+}
+span.select-info {
+  margin-left: 10px;
+  color: red;
+}

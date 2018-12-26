@@ -22,7 +22,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         if (this.Auth.isLogged()) {

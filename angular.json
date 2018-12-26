@@ -80,6 +80,7 @@
               "node_modules/datatables.net-responsive/js/dataTables.responsive.min.js",
               "node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js",
               "node_modules/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js",
+              "node_modules/datatables.net-select/js/dataTables.select.min.js",
               "node_modules/jszip/dist/jszip.min.js",
               "node_modules/summernote/dist/summernote.js",
               "node_modules/bootstrap-markdown/js/bootstrap-markdown.js",

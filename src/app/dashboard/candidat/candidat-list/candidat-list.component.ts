@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import { Helpers } from '../../../helpers';
 import { StatusChangerComponent } from '../../../directives/account/status-changer/status-changer.component';
 import { FeaturedSwitcherComponent } from '../../../directives/candidat/featured-switcher/featured-switcher.component';
+import { ArchivedCandidateComponent } from '../../../directives/candidat/archived-candidate/archived-candidate.component';
 declare var $: any;
 
 @Component({
@@ -26,10 +27,14 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   public sStatus: string = "";
   public sKey: string = "";
   public sActivityArea: number = 0;
+  public sPosition: any;
   public sDate: string = "";
+  public selected: number = 0;
 
   @ViewChild(StatusChangerComponent) private statusChanger: StatusChangerComponent;
   @ViewChild(FeaturedSwitcherComponent) private featuredSwitcher: FeaturedSwitcherComponent;
+  @ViewChild(ArchivedCandidateComponent) private archivedCandidate: ArchivedCandidateComponent;
+  
   constructor(
     public candidateService: CandidateService,
     private router: Router
@@ -46,8 +51,15 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
     this.createSearch();
   }
 
+  onArchived(): void {
+    this.archivedCandidate.changeArchiveStatusCandidate(1, this.selected).subscribe(response => {
+      this.reloadDatatable();
+      swal("Archivage", 'Candidate archivée', 'info');
+    });
+  }
+
   public createSearch() {
-    let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}`;
+    let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}|${this.sPosition}`;
     this.table.search(searchs, true, false).draw();
   }
 
@@ -65,7 +77,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
     const candidateLists = $('#orders-table');
     candidateLists
       .on('page.dt', () => {
-        let info = component.table.page.info();
+        let info = this.table.page.info();
         localStorage.setItem('candidate-page', info.page);
       })
       .on('init.dt', (e, settings, json) => {
@@ -73,21 +85,44 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           let candidatePage: string = localStorage.getItem('candidate-page');
           let pageNum: number = parseInt(candidatePage);
           if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
-            component.table.page(pageNum).draw('page');
-            component.table.ajax.reload(null, false);
+            this.table.page(pageNum).draw('page');
+            this.table.ajax.reload(null, false);
           }
+
+          $('#key-search').on('keypress', event => {
+            this.sKey = event.currentTarget.value;
+            if (event.which === 13) {
+              this.createSearch();
+            }
+          });
+
+          $("#type-status").on('change', event => {
+            this.sStatus = event.currentTarget.value;
+            this.createSearch();
+          });
+
+          $('#position').on('change', e => {
+            this.sPosition = e.currentTarget.value;
+            this.createSearch();
+          })
         }, 600);
 
       })
       .on('xhr.dt', function (e, settings, json, xhr) {
         // Note no return - manipulate the data directly in the JSON object.
       });
-    component.table = candidateLists
+    this.table = candidateLists
       .DataTable({
-        pageLength: 20,
+        pageLength: 10,
         fixedHeader: true,
         responsive: false,
-        "sDom": 'rtip',
+        select: 'single',
+        buttons: [
+          'colvis',
+          'excel',
+          'print'
+        ],
+        dom: '<"top"i><"info"r>t<"bottom"flp><"clear">',
         processing: true,
         page: 2,
         serverSide: true,
@@ -109,8 +144,8 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           { data: 'reference' },
           {
             data: 'featured', render: (data) => {
-              let value:string = data ? 'à la une' : 'standard';
-              let style:string = data ? 'primary' : 'secondary'; 
+              let value: string = data ? 'à la une' : 'standard';
+              let style: string = data ? 'primary' : 'secondary';
               return `<span class="badge update-featured badge-${style} text-uppercase">${value}</span>`;
             }
           },
@@ -131,7 +166,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           }
         ],
         initComplete: (setting, json) => {
-
         },
         ajax: {
           url: `${config.itApi}/candidate/`,
@@ -151,6 +185,16 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         }
 
       });
+
+    this.table
+      .on('select',  (e, dt, type, indexes) => {
+        let data = this.table.rows( indexes ).data();
+        this.selected = _.isEmpty(data[0]) ? 0 : data[0];
+      })
+      .on('deselect', (e, dt, type, indexes) => {
+        this.selected = 0;
+      });
+
 
     $('#orders-table tbody')
       .on('click', '.edit-candidate', (e) => {
@@ -201,29 +245,17 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
       .on('click', '.update-status', e => {
         e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
-        let DATA = component.table.row(el).data();
+        let DATA = this.table.row(el).data();
         let status: any = DATA.isActive && DATA.state === 'publish' ? 1 : (DATA.state === 'pending' ? 'pending' : 0);
-        component.statusChanger.onOpenDialog(DATA.ID, status);
+        this.statusChanger.onOpenDialog(DATA.ID, status);
       })
       .on('click', '.update-featured', e => {
         e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
-        let DATA = component.table.row(el).data();
+        let DATA = this.table.row(el).data();
         let position: number = DATA.featured;
-        component.featuredSwitcher.onOpen(DATA.ID, position);
+        this.featuredSwitcher.onOpen(DATA.ID, position);
       })
-
-    $('#key-search').on('keypress', function (event) {
-      component.sKey = this.value;
-      if (event.which === 13) {
-        component.createSearch();
-      }
-    });
-
-    $("#type-status").on('change', function (event) {
-      component.sStatus = this.value;
-      component.createSearch();
-    });
 
     $('#daterange')
       .daterangepicker({
