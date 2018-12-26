@@ -47,16 +47,12 @@
         <div class="flexbox px-4 py-3 bg-primary-50">
           <div class="flexbox-b">
             <div id="inbox-actions">
-              <button class="btn btn-sm btn-transparent btn-primary btn-icon-only btn-circle" 
-              data-action="archived" [disabled]="!selected" (click)="onArchived()" data-toggle="tooltip" data-original-title="Archiver">
+              <button class="btn btn-sm btn-transparent btn-primary btn-icon-only" 
+              data-action="archived" [disabled]="!selected" (click)="onArchived()" data-toggle="tooltip" data-original-title="Marquer comme incomplete">
                 <i class="la la-archive"></i>
               </button>
-              <button class="btn btn-sm btn-transparent btn-danger btn-icon-only btn-circle" 
-              data-action="delete" [disabled]="!selected" data-toggle="tooltip" data-original-title="Effacer">
-                <i class="la la-trash-o"></i>
-              </button>
-              <button class="btn btn-secondary btn-fix"  (click)="archivedCandidate.openArchivedLists()">
-                  <span class="btn-icon"><i class="la la-archive"></i>Les candidats archivés</span>
+              <button class="btn btn-sm btn-transparent btn-primary btn-fix ml-2"  (click)="archivedCandidate.openArchivedLists()">
+                  <span class="btn-icon"><i class="la la-archive"></i>Les CV incomplets</span>
               </button>
           </div>
           </div>

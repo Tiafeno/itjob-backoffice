@@ -33,7 +33,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(StatusChangerComponent) private statusChanger: StatusChangerComponent;
   @ViewChild(FeaturedSwitcherComponent) private featuredSwitcher: FeaturedSwitcherComponent;
-  @ViewChild(ArchivedCandidateComponent) private archivedCandidate: ArchivedCandidateComponent;
+  @ViewChild(ArchivedCandidateComponent) public archivedCandidate: ArchivedCandidateComponent;
   
   constructor(
     public candidateService: CandidateService,
@@ -54,7 +54,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   onArchived(): void {
     this.archivedCandidate.changeArchiveStatusCandidate(1, this.selected).subscribe(response => {
       this.reloadDatatable();
-      swal("Archivage", 'Candidate archivée', 'info');
+      swal("", 'Le cv a été marquer comme incomplète', 'info');
     });
   }
 
@@ -72,7 +72,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     const component = this;
-    // Ajouter ici un code pou
     moment.locale('fr');
     const candidateLists = $('#orders-table');
     candidateLists

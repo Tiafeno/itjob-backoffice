@@ -13,7 +13,7 @@ declare var $:any;
 })
 export class ArchivedCandidateComponent implements OnInit {
   private table: any;
-  private selected: any = 0;
+  public selected: any = 0;
   @Input() private helper: any;
   @Output() private refresh = new EventEmitter();
   constructor(
@@ -27,6 +27,7 @@ export class ArchivedCandidateComponent implements OnInit {
   reject(): void {
     this.changeArchiveStatusCandidate(0, this.selected).subscribe(response => {
       this.table.ajax.reload(null, false);
+      this.selected = 0;
     });
   }
 
@@ -39,12 +40,13 @@ export class ArchivedCandidateComponent implements OnInit {
       $('#archived-candidate-modal').modal('show');
       return false;
     }
+    
     this.table = archivedLists
     .DataTable({
       pageLength: 10,
       fixedHeader: true,
       responsive: true,
-      select: true,
+      select: 'single',
       dom: '<"top"i><"info"r>t<"bottom"flp><"clear">',
       processing: true,
       page: 0,
@@ -81,7 +83,6 @@ export class ArchivedCandidateComponent implements OnInit {
         url: `${config.itApi}/candidate/archive/`,
         dataType: 'json',
         data: {
-          //columns: false,
           order: false,
         },
         type: 'POST',
