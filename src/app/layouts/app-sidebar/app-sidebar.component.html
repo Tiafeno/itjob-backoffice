@@ -19,28 +19,40 @@
 <div class="sidebar-tabs">
   <div class="tab-content scroller">
     <div class="tab-pane sidebar-submenu fade active show" id="sidemenu-1">
-      <a [routerLink]="['/user-lists']" routerLinkActive="router-link-active"><i class="ti-user menu-item-icon"></i>
-        <div>
-          <h5 class="menu-item-title">Utilisateurs</h5>
-          <small class="menu-item-text">Liste des utilisateurs</small>
-        </div>
-      </a>
       <a [routerLink]="['/candidat-lists']" routerLinkActive="router-link-active"><i class="ti-id-badge menu-item-icon"></i>
         <div>
           <h5 class="menu-item-title">Candidats
           </h5><small class="menu-item-text">Voir les candidats</small>
         </div>
       </a>
-      <a [routerLink]="['/company-lists']" routerLinkActive="router-link-active"><i class="ti-layout-cta-left menu-item-icon"></i>
+      <a [routerLink]="['/company-lists']" routerLinkActive="router-link-active"><i class="la la-building menu-item-icon"></i>
         <div>
           <h5 class="menu-item-title">Entreprises
           </h5><small class="menu-item-text">Voir les entreprise</small>
         </div>
       </a>
-      <a [routerLink]="['/offer-lists']" routerLinkActive="router-link-active"><i class="ti-notepad menu-item-icon"></i>
+      <a [routerLink]="['/offer-lists']" routerLinkActive="router-link-active"><i class="la la-clipboard menu-item-icon"></i>
         <div>
           <h5 class="menu-item-title">Offres
           </h5><small class="menu-item-text">Voir les offres</small>
+        </div>
+      </a>
+      <a [routerLink]="['/taxonomy', 'software']" routerLinkActive="router-link-active"><i class="la la-desktop menu-item-icon"></i>
+        <div>
+          <h5 class="menu-item-title">Logiciels
+          </h5><small class="menu-item-text">Gestionnaire des logiciels</small>
+        </div>
+      </a>
+      <a [routerLink]="['/taxonomy', 'language']" routerLinkActive="router-link-active"><i class="la la-language menu-item-icon"></i>
+        <div>
+          <h5 class="menu-item-title">Les langues
+          </h5><small class="menu-item-text">Gestionnaire de langues</small>
+        </div>
+      </a>
+      <a [routerLink]="['/taxonomy', 'job_sought']" routerLinkActive="router-link-active"><i class="la la-mortar-board menu-item-icon"></i>
+        <div>
+          <h5 class="menu-item-title">Metiers
+          </h5><small class="menu-item-text">Gestionnaire des metiers</small>
         </div>
       </a>
 

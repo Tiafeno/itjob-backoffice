@@ -143,7 +143,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           { data: 'reference' },
           {
             data: 'featured', render: (data) => {
-              let value: string = data ? 'à la une' : 'standard';
+              let value: string = data ? 'à la une' : 'AUCUN';
               let style: string = data ? 'primary' : 'secondary';
               return `<span class="badge update-featured badge-${style} text-uppercase">${value}</span>`;
             }
@@ -252,8 +252,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
         let DATA = this.table.row(el).data();
-        let position: number = DATA.featured;
-        this.featuredSwitcher.onOpen(DATA.ID, position);
+        this.featuredSwitcher.onOpen(DATA);
       })
 
     $('#daterange')

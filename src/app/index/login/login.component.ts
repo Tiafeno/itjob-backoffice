@@ -11,8 +11,8 @@ declare var $: any;
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {
-  public error : boolean = false;
-  public submitted:boolean = false;
+  public error: boolean = false;
+  public submitted: boolean = false;
   public form: FormGroup;
   public loading: boolean = false;
   constructor(

@@ -28,7 +28,7 @@
         <div class="row">
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Secteur d'activité</label>
-            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" bindLabel="name" bindValue="term_id"
+            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name" bindValue="term_id"
               [searchFn]="customSearchFn" [items]="AreaActivity" required>
             </ng-select>
           </div>
@@ -124,7 +124,7 @@
           <div class="col-sm-8 form-group mb-4">
               <label class="font-bold">Ville</label>
               <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                [items]="Towns" required>
+                [items]="Towns" [loading]="loadingTown" required>
               </ng-select>
           </div>
         </div>

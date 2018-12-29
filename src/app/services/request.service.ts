@@ -36,6 +36,10 @@ export class RequestService {
     return this.http.get(`${config.itApi}/dashboard/?ref=header`, { responseType: 'json' });
   }
 
+  public collectTaxonomies(): Observable<any> {
+    return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json'});
+  }
+
   getTown(): Observable<any> {
     if (this.dataCity) {
       return Observable.of(this.dataCity);

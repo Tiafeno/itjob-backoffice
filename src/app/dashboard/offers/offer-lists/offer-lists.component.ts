@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
@@ -7,12 +7,15 @@ import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
+import { FeaturedOfferComponent } from '../../../directives/offers/featured-offer/featured-offer.component';
 declare var $: any;
 @Component({
   selector: 'app-offer-lists',
   templateUrl: './offer-lists.component.html',
   styleUrls: ['./offer-lists.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
+
 export class OfferListsComponent implements OnInit {
   public listsOffers: Array<any> = [];
   public Helper: any;
@@ -22,6 +25,9 @@ export class OfferListsComponent implements OnInit {
   public sActivityArea: number = 0;
   public sDate: string = "";
   public sRateplan: string = "";
+
+  @ViewChild(FeaturedOfferComponent) private featured: FeaturedOfferComponent;
+
   constructor(
     private router: Router,
     private offerService: OfferService
@@ -32,6 +38,10 @@ export class OfferListsComponent implements OnInit {
   onChoosed(areaId: number) {
     this.sActivityArea = areaId;
     this.createSearch();
+  }
+
+  public reload(): void {
+    this.table.ajax.reload(null, false);
   }
 
   public resetFilterSearch() {
@@ -71,7 +81,7 @@ export class OfferListsComponent implements OnInit {
       });
 
     component.table = offerLists.DataTable({
-      pageLength: 20,
+      pageLength: 10,
       page: 1,
       fixedHeader: true,
       responsive: false,
@@ -83,9 +93,16 @@ export class OfferListsComponent implements OnInit {
         { data: 'postPromote', render: (data, type, row, meta) => data },
         { data: 'reference' },
         {
+          data: '_featured', render: data => {
+            let featured: string = data ? 'À LA UNE' : 'AUCUN';
+            let style: string = data ? 'blue' : 'secondary';
+            return `<span class="badge update-position badge-${style}">${featured}</span>`;
+          }
+        },
+        {
           data: 'rateplan', render: (data, type, row) => {
-            let plan:string = data === 'sereine' ? 'Premium' : 'Standard';
-            let style:string = data === 'sereine' ? 'blue' : 'secondary';
+            let plan: string = data === 'sereine' ? 'PREMIUM' : 'STANDARD';
+            let style: string = data === 'sereine' ? 'blue' : 'secondary';
             return `<span class="badge badge-${style}">${plan}</span>`;
           }
         },
@@ -101,12 +118,6 @@ export class OfferListsComponent implements OnInit {
           data: 'branch_activity', render: (data) => {
             if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
             return data.name;
-          }
-        },
-        {
-          data: 'contractType', render: (data) => {
-            if (!_.isObject(data)) return "Non renseigner";
-            return data.label;
           }
         },
         {
@@ -204,6 +215,13 @@ export class OfferListsComponent implements OnInit {
           }
         })
       });
+    $('#orders-table tbody')
+      .on('click', '.update-position', e => {
+        e.preventDefault();
+        let el = $(e.currentTarget).parents('tr');
+        let DATA = this.table.row(el).data();
+        this.featured.open(DATA);
+      })
 
     $('#key-search').on('keypress', function (event) {
       component.sKey = this.value;

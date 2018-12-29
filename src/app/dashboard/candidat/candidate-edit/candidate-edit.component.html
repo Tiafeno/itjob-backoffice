@@ -94,7 +94,7 @@
             </div>
 
             <div class="row">
-              <div class="col-sm-6 form-group mb-4">
+              <div class="col-sm-8 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
                   [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
@@ -338,14 +338,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Training.training_dateBegin.month">
+                            <select class="form-control" name="begin_mounth" [(ngModel)]="editor.Training.training_dateBegin.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Training.training_dateBegin.year"
+                            <select class="form-control" name="begin_year" [(ngModel)]="editor.Training.training_dateBegin.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -358,14 +358,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Training.training_dateEnd.month">
+                            <select class="form-control" name="end_mounth" [(ngModel)]="editor.Training.training_dateEnd.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Training.training_dateEnd.year"
+                            <select class="form-control" name="end_year" [(ngModel)]="editor.Training.training_dateEnd.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -408,7 +408,7 @@
                       name="diploma" placeholder="Diplôme">
                   </div>
                   <div class="form-group mb-4" *ngIf="editor.Experience.exp_branch_activity">
-                    <select class="select2 form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
+                    <select class="form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
                       required>
                       <option [value]="abranch.term_id" *ngFor="let abranch of branchActivitys">{{abranch.name}}</option>
                     </select>
@@ -429,14 +429,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Experience.exp_dateBegin.month">
+                            <select class="form-control" name="begin_mounth" [(ngModel)]="editor.Experience.exp_dateBegin.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Experience.exp_dateBegin.year"
+                            <select class="form-control" name="begin_year" [(ngModel)]="editor.Experience.exp_dateBegin.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -449,14 +449,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Experience.exp_dateEnd.month">
+                            <select class="form-control" name="end_mounth" [(ngModel)]="editor.Experience.exp_dateEnd.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Experience.exp_dateEnd.year"
+                            <select class="form-control" name="end_year" [(ngModel)]="editor.Experience.exp_dateEnd.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>

@@ -1,0 +1,26 @@
+<div class="page-content fade-in-up">
+  <app-edit-taxonomy [term]='edit' [taxonomy]='taxonomy' (refresh)="reloadDatatable()"></app-edit-taxonomy>
+  <app-new-taxonomy [taxonomy]='taxonomy' (refresh)="reloadDatatable()"></app-new-taxonomy>
+  <div class="ibox">
+    <div class="ibox-head">
+      <div class="ibox-title text-uppercase">{{name}}</div>
+    </div>
+    <div class="ibox-body">
+      <div class="flexbox mb-4">
+        <button class="flexbox btn btn-outline-blue" (click)="onNew()">AJOUTER<i class="ti-plus ml-2 font-10"></i></button>
+      </div>
+      <div class="row">
+        <table class="table table-hover" id="taxonomy-table">
+          <thead class="thead-default thead-lg">
+            <tr>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Status</th>
+              <th class="no-sort">Action</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CandidateService } from '../../../services/candidate.service';
 import * as _ from 'lodash';
@@ -8,7 +8,6 @@ import { Helpers } from '../../../helpers';
 import { NgForm } from '@angular/forms';
 import { RequestService } from '../../../services/request.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { config } from '../../../../environments/environment';
 declare var $: any;
 declare var Bloodhound: any;
@@ -16,7 +15,8 @@ declare var Bloodhound: any;
 @Component({
   selector: 'app-candidate-edit',
   templateUrl: './candidate-edit.component.html',
-  styleUrls: ['./candidate-edit.component.css']
+  styleUrls: ['./candidate-edit.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
@@ -148,10 +148,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     let dateBegin = String(this.editor.Training.training_dateBegin);
     let dateEnd = String(this.editor.Training.training_dateEnd);
     moment.locale('fr');
-    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) :
-      (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) :
-      (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
     this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     $('#edit-training-modal').modal('show')
@@ -163,45 +161,40 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.editor.Experience = _.cloneDeep(currentExperience);
     let dateBegin = this.editor.Experience.exp_dateBegin;
     let dateEnd = this.editor.Experience.exp_dateEnd;
-    if (_.isNull(dateBegin)) {
+
+    if (_.isNull(dateBegin) || _.isEmpty(dateBegin)) {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateBegin)) {
         dateBegin = this.editor.Experience.old_value.exp_dateBegin;
       }
     } else {
       dateBegin = String(dateBegin);
     }
-    if (_.isNull(dateEnd)) {
+
+    if (_.isNull(dateEnd) || _.isEmpty(dateEnd)) {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateEnd)) {
         dateEnd = this.editor.Experience.old_value.exp_dateEnd;
       }
     } else {
       dateEnd = String(dateEnd);
     }
+
     moment.locale('fr');
-    if (dateBegin !== null) {
-      let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-      if (_dateBegin.format('YYYY') === 'Invalid date') {
-        this.editor.Experience.exp_dateBegin = null;
-      } else {
-        this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
-      }
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    if (_dateBegin.format('YYYY') === 'Invalid date') {
+      this.editor.Experience.exp_dateBegin = { month: '', year: '' };
     } else {
-      this.editor.Experience.exp_dateBegin = null;
+      this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     }
 
-    if (dateEnd !== null) {
-      let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
-      if (_dateEnd.format('YYYY') === 'Invalid date') {
-        this.editor.Experience.exp_dateEnd = null;
-      } else {
-        this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
-      }
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    if (_dateEnd.format('YYYY') === 'Invalid date') {
+      this.editor.Experience.exp_dateEnd = { month: '', year: '' };
     } else {
-      this.editor.Experience.exp_dateEnd = null;
+      this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     }
+
     let abranch = this.editor.Experience.exp_branch_activity;
     this.editor.Experience.exp_branch_activity = abranch && _.isObject(abranch) ? abranch.term_id : abranch;
-
     $('#edit-experience-modal').modal('show');
   }
 
@@ -227,17 +220,23 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   onUpdateExperience(experienceId: any) {
-    if (!_.isEmpty(this.editor.Experience) && _.isNumber(experienceId)) {
+    if ( ! _.isEmpty(this.editor.Experience) && _.isNumber(experienceId) ) {
       this.loadingSaveExperience = true;
+      // Crée une nouvelle liste sans l'expérience actuellement modifier
       let Experiences = _.reject(this.editor.experiences, ['ID', experienceId]);
       let editExperience = _.clone(this.editor.Experience);
       editExperience.validated = true;
-      editExperience.exp_dateBegin = moment(editExperience.exp_dateBegin.month + ' ' + editExperience.exp_dateBegin.year).format('MM/DD/YYYY');
-      editExperience.exp_dateEnd = moment(editExperience.exp_dateEnd.month + ' ' + editExperience.exp_dateEnd.year).format('MM/DD/YYYY');
-      if (editExperience.exp_dateBegin === "Invalid date" || editExperience.exp_dateEnd === "Invalid date") return;
+      let expBegin = _.clone(editExperience.exp_dateBegin);
+      let expEnd = _.clone(editExperience.exp_dateEnd);
+      let dateBegin = `${expBegin.month} ${expBegin.year}`;
+      let dateEnd = `${expEnd.month} ${expEnd.year}`;
+      editExperience.exp_dateBegin = expBegin = moment(dateBegin, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
+      editExperience.exp_dateEnd = expEnd = moment(dateEnd, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
+      if (expBegin === "Invalid date" || expEnd === "Invalid date") return;
+      
 
-      this.editor.experiences = _.cloneDeep(Experiences);
-      this.editor.experiences.push(editExperience);
+      this.editor.experiences = _.cloneDeep(Experiences); // Modifier la liste des experiences
+      this.editor.experiences.push(editExperience); // Ajouter la nouvelle experience dans la liste
       this.editor.experiences = _.orderBy(this.editor.experiences, ['ID'], ['asc']);
       this.candidatService.updateExperience(this.editor.experiences, this.Candidate.ID)
         .subscribe(response => {
@@ -280,7 +279,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         component.avatar.preview = e.target.result;
       }
       reader.readAsDataURL(ev.target.files[0]);
-      console.log(this.inputAvatar);
     }
   }
 
@@ -322,7 +320,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private saveCandidate(Form: any, attachment_id?:number) {
+  private saveCandidate(Form: any, attachment_id?: number) {
     if (!_.isUndefined(attachment_id))
       Form.attachment_id = attachment_id;
     this.candidatService.saveCandidate(Form.ID, Form)

@@ -18,6 +18,8 @@ export class CompanyEditComponent implements OnInit {
   public loading:boolean = false;
   public Regions: any = [];
   public AreaActivity: any = [];
+  public loadingArea: boolean = false;
+  public loadingTown: boolean = false;
   public Towns: any = [];
 
   @Output() refresh = new EventEmitter();
@@ -77,8 +79,10 @@ export class CompanyEditComponent implements OnInit {
       });
       this.editor = _.cloneDeep(editor);
       this.getTaxonomie('region').subscribe(response => { this.Regions = _.cloneDeep(response); });
-      this.getTaxonomie('branch_activity').subscribe(response => { this.AreaActivity = _.cloneDeep(response); });
-      this.getTaxonomie('city').subscribe(response => { this.Towns = _.cloneDeep(response); });
+      this.loadingArea = true;
+      this.getTaxonomie('branch_activity').subscribe(response => { this.AreaActivity = _.cloneDeep(response); this.loadingArea = false; });
+      this.loadingTown = true;
+      this.getTaxonomie('city').subscribe(response => { this.Towns = _.cloneDeep(response); this.loadingTown = false; });
 
       $('#edit-company-modal').modal('show');
     }

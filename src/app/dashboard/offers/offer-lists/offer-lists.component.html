@@ -1,4 +1,5 @@
 <div class="page-content fade-in-up">
+  <app-featured-offer (refresh)="reload()"></app-featured-offer>
   <div class="ibox">
     <div class="ibox-body">
       <h5 class="font-strong mb-4">LES OFFRES</h5>
@@ -16,6 +17,7 @@
             <select class="selectpicker form-control " id="type-rateplan" title="Tous les types" data-style="btn-solid">
               <option value="">Tous les types</option>
               <option value="sereine">Sereine</option>
+              <option value="premium">Premium</option>
               <option value="standard">Standard</option>
             </select>
           </div>
@@ -37,7 +39,7 @@
           </div>
 
           <div class="col-md-4">
-            <button type="button" (click)="resetFilterSearch()" class="btn btn-sm btn-info">Reinitialiser les filtres</button>
+            <button type="button" (click)="resetFilterSearch()" class="btn btn-info">Reinitialiser les filtres</button>
           </div>
         </div>
 
@@ -50,11 +52,11 @@
               <th>#</th>
               <th>Poste occupé</th>
               <th>Réference</th>
+              <th>Position</th>
               <th>Type</th>
               <th>Date limite</th>
               <th>Status</th>
               <th>Secteur d'activité</th>
-              <th>Type de contrat</th>
               <th>Région</th>
               <th class="no-sort">Action</th>
             </tr>

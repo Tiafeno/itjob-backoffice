@@ -8,3 +8,9 @@ div.dataTables_wrapper div.dataTables_processing {
 .edit-company {
   cursor: pointer;
 }
+.swal-button--activated {
+  background-color: #0f569c;
+}
+.swal-button--disabled {
+  background-color: red;
+}

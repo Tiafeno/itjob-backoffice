@@ -1,16 +1,16 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
-declare var $: any;
-import { config, dateTimePickerFr } from '../../../../environments/environment';
 import * as moment from 'moment';
+import { dateTimePickerFr, config } from '../../../../environments/environment';
+declare var $:any;
 
 @Component({
-  selector: 'app-featured-switcher',
-  templateUrl: './featured-switcher.component.html',
-  styleUrls: ['./featured-switcher.component.css']
+  selector: 'app-featured-offer',
+  templateUrl: './featured-offer.component.html',
+  styleUrls: ['./featured-offer.component.css']
 })
-export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
+export class FeaturedOfferComponent implements OnInit, AfterViewInit {
   private postId: number = 0;
   public position: number;
   public dateLimit: any = "";
@@ -24,14 +24,14 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
     private Http: HttpClient
   ) { }
 
-  public onOpen(candidate: any): void {
-    this.position = candidate.featured;
-    this.currentPosition = candidate.featured;
-    if (this.currentPosition && !_.isNull(candidate.featuredDateLimit)) {
-      this.dateLimit = moment(candidate.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
+  public open(offer: any): void {
+    this.position = offer._featured;
+    this.currentPosition = offer._featured;
+    if (this.currentPosition && !_.isNull(offer._featuredDateLimit)) {
+      this.dateLimit = moment(offer._featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
     }
-    this.postId = candidate.ID;
-    $('#edit-featured-modal').modal('show');
+    this.postId = offer.ID;
+    $('#edit-featured-offer-modal').modal('show');
 
   }
 
@@ -41,12 +41,12 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
       return false;
     }
       this.loading = true;
-      let changePosition = this.Http.get(`${config.itApi}/candidate/${this.postId}?ref=featured&val=${this.position}&datelimit=${this.dateLimit}`, { responseType: 'json' });
+      let changePosition = this.Http.get(`${config.itApi}/offer/${this.postId}?ref=featured&val=${this.position}&datelimit=${this.dateLimit}`, { responseType: 'json' });
       changePosition.subscribe(response => {
         let resp: any = response;
         this.loading = false;
         if (resp.success) {
-          $('#edit-featured-modal').modal('hide');
+          $('#edit-featured-offer-modal').modal('hide');
           this.refresh.emit();
         }
       })
@@ -70,12 +70,11 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
     let component = this;
-    $('#edit-featured-modal')
+    $('#edit-featured-offer-modal')
       .on('hidden.bs.modal', function (e) {
         component.warning = false;
         this.dateLimit = '';
       })
 
   }
-
 }

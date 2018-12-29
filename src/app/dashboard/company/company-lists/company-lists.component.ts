@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { CompanyService } from '../../../services/company.service';
-import { Router } from '@angular/router';
 
 import * as _ from 'lodash';
 import swal from 'sweetalert';
@@ -23,7 +22,6 @@ export class CompanyListsComponent implements OnInit {
   public sActivityArea: number = 0;
   public TABLE: any;
 
-  @ViewChild(SwitcherComponent) private switcher: SwitcherComponent;
   @ViewChild(CompanyEditComponent) private companyEdit: CompanyEditComponent
 
   constructor(
@@ -83,13 +81,6 @@ export class CompanyListsComponent implements OnInit {
       columns: [
         { data: 'ID' },
         { data: 'title', render: (data, type, row, meta) => data },
-        {
-          data: 'account', render: (data, type, row) => {
-            let status: string = data === 1 ? "Premium" : (data === 2 ? "En attente" : "Standard");
-            let style: string = data === 1 ? 'success' : (data === 2 ? "pink" : "default")
-            return `<span data-id="${row.ID}" class="badge update-account badge-${style}">${status}</span>`
-          }
-        },
         { data: 'add_create', render: (data) => { return moment(data).fromNow(); } },
         {
           data: 'isActive', render: (data, type, row, meta) => {
@@ -111,8 +102,7 @@ export class CompanyListsComponent implements OnInit {
           }
         },
         {
-          data: null,
-          render: (data, type, row) => {
+          data: null, render: (data, type, row) => {
             return `<span data-id='${row.ID}' class='edit-company badge badge-blue'>Modifier</span>`;
           }
         }
@@ -136,7 +126,6 @@ export class CompanyListsComponent implements OnInit {
           }
         }
       }
-
     });
 
     $('#key-search').on('keypress', function (event) {
@@ -214,11 +203,10 @@ export class CompanyListsComponent implements OnInit {
         e.preventDefault();
         let el = $(e.currentTarget).parents('tr');
         let DATA = component.TABLE.row(el).data();
-        let currentStatus: any = DATA.isActive && DATA.post_status === 'publish' ? 1 : (DATA.post_status === 'pending' ? 'pending' : 0);
+        let currentStatus: any = DATA.isActive && DATA.post_status === 'publish' ? true : (DATA.post_status === 'pending' ? 'pending' : false);
         let Element = e.currentTarget;
         let data = $(Element).data();
         let companyId: number = data.id;
-        let confirmButton: string = currentStatus === 1 ? 'Activer' : 'Désactiver';
         swal("Modifier le status de l'entreprise", {
           buttons: {
             activated: {
@@ -230,11 +218,12 @@ export class CompanyListsComponent implements OnInit {
             cancel: "Annuler"
           },
         } as any)
-          .then((value) => {
+          .then(value => {
             switch (value) {
               case "activated":
               case "disabled":
                 let status: boolean = value === 'activated' ? true : false;
+                if (status === currentStatus) return;
                 component.companyService
                   .activated(companyId, status)
                   .subscribe(response => {
@@ -250,13 +239,7 @@ export class CompanyListsComponent implements OnInit {
             }
           });
 
-      })
-      .on('click', '.update-account', e => {
-        e.preventDefault();
-        let el = $(e.currentTarget).parents('tr');
-        let DATA = component.TABLE.row(el).data();
-        component.switcher.onOpenDialog(DATA.ID, DATA.account);
-      })
+      });
   }
 
 }

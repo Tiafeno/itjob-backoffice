@@ -23,6 +23,11 @@ import { StatusChangerComponent } from '../directives/account/status-changer/sta
 import { UploadfileDirective } from '../directives/candidat/uploadfile.directive';
 import { FeaturedSwitcherComponent } from '../directives/candidat/featured-switcher/featured-switcher.component';
 import { ArchivedCandidateComponent } from '../directives/candidat/archived-candidate/archived-candidate.component';
+import { TaxonomyComponent } from './taxonomy/taxonomy.component';
+import { EditTaxonomyComponent } from './taxonomy/edit-taxonomy/edit-taxonomy.component';
+import { NewTaxonomyComponent } from './taxonomy/new-taxonomy/new-taxonomy.component';
+import { FeaturedOfferComponent } from '../directives/offers/featured-offer/featured-offer.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   imports: [
@@ -32,7 +37,7 @@ import { ArchivedCandidateComponent } from '../directives/candidat/archived-cand
     ReactiveFormsModule,
     HttpClientModule,
     NgSelectModule,
-    SweetAlert2Module,
+    SweetAlert2Module
   ],
   declarations: [
     HomeComponent,
@@ -52,7 +57,12 @@ import { ArchivedCandidateComponent } from '../directives/candidat/archived-cand
     StatusChangerComponent,
     FeaturedSwitcherComponent,
     ArchivedCandidateComponent,
-    UploadfileDirective
+    UploadfileDirective,
+    TaxonomyComponent,
+    EditTaxonomyComponent,
+    NewTaxonomyComponent,
+    FeaturedOfferComponent,
+    SettingsComponent
   ],
   providers: [
     {
