@@ -9,18 +9,6 @@
 
         <div class="row mb-4">
           <div class="col-md-4 mb-2 mb-sm-0">
-            <select class="selectpicker show-tick form-control" id="type-account" title="Tout les types de compte"
-              data-style="btn-solid" data-width="100%">
-              <option value="">Tout les types de compte</option>
-              <option value="0">Standard</option>
-              <option value="1">Premium</option>
-              <option value="2">En attente</option>
-            </select>
-          </div>
-
-          <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
-
-          <div class="col-md-4 mb-2 mb-sm-0">
             <select class="selectpicker form-control " id="type-status" title="Tous les status" data-style="btn-solid">
               <option value="">Tous les status</option>
               <option value="pending">En attente</option>
@@ -28,16 +16,16 @@
               <option value="0">Désactiver</option>
             </select>
           </div>
-
-        </div>
-
-        <div class="row">
           <div class="col-md-4 form-group mb-2 mb-sm-0">
             <div class="input-group-icon input-group-icon-left mr-3">
               <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
               <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
             </div>
           </div>
+          <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+        </div>
+
+        <div class="row">
           <div class="col-md-4 form-check mb-2 mb-sm-0">
             <div class="input-group-icon input-group-icon-left mr-3">
               <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>

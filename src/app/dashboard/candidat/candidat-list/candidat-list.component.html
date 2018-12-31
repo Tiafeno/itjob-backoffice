@@ -48,7 +48,7 @@
           <div class="flexbox-b">
             <div id="inbox-actions">
               <button class="btn btn-sm btn-transparent btn-primary btn-icon-only" 
-              data-action="archived" [disabled]="!selected" (click)="onArchived()" data-toggle="tooltip" data-original-title="Marquer comme incomplete">
+              data-action="archived" [disabled]="!selected" (click)="onArchived(selected)" data-toggle="tooltip" data-original-title="Marquer comme incomplete">
                 <i class="la la-archive"></i>
               </button>
               <button class="btn btn-sm btn-transparent btn-primary btn-fix ml-2"  (click)="archivedCandidate.openArchivedLists()">

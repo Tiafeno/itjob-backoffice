@@ -28,6 +28,8 @@ import { EditTaxonomyComponent } from './taxonomy/edit-taxonomy/edit-taxonomy.co
 import { NewTaxonomyComponent } from './taxonomy/new-taxonomy/new-taxonomy.component';
 import { FeaturedOfferComponent } from '../directives/offers/featured-offer/featured-offer.component';
 import { SettingsComponent } from './settings/settings.component';
+import { RatePlanComponent } from '../directives/offers/rate-plan/rate-plan.component';
+import { DeadlineOfferComponent } from '../directives/offers/deadline-offer/deadline-offer.component';
 
 @NgModule({
   imports: [
@@ -62,7 +64,9 @@ import { SettingsComponent } from './settings/settings.component';
     EditTaxonomyComponent,
     NewTaxonomyComponent,
     FeaturedOfferComponent,
-    SettingsComponent
+    RatePlanComponent,
+    SettingsComponent,
+    DeadlineOfferComponent
   ],
   providers: [
     {

@@ -10,6 +10,7 @@ import { Helpers } from '../../../helpers';
 import { StatusChangerComponent } from '../../../directives/account/status-changer/status-changer.component';
 import { FeaturedSwitcherComponent } from '../../../directives/candidat/featured-switcher/featured-switcher.component';
 import { ArchivedCandidateComponent } from '../../../directives/candidat/archived-candidate/archived-candidate.component';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 
 @Component({
@@ -34,25 +35,28 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   @ViewChild(StatusChangerComponent) private statusChanger: StatusChangerComponent;
   @ViewChild(FeaturedSwitcherComponent) private featuredSwitcher: FeaturedSwitcherComponent;
   @ViewChild(ArchivedCandidateComponent) public archivedCandidate: ArchivedCandidateComponent;
-  
+
   constructor(
     public candidateService: CandidateService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.Helper = Helpers
   }
 
+  // Actualiser les resultats
   reloadDatatable(): void {
     this.table.ajax.reload(null, false);
   }
 
+  // Effectuer une recherche du metier
   onChoosed(areaId: number) {
     this.sActivityArea = areaId;
     this.createSearch();
   }
 
-  onArchived(): void {
-    this.archivedCandidate.changeArchiveStatusCandidate(1, this.selected).subscribe(response => {
+  onArchived(selected: number): void {
+    this.archivedCandidate.changeArchiveStatusCandidate(1, selected).subscribe(response => {
       this.reloadDatatable();
       swal("", 'Le cv a été marquer comme incomplète', 'info');
     });
@@ -83,27 +87,10 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           let candidatePage: string = localStorage.getItem('candidate-page');
           let pageNum: number = parseInt(candidatePage);
-          if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
+          if (!_.isNaN(pageNum)) {
             this.table.page(pageNum).draw('page');
             this.table.ajax.reload(null, false);
           }
-
-          $('#key-search').on('keypress', event => {
-            this.sKey = event.currentTarget.value;
-            if (event.which === 13) {
-              this.createSearch();
-            }
-          });
-
-          $("#type-status").on('change', event => {
-            this.sStatus = event.currentTarget.value;
-            this.createSearch();
-          });
-
-          $('#position').on('change', e => {
-            this.sPosition = e.currentTarget.value;
-            this.createSearch();
-          })
         }, 600);
 
       })
@@ -165,6 +152,22 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           }
         ],
         initComplete: (setting, json) => {
+          $('#key-search').on('keypress', event => {
+            this.sKey = event.currentTarget.value;
+            if (event.which === 13) {
+              this.createSearch();
+            }
+          });
+
+          $("#type-status").on('change', event => {
+            this.sStatus = event.currentTarget.value;
+            this.createSearch();
+          });
+
+          $('#position').on('change', e => {
+            this.sPosition = e.currentTarget.value;
+            this.createSearch();
+          });
         },
         ajax: {
           url: `${config.itApi}/candidate/`,
@@ -186,63 +189,26 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
       });
 
     this.table
-      .on('select',  (e, dt, type, indexes) => {
-        let data = this.table.rows( indexes ).data();
+      .on('select', (e, dt, type, indexes) => {
+        let data = this.table.rows(indexes).data();
         this.selected = _.isEmpty(data[0]) ? 0 : data[0];
       })
       .on('deselect', (e, dt, type, indexes) => {
         this.selected = 0;
       });
 
-
     $('#orders-table tbody')
+      // Modifier le candidat
       .on('click', '.edit-candidate', (e) => {
         e.preventDefault();
         let data = $(e.currentTarget).data();
         component.router.navigate(['/candidate', data.id, 'edit']);
       })
-      .on('click', '.status-candidate', (e) => {
-        e.preventDefault();
-        let el = $(e.currentTarget).parents('tr');
-        let DATA = component.table.row(el).data();
-
-        let elData = $(e.currentTarget).data();
-        let statusChange: boolean = elData.isActive;
-        let candidateId: number = elData.id;
-        let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
-        let cancelButton: string = "Annuler";
-        if (DATA.isActive === statusChange) {
-          swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} un candidat qui es déjà ${confirmButton.toLowerCase()}.`, 'warning');
-          return false;
-        }
-        swal({
-          title: '',
-          text: `Vous voulez vraiment ${confirmButton.toLowerCase()} ce candidat?`,
-          type: statusChange ? 'warning' : 'error',
-          showCancelButton: true,
-          confirmButtonText: confirmButton,
-          cancelButtonText: cancelButton
-        }).then((result) => {
-          if (result.value) {
-            component.candidateService
-              .activated(candidateId, statusChange)
-              .subscribe(response => {
-                swal(
-                  '',
-                  `Candidat ${confirmButton.toLowerCase()} avec succès`,
-                  'success'
-                )
-                component.table.ajax.reload(null, false);
-              })
-            // For more information about handling dismissals please visit
-            // https://sweetalert2.github.io/#handling-dismissals
-          } else if (result.dismiss === swal.DismissReason.cancel) {
-
-          }
-        })
-      })
       .on('click', '.update-status', e => {
         e.preventDefault();
+        // Réfuser l'accès au commercial de modifier cette option
+        if (!this.authService.hasAccess()) return;
+
         let el = $(e.currentTarget).parents('tr');
         let DATA = this.table.row(el).data();
         let status: any = DATA.isActive && DATA.state === 'publish' ? 1 : (DATA.state === 'pending' ? 'pending' : 0);
@@ -250,6 +216,9 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
       })
       .on('click', '.update-featured', e => {
         e.preventDefault();
+        // Réfuser l'accès au commercial de modifier cette option
+        if (!this.authService.hasAccess()) return;
+
         let el = $(e.currentTarget).parents('tr');
         let DATA = this.table.row(el).data();
         this.featuredSwitcher.onOpen(DATA);

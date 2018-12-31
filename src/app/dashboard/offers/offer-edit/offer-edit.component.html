@@ -1,4 +1,5 @@
 <div class="page-content fade-in-up">
+  <app-company-edit  (refresh)="ngOnInit()"></app-company-edit>
   <div class="ibox">
     <div class="ibox-body" *ngIf="loadingForm">
       <div class="row">
@@ -47,22 +48,6 @@
             </div>
 
             <div class="row">
-              <div class="col-sm-12 mb-2">
-                <span class="font-bold">Mode de diffusion</span>
-              </div>
-              <div class="col-sm-12 form-group mb-2">
-                <label class="radio radio-blue">
-                  <input type="radio" name="plan" [value]="'sereine'" [(ngModel)]="Editor.rateplan">
-                  <span class="input-span"></span>Mode de diffusion Sereine</label>
-              </div>
-              <div class="col-sm-12 form-group mb-4">
-                <label class="radio radio-blue">
-                  <input type="radio" name="plan" [value]="'standard'" [(ngModel)]="Editor.rateplan">
-                  <span class="input-span"></span>Mode de diffusion Standard</label>
-              </div>
-            </div>
-
-            <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Type de contrat</label>
                 <div>
@@ -103,7 +88,6 @@
                 </ng-select>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Date limite de candidature</label>
@@ -114,7 +98,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group mb-4">
@@ -172,6 +155,9 @@
               <div class="row align-items-center">
                 <div class="col-4 text-light">Numéro de téléphone</div>
                 <div class="col-8">{{Offer.__info.phone}}</div>
+              </div>
+              <div class="row">
+                  <button class="btn btn-outline-pink btn-sm btn-square" (click)="editCompany($event)">Modifier l'entreprise</button>
               </div>
             </div>
           </div>

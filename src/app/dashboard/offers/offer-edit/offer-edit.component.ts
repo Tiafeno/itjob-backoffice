@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, Route } from '@angular/router';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
@@ -6,6 +6,8 @@ import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert2';
 import { RequestService } from '../../../services/request.service';
+import { CandidateEditComponent } from '../../candidat/candidate-edit/candidate-edit.component';
+import { CompanyEditComponent } from '../../company/company-edit/company-edit.component';
 declare var $: any;
 @Component({
   selector: 'app-offer-edit',
@@ -14,6 +16,7 @@ declare var $: any;
 })
 export class OfferEditComponent implements OnInit {
   public ID: number;
+  public companyId: number = 0;
   public loadingForm: boolean = false;
   public loadingSave: boolean = false;
   public townLoading: boolean = false;
@@ -23,6 +26,9 @@ export class OfferEditComponent implements OnInit {
   public Towns: any = [];
   public Regions: any = {};
   public branchActivitys: any = [];
+
+  @ViewChild(CandidateEditComponent) private companyEdit: CompanyEditComponent;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -175,6 +181,12 @@ export class OfferEditComponent implements OnInit {
       return false;
     }
   }
+
+  editCompany(event: any) {
+    let element = event.currentTarget;
+    console.log(element);
+  }
+
   onChangeStatus(newValue) {
     this.Editor.activated = newValue === 'pending' ? false : true;
   }

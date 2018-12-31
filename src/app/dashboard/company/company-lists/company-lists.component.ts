@@ -7,6 +7,7 @@ import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 import { SwitcherComponent } from '../../../directives/account/switcher/switcher.component';
 import { CompanyEditComponent } from '../company-edit/company-edit.component';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 @Component({
   selector: 'app-company-lists',
@@ -25,7 +26,8 @@ export class CompanyListsComponent implements OnInit {
   @ViewChild(CompanyEditComponent) private companyEdit: CompanyEditComponent
 
   constructor(
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private authService: AuthService
   ) { }
 
   onChoosed(areaId: number) {
@@ -51,12 +53,11 @@ export class CompanyListsComponent implements OnInit {
 
   ngOnInit() {
     moment.locale('fr');
-    const component = this;
     // Ajouter ici un code pour recuperer les candidats...
     const companyLists = $('#orders-table');
     companyLists
       .on('page.dt', () => {
-        let info = component.TABLE.page.info();
+        let info = this.TABLE.page.info();
         localStorage.setItem('company-page', info.page);
       })
       .on('init.dt', (e, settings, json) => {
@@ -64,13 +65,13 @@ export class CompanyListsComponent implements OnInit {
           let page: string = localStorage.getItem('company-page');
           let pageNum: number = parseInt(page);
           if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
-            component.TABLE.page(pageNum).draw("page");
-            component.TABLE.ajax.reload(null, false);
+            this.TABLE.page(pageNum).draw("page");
+            this.TABLE.ajax.reload(null, false);
           }
         }, 600);
       });
 
-    component.TABLE = companyLists.DataTable({
+    this.TABLE = companyLists.DataTable({
       pageLength: 20,
       page: 0,
       fixedHeader: true,
@@ -109,6 +110,18 @@ export class CompanyListsComponent implements OnInit {
       ],
       initComplete: (setting, json) => {
 
+        $('#key-search').on('keypress', (event) => {
+          if (event.which === 13) {
+            this.sKey = event.currentTarget.value;
+            this.createSearch();
+          }
+        });
+
+        $("#type-status").on('change', (event) => {
+          this.sStatus = event.currentTarget.value;
+          this.createSearch();
+        });
+
       },
       ajax: {
         url: `${config.itApi}/company/`,
@@ -126,23 +139,6 @@ export class CompanyListsComponent implements OnInit {
           }
         }
       }
-    });
-
-    $('#key-search').on('keypress', function (event) {
-      if (event.which === 13) {
-        component.sKey = this.value;
-        component.createSearch();
-      }
-    });
-
-    $("#type-status").on('change', function (event) {
-      component.sStatus = this.value;
-      component.createSearch();
-    });
-
-    $("#type-account").on('change', function (event) {
-      component.sAccount = this.value;
-      component.createSearch();
     });
 
     $('#daterange')
@@ -180,32 +176,38 @@ export class CompanyListsComponent implements OnInit {
           "firstDay": 1
         }
       })
-      .on('apply.daterangepicker', function (ev, picker) {
+      .on('apply.daterangepicker', (ev, picker) => {
         let startDate = picker.startDate.format('YYYY-MM-DD');
         let endDate = picker.endDate.format('YYYY-MM-DD');
-        component.sDate = `${startDate}x${endDate}`;
-        component.createSearch();
+        this.sDate = `${startDate}x${endDate}`;
+        this.createSearch();
       })
-      .on('cancel.daterangepicker', function (ev, picker) {
+      .on('cancel.daterangepicker', (ev, picker) => {
         $('#daterange').val('');
-        component.sDate = '';
-        component.createSearch();
+        this.sDate = '';
+        this.createSearch();
       });
 
     $('#orders-table tbody')
       .on('click', '.edit-company', (e) => {
         e.preventDefault();
+        // Réfuser l'accès au commercial de modifier cette option
+        // Seul l'administrateur peuvent modifier les entreprises
+        if (!this.authService.hasAccess()) return;
+
         let el = $(e.currentTarget).parents('tr');
-        let DATA = component.TABLE.row(el).data();
-        component.companyEdit.onOpen(DATA);
+        let DATA = this.TABLE.row(el).data();
+        this.companyEdit.onOpen(DATA);
       })
       .on('click', '.edit-status', (e) => {
         e.preventDefault();
+        // Réfuser l'accès au commercial de modifier cette option
+        if (!this.authService.hasAccess()) return;
+
         let el = $(e.currentTarget).parents('tr');
-        let DATA = component.TABLE.row(el).data();
+        let DATA = this.TABLE.row(el).data();
         let currentStatus: any = DATA.isActive && DATA.post_status === 'publish' ? true : (DATA.post_status === 'pending' ? 'pending' : false);
-        let Element = e.currentTarget;
-        let data = $(Element).data();
+        let data = $(e.currentTarget).data();
         let companyId: number = data.id;
         swal("Modifier le status de l'entreprise", {
           buttons: {
@@ -224,7 +226,7 @@ export class CompanyListsComponent implements OnInit {
               case "disabled":
                 let status: boolean = value === 'activated' ? true : false;
                 if (status === currentStatus) return;
-                component.companyService
+                this.companyService
                   .activated(companyId, status)
                   .subscribe(response => {
                     swal(
@@ -232,13 +234,12 @@ export class CompanyListsComponent implements OnInit {
                       'Entreprise mis à jour avec succès',
                       'success'
                     )
-                    component.TABLE.ajax.reload(null, false);
+                    this.TABLE.ajax.reload(null, false);
                   })
                 break;
 
             }
           });
-
       });
   }
 

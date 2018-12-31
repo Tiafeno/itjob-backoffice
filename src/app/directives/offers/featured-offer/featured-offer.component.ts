@@ -54,7 +54,7 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     $.fn.datetimepicker.dates['fr'] = dateTimePickerFr;
-    let dateLimitElement = $('.input-group.date');
+    let dateLimitElement = $('.input-group.date:not(.no-time)');
     dateLimitElement
       .datetimepicker({
         isRTL: true,
@@ -69,10 +69,9 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
-    let component = this;
     $('#edit-featured-offer-modal')
-      .on('hidden.bs.modal', function (e) {
-        component.warning = false;
+      .on('hidden.bs.modal', (e) => {
+        this.warning = false;
         this.dateLimit = '';
       })
 

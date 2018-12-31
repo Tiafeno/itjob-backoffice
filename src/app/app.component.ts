@@ -5,6 +5,7 @@ import { RequestService } from './services/request.service';
 
 import * as _ from 'lodash';
 import { AuthService } from './services/auth.service';
+import swal from 'sweetalert';
 @Component({
   selector: 'body',
   templateUrl: './app.component.html',
@@ -35,6 +36,15 @@ export class AppComponent implements OnInit, AfterViewInit {
             error => {
               if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
                 this.Auth.logout();
+                return;
+              }
+              if (error.status === 0) {
+                swal({
+                  title: 'Internal Server Error',
+                  text: 'There is a problem with server.',
+                  icon: 'error',
+                  button: false
+                } as any);
               }
             });
         }
