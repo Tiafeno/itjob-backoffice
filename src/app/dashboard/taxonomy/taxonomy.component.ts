@@ -6,6 +6,7 @@ import { Helpers } from '../../helpers';
 import { RequestService } from '../../services/request.service';
 import { EditTaxonomyComponent } from './edit-taxonomy/edit-taxonomy.component';
 import { NewTaxonomyComponent } from './new-taxonomy/new-taxonomy.component';
+import { AuthService } from '../../services/auth.service';
 declare var $: any;
 
 @Component({
@@ -25,13 +26,13 @@ export class TaxonomyComponent implements OnInit {
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private requestServices: RequestService
+    private requestServices: RequestService,
+    private authSerice: AuthService
   ) { }
 
   ngOnInit() {
     this.activeRoute.params.subscribe(params => {
       this.taxonomy = params.term;
-      Helpers.setLoading(true);
       this.requestServices.collectTaxonomies()
         .subscribe(taxonomies => {
           this.name = taxonomies[this.taxonomy].name;
@@ -45,11 +46,19 @@ export class TaxonomyComponent implements OnInit {
   }
 
   onEdit(term: any): void {
+    // Réfuser l'accès au commercial de modifier cette option
+    if (!this.authSerice.hasAccess()) return;
+
     this.edit = _.cloneDeep(term);
+    let activated = this.edit.activated;
+    this.edit.activated = _.isEmpty(activated) || _.isNull(activated) ? 0 : 1;
     this.EditComponent.open();
   }
 
   onNew(): void {
+    // Réfuser l'accès au commercial de modifier cette option
+    if (!this.authSerice.hasAccess()) return;
+
     this.NewComponent.open();
   }
 
@@ -59,6 +68,13 @@ export class TaxonomyComponent implements OnInit {
       this.table.destroy();
       taxonomyLists.find('tbody').empty();
     }
+    taxonomyLists
+      .on('preXhr.dt', function (e, settings, data) {
+        Helpers.setLoading(true);
+      })
+      .on('init.dt', function () {
+        Helpers.setLoading(false);
+      })
     this.table = taxonomyLists
       .DataTable({
         pageLength: 20,
@@ -86,7 +102,7 @@ export class TaxonomyComponent implements OnInit {
           }
         ],
         initComplete: (setting, json) => {
-          Helpers.setLoading(false);
+
         },
         ajax: {
           url: `${config.itApi}/taxonomy/${this.taxonomy}/`,
@@ -104,6 +120,7 @@ export class TaxonomyComponent implements OnInit {
           }
         }
       });
+
 
     $('#taxonomy-table tbody')
       .on('click', '.edit-taxonomy', (e) => {

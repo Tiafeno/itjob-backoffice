@@ -209,7 +209,9 @@ export class OfferListsComponent implements OnInit {
 
             let el = $(e.currentTarget).parents('tr');
             let DATA = this.table.row(el).data();
-            this.ratePlanComp.onOpen(DATA.ID, DATA.rateplan);
+            let rateplan: string = DATA.rateplan;
+            rateplan = _.isEmpty(rateplan) || _.isNull(rateplan) ? 'standard' : rateplan;
+            this.ratePlanComp.onOpen(DATA.ID, rateplan);
          })
          // Modifier la position de l'offre
          .on('click', '.update-position', e => {

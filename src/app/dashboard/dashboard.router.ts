@@ -10,6 +10,7 @@ import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
 import { CompanyListsComponent } from './company/company-lists/company-lists.component';
 import { TaxonomyComponent } from './taxonomy/taxonomy.component';
 import { SettingsComponent } from './settings/settings.component';
+import { AdminGuard } from '../guards/admin.guard';
 
 export const DashboardRouter: Route[] = [
   {
@@ -39,7 +40,7 @@ export const DashboardRouter: Route[] = [
         ]
       },
       { path: "company-lists", component: CompanyListsComponent },
-      { path: "settings", component: SettingsComponent },
+      { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
       {
         path: 'taxonomy/:term',
         component: TaxonomyComponent

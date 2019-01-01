@@ -23,6 +23,7 @@ import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CompanyService } from './services/company.service';
+import { AdminGuard } from './guards/admin.guard';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { CompanyService } from './services/company.service';
     AuthService,
     AuthGuard,
     LoginGuard,
+    AdminGuard,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
     {
       provide: NG_SELECT_DEFAULT_CONFIG,

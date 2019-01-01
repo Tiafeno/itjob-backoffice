@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         if (this.Auth.isLogged()) {
-          Helpers.setLoading(true);
+          //Helpers.setLoading(true);
           this.requestService.collectNotice().subscribe(
             response => {
               if (response.success) {

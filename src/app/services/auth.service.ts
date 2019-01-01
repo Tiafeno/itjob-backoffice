@@ -39,6 +39,21 @@ export class AuthService {
       }
    }
 
+   public isAdmin(): boolean {
+      let User = JSON.parse(localStorage.getItem('currentUser'));
+      if (User && User.token) {
+         let roles: Array<string> = User.data.roles;
+         if (_.indexOf(roles, 'administrator') > -1) {
+            return true;
+         } else {
+            return false;
+         }
+      } else {
+         this.logout();
+         return false;
+      }
+   }
+
    public logout() {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (currentUser && currentUser.token) {
