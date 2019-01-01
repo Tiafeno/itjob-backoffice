@@ -1,0 +1,52 @@
+<div class="modal fade" id="edit-featured-modal">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Modification</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-warning alert-dismissable fade show alert-outline has-icon" *ngIf="warning">
+              <i class="la la-info-circle alert-icon"></i>
+              <strong>Avertissement</strong><br>Veuillez modifier la position du candidat avant d'enregistrer.
+            </div>
+            <div class="col-sm-12 mb-4">
+              <div class="form-group">
+                <label>Position</label>
+                <select class="form-control" name="position" [value]="position" [(ngModel)]="position" data-style="btn-solid">
+                  <option value="0">Aucun</option>
+                  <option value="1">A la une</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-12 mb-4" [ngClass]="{'d-none': position == 0}">
+              <div class="form-group">
+                <label>Date limite</label>
+                <div class="input-group date">
+                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" name="datelimit" type="text" [value]="dateLimit" placeholder="Date limite"
+                    autocomplete="off" required>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <button class="btn btn-primary mr-3" (click)="onUpdate()" [disabled]="loading">
+            <span>Enregistrer</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

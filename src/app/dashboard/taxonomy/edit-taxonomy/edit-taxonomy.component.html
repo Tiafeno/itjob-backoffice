@@ -1,0 +1,45 @@
+<div class="modal fade" id="edit-taxonomy-modal">
+  <div class="modal-dialog" role="document">
+    <form #editForm="ngForm" (ngSubmit)="onUpdate( editForm )" class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Modification</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group mb-4">
+              <label>Nom</label>
+              <input class="form-control form-control-solid" [(ngModel)]="term.name" name="title" placeholder="Nom"
+                type="text" autocomplete="off" required>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Status</label>
+              <select class="selectpicker form-control" name="activated" [(ngModel)]="term.activated" data-style="btn-solid"
+                required>
+                <option value="1">Publier</option>
+                <option value="0">Mettre en attente</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <div style="display: none">
+              <input type="number" name="term_id" [(ngModel)]="term.term_id">
+              <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
+          </div>
+          <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
+            <span>Enregistrer</span>
+          </button>
+        </div>
+        <a class="text-danger" (click)="onRemove()"><i class="la la-trash font-20"></i></a>
+      </div>
+    </form>
+  </div>
+</div>

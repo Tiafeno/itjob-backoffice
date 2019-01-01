@@ -2,3 +2,17 @@ div.dataTables_wrapper div.dataTables_processing {
   background-color: #17a2b8;
   color: #ffffff;
 }
+
+.update-status,
+.edit-candidate,
+.update-featured {
+  cursor: pointer;
+}
+
+tr.selected {
+  background-color: rgba(227, 230, 231, 0.57);
+}
+span.select-info {
+  margin-left: 10px;
+  color: red;
+}

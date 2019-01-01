@@ -17,6 +17,19 @@ import { SweetAlert2Module} from '@toverux/ngx-sweetalert2';
 import { PostuledCandidatesComponent } from '../directives/offers/postuled-candidates/postuled-candidates.component';
 import { UserListsComponent } from './users/user-lists/user-lists.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { ActivityAreaComponent } from '../directives/search/activity-area/activity-area.component';
+import { SwitcherComponent } from '../directives/account/switcher/switcher.component';
+import { StatusChangerComponent } from '../directives/account/status-changer/status-changer.component';
+import { UploadfileDirective } from '../directives/candidat/uploadfile.directive';
+import { FeaturedSwitcherComponent } from '../directives/candidat/featured-switcher/featured-switcher.component';
+import { ArchivedCandidateComponent } from '../directives/candidat/archived-candidate/archived-candidate.component';
+import { TaxonomyComponent } from './taxonomy/taxonomy.component';
+import { EditTaxonomyComponent } from './taxonomy/edit-taxonomy/edit-taxonomy.component';
+import { NewTaxonomyComponent } from './taxonomy/new-taxonomy/new-taxonomy.component';
+import { FeaturedOfferComponent } from '../directives/offers/featured-offer/featured-offer.component';
+import { SettingsComponent } from './settings/settings.component';
+import { RatePlanComponent } from '../directives/offers/rate-plan/rate-plan.component';
+import { DeadlineOfferComponent } from '../directives/offers/deadline-offer/deadline-offer.component';
 
 @NgModule({
   imports: [
@@ -26,7 +39,7 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
     ReactiveFormsModule,
     HttpClientModule,
     NgSelectModule,
-    SweetAlert2Module,
+    SweetAlert2Module
   ],
   declarations: [
     HomeComponent,
@@ -40,7 +53,20 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
     Error404Component,
     PostuledCandidatesComponent,
     UserListsComponent,
-    UserEditComponent
+    UserEditComponent,
+    ActivityAreaComponent,
+    SwitcherComponent,
+    StatusChangerComponent,
+    FeaturedSwitcherComponent,
+    ArchivedCandidateComponent,
+    UploadfileDirective,
+    TaxonomyComponent,
+    EditTaxonomyComponent,
+    NewTaxonomyComponent,
+    FeaturedOfferComponent,
+    RatePlanComponent,
+    SettingsComponent,
+    DeadlineOfferComponent
   ],
   providers: [
     {
@@ -49,6 +75,9 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
         notFoundText: 'Custom not found'
       }
     }
+  ],
+  exports: [
+    UploadfileDirective
   ]
 })
 export class DashboardModule { }

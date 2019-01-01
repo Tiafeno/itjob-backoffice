@@ -1,3 +1,142 @@
-<p>
-  company-edit works!
-</p>
+<div class="modal fade" id="edit-company-modal">
+  <div class="modal-dialog modal-lg" role="document">
+    <form class="modal-content" #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Type de compte</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="alert alert-warning alert-dismissable fade show alert-outline has-icon" *ngIf="warning">
+            <i class="la la-info-circle alert-icon"></i>
+            <strong>Avertissement</strong><br>Veuillez modifier le type du compte avant d'enregistrer.
+          </div>
+        </div>
+        <div class="row" *ngIf="editor">
+          <div class="col-sm-12 mb-4">
+            <div class="form-group">
+              <label class="font-bold">Nom de l'entreprise</label>
+              <input class="form-control from-control-solid" autocomplete="off" name="title" type="text" [(ngModel)]="editor.title"
+                placeholder="Nom de l'entreprise" required>
+              <span class="help-block mt-2">This is some placeholder block-level help text for the above input.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Secteur d'activité</label>
+            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name" bindValue="term_id"
+              [searchFn]="customSearchFn" [items]="AreaActivity" required>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Type de compte</label>
+            <div>
+              <select class="form-control" name="account" [(ngModel)]="editor.account" title="Type de compte" required>
+                <option value="0">Compte standard</option>
+                <option value="1">Compte premium</option>
+                <option value="2">En attente de validation</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">NIF </label>
+            <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
+              autocomplete="off" >
+          </div>
+
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Numéro statistique </label>
+            <input class="form-control form-control-solid" name="stat" [(ngModel)]="editor.stat" type="text"
+              placeholder="Numéro statistique" autocomplete="off" >
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3 form-group md-4">
+            <label class="font-bold">Salutation</label>
+            <div>
+              <select class="form-control" name="greeting" [(ngModel)]="editor.greeting" title="Salutation" required>
+                <option value="mrs">Madame</option>
+                <option value="mr">Monsieur</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Nom & Prénom du résponsable</label>
+            <input class="form-control form-control-solid" autocomplete="off" name="name" [(ngModel)]="editor.name"
+              type="text" placeholder="Nom du résponsable" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Numéro de téléphone</label>
+            <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
+              <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
+                <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire">
+                <span class="input-group-btn ml-2">
+                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
+                    <i class="la la-close"></i>
+                  </button>
+                </span>
+              </div>
+
+            </div>
+            <div>
+              <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-primary">Ajouter un numéro</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Adresse email</label>
+            <input class="form-control form-control-solid" autocomplete="off" name="email" [disabled]="true"
+              [(ngModel)]="editor.email" type="text" placeholder="Addresse email de l'entreprise" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Adresse</label>
+            <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.address" type="text"
+              placeholder="Adresse de l'entreprise" autocomplete="off" required>
+          </div>
+
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Région</label>
+            <ng-select name="region" [(ngModel)]="editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+              [items]="Regions" required>
+            </ng-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-8 form-group mb-4">
+              <label class="font-bold">Ville</label>
+              <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                [items]="Towns" [loading]="loadingTown" required>
+              </ng-select>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
+            <span>Enregistrer</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

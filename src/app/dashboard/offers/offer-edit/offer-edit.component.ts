@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, Route } from '@angular/router';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
+import swal from 'sweetalert2';
+import { RequestService } from '../../../services/request.service';
+import { CandidateEditComponent } from '../../candidat/candidate-edit/candidate-edit.component';
+import { CompanyEditComponent } from '../../company/company-edit/company-edit.component';
 declare var $: any;
 @Component({
   selector: 'app-offer-edit',
@@ -12,15 +16,24 @@ declare var $: any;
 })
 export class OfferEditComponent implements OnInit {
   public ID: number;
+  public companyId: number = 0;
   public loadingForm: boolean = false;
+  public loadingSave: boolean = false;
+  public townLoading: boolean = false;
+  public areaLoading: boolean = false;
   public Offer: Object = {};
   public Editor: any = {};
-  public Towns: any = {};
+  public Towns: any = [];
   public Regions: any = {};
-  public branchActivitys: any = {};
+  public branchActivitys: any = [];
+
+  @ViewChild(CandidateEditComponent) private companyEdit: CompanyEditComponent;
+
   constructor(
     private route: ActivatedRoute,
-    private offerServices: OfferService
+    private router: Router,
+    private offerServices: OfferService,
+    private requestServices: RequestService
   ) { }
 
   ngOnInit() {
@@ -36,22 +49,40 @@ export class OfferEditComponent implements OnInit {
     });
   }
 
+  townLoadingFn() {
+    this.townLoading = true;
+    this.requestServices.getTown().subscribe(x => {
+      this.Towns = _.cloneDeep(x);
+      this.townLoading = false;
+    })
+  }
+
+  areaLoadingFn() {
+    this.areaLoading = true;
+    this.requestServices.getArea().subscribe(x => {
+      this.branchActivitys = _.cloneDeep(x)
+      this.areaLoading = false;
+    })
+  }
+
   loadForm(Offer: any) {
     this.offerServices.collectDataEditor()
       .subscribe(observer => {
-        this.Regions = _.cloneDeep(observer[0]);
-        this.Towns = _.cloneDeep(observer[1]);
-        this.branchActivitys = _.cloneDeep(observer[2]);
+        this.townLoadingFn();
+        this.areaLoadingFn();
+
+        this.Regions = _.cloneDeep(observer[0].body);
         this.Editor = Offer;
         let contract = this.Editor.contractType;
         let region = this.Editor.region;
         let abranch = this.Editor.branch_activity;
         let town = this.Editor.town;
-
         this.Editor.contractType = !_.isNull(contract) && !_.isEmpty(contract) ? contract.value : '';
         this.Editor.region = _.isObject(region) ? region.term_id : '';
         this.Editor.branch_activity = _.isObject(abranch) ? abranch.term_id : '';
         this.Editor.town = _.isObject(town) ? town.term_id : '';
+        this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending'  ? "pending" : 0);
+        this.Editor.rateplan = _.isNull(Offer.rateplan) || _.isEmpty(Offer.rateplan) ? 'standard' : Offer.rateplan;
         // Load script
         Helpers.setLoading(false);
         this.loadingForm = true;
@@ -130,17 +161,32 @@ export class OfferEditComponent implements OnInit {
 
   onSubmitForm(editForm: NgForm): boolean {
     if (editForm.valid) {
+      this.loadingSave = true;
       const Value = editForm.value;
       this.offerServices
         .saveOffer(Value)
         .subscribe(response => {
-
+          swal({
+            title: "Modification",
+            text: 'La modification a été effectuée',
+            icon: "success",
+          } as any)
+          .then(name => {
+            this.loadingSave = false;
+            this.router.navigate([this.router.url]);
+          });
         });
 
     } else {
       return false;
     }
   }
+
+  editCompany(event: any) {
+    let element = event.currentTarget;
+    console.log(element);
+  }
+
   onChangeStatus(newValue) {
     this.Editor.activated = newValue === 'pending' ? false : true;
   }

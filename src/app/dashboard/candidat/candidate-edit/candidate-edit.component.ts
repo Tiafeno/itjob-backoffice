@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CandidateService } from '../../../services/candidate.service';
 import * as _ from 'lodash';
@@ -6,17 +6,26 @@ import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { Helpers } from '../../../helpers';
 import { NgForm } from '@angular/forms';
+import { RequestService } from '../../../services/request.service';
+import { HttpClient } from '@angular/common/http';
+import { config } from '../../../../environments/environment';
 declare var $: any;
 declare var Bloodhound: any;
 
 @Component({
   selector: 'app-candidate-edit',
   templateUrl: './candidate-edit.component.html',
-  styleUrls: ['./candidate-edit.component.css']
+  styleUrls: ['./candidate-edit.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
   public loadingForm: boolean = false;
+  public loadingSave: boolean = false;
+  public loadingSaveExperience: boolean = false;
+  public loadingSaveTraining: boolean = false;
+  public townLoading: boolean = false;
+  public areaLoading: boolean = false;
   public Candidate: any = {};
   public Regions: any = [];
   public Jobs: any = [];
@@ -25,11 +34,18 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Softwares: any = [];
   public branchActivitys: any = [];
   public editor: any = {};
+  public avatar: any = {};
+  public inputAvatar: FileList;
+  public apiUploadEndPoint: string = `${config.itApi}/upload/`;
   public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
-  constructor(private route: ActivatedRoute,
-    private candidatService: CandidateService) {
+  constructor(
+    private Http: HttpClient,
+    private route: ActivatedRoute,
+    private candidatService: CandidateService,
+    private requestServices: RequestService
+  ) {
     this.Candidate.status = true;
     this.editor.Form = {};
     this.editor.Form.Address = {};
@@ -48,10 +64,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
             .subscribe(responseList => {
               this.Regions = _.cloneDeep(responseList[0]);
               this.Jobs = _.cloneDeep(responseList[1]);
-              this.Towns = _.cloneDeep(responseList[2]);
-              this.Languages = _.cloneDeep(responseList[3]);
-              this.Softwares = _.cloneDeep(responseList[4]);
-              this.branchActivitys = _.cloneDeep(responseList[5]);
+              this.Languages = _.cloneDeep(responseList[2]);
+              this.Softwares = _.cloneDeep(responseList[3]);
+
+              this.townLoadingFn();
+              this.areaLoadingFn();
 
               this.loadForm();
             })
@@ -68,8 +85,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       training.ID = index;
       return training;
     });
+    this.avatar.preview = this.Candidate.privateInformations.avatar ? this.Candidate.privateInformations.avatar[0] : '';
+    this.avatar.value = '';
     let pI = _.clone(this.Candidate.privateInformations);
-    let cellphones = pI.cellphone;
+    let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
     currentDriveLicences = _.map(currentDriveLicences, _.unary(parseInt));
     let dLicences = [
@@ -88,7 +107,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Greeting: _.isObject(this.Candidate.greeting) ? this.Candidate.greeting.value : this.Candidate.greeting,
       Region: !_.isObject(this.Candidate.region) ? '' : this.Candidate.region.term_id,
       Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : '',
-      State: this.Candidate.state,
+      State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending' ? "pending" : 0),
       Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : "",
       DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
         dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
@@ -99,11 +118,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Jobs: _.isArray(currentJobs) ? currentJobs : false,
       _oldJob: !_.isArray(currentJobs) ? currentJobs : false,
       Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
-      Cellphones: _.isArray(cellphones) ? cellphones : [],
-      Phone: _.isArray(pI.phone) ? pI.phone : [],
+      Cellphones: _.map(cellphones, (cel, index) => { return { value: cel, id: index } }),
       Avatar: pI.avatar,
       Firstname: pI.firstname,
       Lastname: pI.lastname,
+      Email: pI.author.data.user_email,
       Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : '',
       Interest: this.Candidate.centerInterest,
       Divers: this.Candidate.centerInterest.various,
@@ -113,6 +132,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.ngReadyContent();
   }
 
+  onAddedCellphone() {
+    let index = this.editor.Form.Cellphones.length;
+    this.editor.Form.Cellphones.push({ value: '', id: index });
+  }
+
+  onRemoveCellphone(cellId: number) {
+    this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, { id: cellId });
+  }
 
   onEditTraining(tId) {
     let currentTraining = _.find(this.editor.trainings, ['ID', tId]);
@@ -121,10 +148,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     let dateBegin = String(this.editor.Training.training_dateBegin);
     let dateEnd = String(this.editor.Training.training_dateEnd);
     moment.locale('fr');
-    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) :
-      (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) :
-      (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
     this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     $('#edit-training-modal').modal('show')
@@ -136,45 +161,40 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.editor.Experience = _.cloneDeep(currentExperience);
     let dateBegin = this.editor.Experience.exp_dateBegin;
     let dateEnd = this.editor.Experience.exp_dateEnd;
-    if (_.isNull(dateBegin)) {
+
+    if (_.isNull(dateBegin) || _.isEmpty(dateBegin)) {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateBegin)) {
         dateBegin = this.editor.Experience.old_value.exp_dateBegin;
       }
     } else {
       dateBegin = String(dateBegin);
     }
-    if (_.isNull(dateEnd)) {
+
+    if (_.isNull(dateEnd) || _.isEmpty(dateEnd)) {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateEnd)) {
         dateEnd = this.editor.Experience.old_value.exp_dateEnd;
       }
     } else {
       dateEnd = String(dateEnd);
     }
+
     moment.locale('fr');
-    if (dateBegin !== null) {
-      let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-      if (_dateBegin.format('YYYY') === 'Invalid date') {
-        this.editor.Experience.exp_dateBegin = null;
-      } else {
-        this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
-      }
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
+    if (_dateBegin.format('YYYY') === 'Invalid date') {
+      this.editor.Experience.exp_dateBegin = { month: '', year: '' };
     } else {
-      this.editor.Experience.exp_dateBegin = null;
+      this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     }
 
-    if (dateEnd !== null) {
-      let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
-      if (_dateEnd.format('YYYY') === 'Invalid date') {
-        this.editor.Experience.exp_dateEnd = null;
-      } else {
-        this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
-      }
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    if (_dateEnd.format('YYYY') === 'Invalid date') {
+      this.editor.Experience.exp_dateEnd = { month: '', year: '' };
     } else {
-      this.editor.Experience.exp_dateEnd = null;
+      this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     }
+
     let abranch = this.editor.Experience.exp_branch_activity;
     this.editor.Experience.exp_branch_activity = abranch && _.isObject(abranch) ? abranch.term_id : abranch;
-
     $('#edit-experience-modal').modal('show');
   }
 
@@ -199,49 +219,115 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onUpdateExperience(experienceId) {
-    if (!_.isEmpty(this.editor.Experience) && _.isNumber(experienceId)) {
+  onUpdateExperience(experienceId: any) {
+    if ( ! _.isEmpty(this.editor.Experience) && _.isNumber(experienceId) ) {
+      this.loadingSaveExperience = true;
+      // Crée une nouvelle liste sans l'expérience actuellement modifier
       let Experiences = _.reject(this.editor.experiences, ['ID', experienceId]);
       let editExperience = _.clone(this.editor.Experience);
       editExperience.validated = true;
-      editExperience.exp_dateBegin = moment(editExperience.exp_dateBegin.month + ' ' + editExperience.exp_dateBegin.year).format('MM/DD/YYYY');
-      editExperience.exp_dateEnd = moment(editExperience.exp_dateEnd.month + ' ' + editExperience.exp_dateEnd.year).format('MM/DD/YYYY');
-      if (editExperience.exp_dateBegin === "Invalid date" || editExperience.exp_dateEnd === "Invalid date") return;
+      let expBegin = _.clone(editExperience.exp_dateBegin);
+      let expEnd = _.clone(editExperience.exp_dateEnd);
+      let dateBegin = `${expBegin.month} ${expBegin.year}`;
+      let dateEnd = `${expEnd.month} ${expEnd.year}`;
+      editExperience.exp_dateBegin = expBegin = moment(dateBegin, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
+      editExperience.exp_dateEnd = expEnd = moment(dateEnd, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
+      if (expBegin === "Invalid date" || expEnd === "Invalid date") return;
+      
 
-      this.editor.experiences = _.cloneDeep(Experiences);
-      this.editor.experiences.push(editExperience);
+      this.editor.experiences = _.cloneDeep(Experiences); // Modifier la liste des experiences
+      this.editor.experiences.push(editExperience); // Ajouter la nouvelle experience dans la liste
       this.editor.experiences = _.orderBy(this.editor.experiences, ['ID'], ['asc']);
       this.candidatService.updateExperience(this.editor.experiences, this.Candidate.ID)
         .subscribe(response => {
           $('#edit-experience-modal').modal('hide');
+          this.loadingSaveExperience = false;
         });
-    } else {
-      return false;
+    }
+  }
+
+  onDeleteExperience(experienceId: any) {
+    let id: number = parseInt(experienceId);
+    let Experiences: any = _.reject(this.editor.experiences, ['ID', id]);
+    this.loadingSaveExperience = true;
+    this.candidatService.updateExperience(Experiences, this.Candidate.ID)
+      .subscribe(response => {
+        $('#edit-experience-modal').modal('hide');
+        this.editor.experiences = _.cloneDeep(Experiences);
+        this.loadingSaveExperience = false;
+      });
+  }
+
+  onDeleteTraining(trainingId: any) {
+    let id: number = parseInt(trainingId);
+    let Training: any = _.reject(this.editor.trainings, ['ID', id]);
+    this.loadingSaveTraining = true;
+    this.candidatService.updateTraining(Training, this.Candidate.ID)
+      .subscribe(response => {
+        $('#edit-training-modal').modal('hide');
+        this.editor.trainings = _.cloneDeep(Training);
+        this.loadingSaveTraining = false;
+      });
+  }
+
+  onFileChange(ev: any) {
+    if (ev.target.files && ev.target.files[0]) {
+      var reader = new FileReader();
+      this.inputAvatar = ev.target.files;
+      const component = this;
+      reader.onload = function (e: any) {
+        component.avatar.preview = e.target.result;
+      }
+      reader.readAsDataURL(ev.target.files[0]);
     }
   }
 
   onSubmitForm(editForm: NgForm) {
     if (editForm.valid) {
-      let driveLicences = [
-          { id: 0, value: editForm.value.a },
-          { id: 1, value: editForm.value.a_ },
-          { id: 2, value: editForm.value.b },
-          { id: 3, value: editForm.value.c },
-          { id: 4, value: editForm.value.d }
-        ];
-      delete editForm.value.a;
-      delete editForm.value.a_;
-      delete editForm.value.b;
-      delete editForm.value.c;
-      delete editForm.value.d;
+      this.loadingSave = true;
+      let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 };
       let Form = _.clone(editForm.value);
-      Form.driveLicences = _.filter(driveLicences, ['value', true]);
-      console.log(Form);
-      this.candidatService.saveCandidate(Form)
-      .subscribe(response => {
-        
+      Form.cellphones = Object.values(Form.cellphones);
+      Form.drivelicences = _.map(Form.drivelicences, (value: any, key) => {
+        return value ? driveLicences[key] : '';
       });
+      Form.drivelicences = _.without(Form.drivelicences, '');
+
+      if (_.isObject(this.inputAvatar) && this.inputAvatar.length > 0) {
+        let file: File = this.inputAvatar[0];
+        let formData: FormData = new FormData();
+        formData.append('upload', file);
+        let headers = new Headers();
+        headers.append('Content-Type', 'multipart/form-data');
+        headers.append('Accept', 'application/json');
+        this.Http.post(`${this.apiUploadEndPoint}`, formData)
+          .subscribe(
+            data => {
+              let response: any = data;
+              if (response.success) {
+                // Success upload
+                this.saveCandidate(Form, response.attachment_id);
+              } else {
+                this.loadingSave = false;
+                swal('Erreur', "Une erreur s'est produite", 'warning');
+              }
+            },
+            error => console.log(error)
+          )
+      } else {
+        this.saveCandidate(Form);
+      }
     }
+  }
+
+  private saveCandidate(Form: any, attachment_id?: number) {
+    if (!_.isUndefined(attachment_id))
+      Form.attachment_id = attachment_id;
+    this.candidatService.saveCandidate(Form.ID, Form)
+      .subscribe(response => {
+        swal("Modification", "La modification a été effectuée", "success");
+        this.loadingSave = false;
+      });
   }
 
   private setEditorForm(contents) {
@@ -251,6 +337,22 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.editor.Form[i] = contents[i];
     }
     Helpers.setLoading(false);
+  }
+
+  townLoadingFn() {
+    this.townLoading = true;
+    this.requestServices.getTown().subscribe(x => {
+      this.Towns = _.cloneDeep(x);
+      this.townLoading = false;
+    })
+  }
+
+  areaLoadingFn() {
+    this.areaLoading = true;
+    this.requestServices.getArea().subscribe(x => {
+      this.branchActivitys = _.cloneDeep(x)
+      this.areaLoading = false;
+    })
   }
 
   ngReadyContent() {
@@ -297,7 +399,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
           $(this).find('.select2').select2({
             width: "100%"
           });
-
         });
 
       $('#edit-experience-modal')

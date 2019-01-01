@@ -11,3 +11,7 @@ ng-select.ng-invalid .ng-select-container {
   top: -5px;
   right: -10px;
 }
+
+.content-wrapper {
+  min-height: 100vh !important;
+}

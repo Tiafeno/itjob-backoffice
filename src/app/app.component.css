@@ -20,3 +20,9 @@
 .table-responsive #orders-table_wrapper {
   width: 100%;
 }
+
+.logs-list .log-item {
+  position: relative;
+  padding: 10px 30px;
+  height: inherit !important;
+}

@@ -1,104 +1,147 @@
 <div class="page-content fade-in-up">
   <div class="ibox">
     <div class="ibox-body" *ngIf="!loadingForm">
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-4">
-          <a class="btn btn-primary btn-sm btn-air mr-2" [routerLink]="['/candidat-lists']">Retour</a>
-          <a class="btn btn-secondary btn-sm btn-air mr-2" target="_blank" [href]="Candidate.candidate_url">Voir le
-            candidat</a>
+          <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/candidat-lists']">Retour</a>
+          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Visualiser
+          </a>
         </div>
       </div>
-      <h5 class="font-strong mb-5">
-        <div *ngIf="Candidate.state !== 'publish'"><span class="badge badge-pill ng-binding badge-pink">
-            En attente de validation</span>
-        </div>
+      <h5 class="font-strong mb-3">
+        <div *ngIf="editor.Form.State === 0 || editor.Form.State === '0'"><span class="badge badge-pill badge-pink">Candidat
+            désactiver</span></div>
+        <div *ngIf="editor.Form.State === 'pending'"><span class="badge badge-pill badge-warning">En attente de
+            validation</span></div>
       </h5>
       <div class="row">
         <div class="col-lg-8">
 
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
-            <div class="form-group mb-4">
-              <label class="ui-switch switch-icon mr-3 mb-0">
-                <input type="checkbox" name="activated" [(ngModel)]="editor.Form.isActive" [checked]="editor.Form.isActive">
-                <span></span>
-              </label>Activer le candidat pour être visible dans le site
-            </div>
-
-            <div class="row">
-              <div class="form-group mb-4 col-sm-6">
-                <label>Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
-                  type="text" name="reference" placeholder="Référence du candidat">
+            <div class="row mb-4">
+              <div class="form-group col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12 mb-4">
+                    <label class="font-bold">Référence </label>
+                    <input class="form-control form-control-solid" [(ngModel)]="editor.Form.Reference" [disabled]='true'
+                      type="text" name="reference" placeholder="Référence du candidat">
+                  </div>
+                  <div class="col-sm-12">
+                    <label class="font-bold">Titre</label>
+                    <div>
+                      <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur"
+                        required>
+                        <option value="mr">Monsieur</option>
+                        <option value="mrs">Madame</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-sm-6 form-group mb-4">
-                <label>Titre</label>
-                <div>
-                  <select class="form-control" name="greeting" [(ngModel)]="editor.Form.Greeting" title="Madame ou Monsieur">
-                    <option value="mr">Monsieur</option>
-                    <option value="mrs">Madame</option>
-                  </select>
+              <div class="col-sm-6 form-group">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="d-flex align-items-center">
+                      <img [src]="avatar.preview" alt="image" width="90">
+                      <div class="text-left ml-4">
+                        <div class="h1" appUploadfile><i class="la la-camera text-primary"></i>
+                          <div style="display: none">
+                              <input type="file" name="avatar" (change)="onFileChange($event)"/>
+                          </div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Nom</label>
+                <label class="font-bold">Nom</label>
                 <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
-                  type="text" placeholder="Nom du candidat">
+                  type="text" placeholder="Nom du candidat" required>
               </div>
               <div class="col-sm-6 form-group mb-4">
-                <label>Prénom</label>
+                <label class="font-bold">Prénom</label>
                 <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
                   placeholder="Prénom du candidat">
               </div>
             </div>
 
             <div class="row">
+              <div class="col-sm-6 mb-4">
+                <label class="font-bold">Adresse email</label>
+                <input class="form-control form-control-solid" name="email" [disabled]="true" [(ngModel)]="editor.Form.Email"
+                  type="text" placeholder="Adresse Email" required>
+              </div>
+            </div>
 
+            <div class="row">
               <div class="col-sm-4 form-group mb-4">
-                <label>Adresse</label>
+                <label class="font-bold">Adresse</label>
                 <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
-                  type="text" placeholder="Adresse du candidat">
+                  type="text" placeholder="Adresse du candidat" required>
               </div>
 
               <div class="col-sm-6 form-group mb-4">
-                <label>Région</label>
+                <label class="font-bold">Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [items]="Regions"> 
+                  [searchFn]="customSearchFn" [items]="Regions" required>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-8 form-group mb-4">
+                <label class="font-bold">Ville ou code postal</label>
+                <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
+                  [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
                 </ng-select>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Ville ou code postal</label>
-                <ng-select name="town" [items]="Towns" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                  [(ngModel)]="editor.Form.Town" aria-required="true" required>
-                </ng-select>
-              </div>
-            </div>
+                <label class="font-bold">Numéro de téléphone</label>
+                <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
+                  <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
+                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
+                      required>
+                    <span class="input-group-btn ml-2">
+                      <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
+                        title="Enlever ce numero">
+                        <i class="la la-close"></i>
+                      </button>
+                    </span>
 
-            <div class="row">
-              <div class="col-sm-6 form-group mb-4">
-                <label>Date de naissance</label>
-                <div class="input-group date">
-                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
-                    placeholder="Date de naissance">
+                  </div>
+
+                </div>
+                <div>
+                  <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-success">Ajouter un numéro</button>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
-                <label>Status </label>
+                <label class="font-bold">Date de naissance</label>
+                <div class="input-group date">
+                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
+                    placeholder="Date de naissance" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label class="font-bold">Status </label>
                 <div>
-                  <select class="select2 show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
-                    data-style="btn-solid">
+                  <select class="show-tick form-control" name="status" [(ngModel)]="editor.Form.Status" title="Please select"
+                    data-style="btn-solid" required>
                     <option value="1">Je cherche un emploi</option>
                     <option value="2">Je souhaite entretenir mon réseau</option>
                     <option value="3">Je cherche un stage</option>
@@ -111,11 +154,11 @@
               <div class="col-6 mb-4">
                 <div class="row">
                   <div class="col-sm-12">
-                    <label>Permis <span style="color: red">*</span></label>
+                    <label class="font-bold">Permis <span style="color: red">*</span></label>
                   </div>
-
                 </div>
-                <div class="row">
+
+                <div class="row" ngModelGroup="drivelicences" #drivelicencesCtrl="ngModelGroup">
                   <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
@@ -132,12 +175,11 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="form-group">
-                  <label>Emploi recherché</label>
+                  <label class="font-bold">Emploi recherché</label>
                   <div>
-                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Jobs" name="jobs" title="Emploi recherché"
-                      multiple data-style="btn-solid">
-                      <option [value]="job.term_id" *ngFor="let job of Jobs">{{job.name}}</option>
-                    </select>
+                    <ng-select [(ngModel)]="editor.Form.Jobs" [multiple]="true" name="jobs" bindLabel="name" bindValue="term_id"
+                      [items]="Jobs" required>
+                    </ng-select>
 
                     <p class="text-muted" *ngIf="editor.Form._oldJob">{{editor.Form._oldJob}}</p>
                   </div>
@@ -149,11 +191,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
-                  <label>Les langues</label>
-                  <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Language" name="languages"
-                    title="Ajouter une langue" multiple data-style="btn-solid">
-                    <option [value]="language.term_id" *ngFor="let language of Languages">{{language.name}}</option>
-                  </select>
+                  <label class="font-bold">Les langues</label>
+                  <ng-select [(ngModel)]="editor.Form.Language" name="languages" bindLabel="name" bindValue="term_id"
+                    [multiple]='true' [items]="Languages" required>
+                  </ng-select>
                 </div>
               </div>
             </div>
@@ -162,7 +203,7 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body dd pl-0">
-                  <h5 class="font-strong text-uppercase">Formations / Diplômes</h5>
+                  <h5 class="font-bold text-uppercase">Formations / Diplômes</h5>
                   <ul class="media-list media-list-divider dd-list mr-2">
 
                     <li class="media align-items-center dd-item" [attr.data-index]="i" *ngFor="let training of editor.trainings; let i = index">
@@ -175,7 +216,7 @@
                           </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
                         </div>
-                        <button (click)="onEditTraining(training.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
+                        <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
 
@@ -187,19 +228,21 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body pl-0">
-                  <h5 class="font-strong text-uppercase mb-4">Expériences professionnelles</h5>
+                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles</h5>
                   <ul class="media-list media-list-divider mr-2">
-
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
                         <div class="flex-1">
-                          <div class="media-heading">{{experience.exp_company}}</div>
+                          <div class="media-heading">
+                            {{experience.exp_company}}
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En
+                              attente de validation</span>
+                          </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                         </div>
-                        <button (click)="onEditExperience(experience.ID)" class="btn btn-sm btn-outline-secondary ">Modifier</button>
+                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
-
                   </ul>
                 </div>
               </div>
@@ -208,12 +251,11 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="form-group">
-                  <label>Logiciels maitrisés</label>
+                  <label class="font-bold">Logiciels maitrisés</label>
                   <div>
-                    <select class="select2 show-tick form-control" [(ngModel)]="editor.Form.Softwares" name="softwares"
-                      title="Logiciel" multiple data-style="btn-solid">
-                      <option [value]="software.term_id" *ngFor="let software of Softwares">{{software.name}}</option>
-                    </select>
+                    <ng-select [(ngModel)]="editor.Form.Softwares" name="softwares" bindValue="term_id" bindLabel="name"
+                      [multiple]='true' [items]='Softwares'>
+                    </ng-select>
                   </div>
                 </div>
               </div>
@@ -222,14 +264,13 @@
             <div class="row">
               <div class="col-md-6 mb-4">
                 <h5 class="font-strong text-uppercase mb-4">Centre d'intérêt</h5>
-                <label>Divers</label>
+                <label class="font-bold">Divers</label>
                 <input class="form-control form-control-solid" type="text" name="divers" [(ngModel)]="editor.Form.Divers"
                   placeholder="Divers">
               </div>
               <div class="col-md-12">
-
                 <div class="form-group mb-4">
-                  <label>Projet personnel</label>
+                  <label class="font-bold">Projet personnel</label>
                   <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
                     placeholder="Ajouter une projet personnel"></textarea>
                 </div>
@@ -259,7 +300,7 @@
 
             <div class="text-right mt-4">
               <input type="hidden" name="ID" [(ngModel)]="editor.Form.ID">
-              <button class="btn btn-primary btn-air mr-2" type="submit">Enregistrer</button>
+              <button class="btn btn-primary btn-air mr-2" [disabled]="loadingSave" type="submit">Enregistrer</button>
             </div>
           </form>
 
@@ -297,14 +338,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Training.training_dateBegin.month">
+                            <select class="form-control" name="begin_mounth" [(ngModel)]="editor.Training.training_dateBegin.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Training.training_dateBegin.year"
+                            <select class="form-control" name="begin_year" [(ngModel)]="editor.Training.training_dateBegin.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -317,14 +358,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Training.training_dateEnd.month">
+                            <select class="form-control" name="end_mounth" [(ngModel)]="editor.Training.training_dateEnd.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Training.training_dateEnd.year"
+                            <select class="form-control" name="end_year" [(ngModel)]="editor.Training.training_dateEnd.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -336,12 +377,13 @@
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateTraining(editor.Training.ID)">
+                    <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
                       <span *ngIf="editor.Training.validated">Enregistrer</span>
-                      <span *ngIf="!editor.Training.validated">Valider</span>
+                      <span *ngIf="!editor.Training.validated">Valider & Enregistrer</span>
                     </button>
                   </div>
-                  <a class="text-danger" title="Effacer cette formation"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i
+                      class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>
@@ -366,7 +408,7 @@
                       name="diploma" placeholder="Diplôme">
                   </div>
                   <div class="form-group mb-4" *ngIf="editor.Experience.exp_branch_activity">
-                    <select class="select2 form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
+                    <select class="form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
                       required>
                       <option [value]="abranch.term_id" *ngFor="let abranch of branchActivitys">{{abranch.name}}</option>
                     </select>
@@ -387,14 +429,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_mounth" [(ngModel)]="editor.Experience.exp_dateBegin.month">
+                            <select class="form-control" name="begin_mounth" [(ngModel)]="editor.Experience.exp_dateBegin.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="begin_year" [(ngModel)]="editor.Experience.exp_dateBegin.year"
+                            <select class="form-control" name="begin_year" [(ngModel)]="editor.Experience.exp_dateBegin.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -407,14 +449,14 @@
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_mounth" [(ngModel)]="editor.Experience.exp_dateEnd.month">
+                            <select class="form-control" name="end_mounth" [(ngModel)]="editor.Experience.exp_dateEnd.month">
                               <option [value]="month" *ngFor="let month of Months">{{month}}</option>
                             </select>
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <select class="select2 form-control" name="end_year" [(ngModel)]="editor.Experience.exp_dateEnd.year"
+                            <select class="form-control" name="end_year" [(ngModel)]="editor.Experience.exp_dateEnd.year"
                               required>
                               <option [value]="year" *ngFor="let year of Years">{{year}}</option>
                             </select>
@@ -432,9 +474,13 @@
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
                   <div>
-                    <button class="btn btn-primary btn-rounded mr-3" (click)="onUpdateExperience(editor.Experience.ID)">Enregistrer</button>
+                    <button class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                      <span *ngIf="editor.Experience.validated">Enregistrer</span>
+                      <span *ngIf="!editor.Experience.validated">Valider & Enregistrer</span>
+                    </button>
                   </div>
-                  <a class="text-danger" title="Effacer cette experience"><i class="la la-trash font-20"></i></a>
+                  <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i
+                      class="la la-trash font-20"></i></a>
                 </div>
               </form>
             </div>

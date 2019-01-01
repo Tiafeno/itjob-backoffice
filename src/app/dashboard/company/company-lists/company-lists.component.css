@@ -1,0 +1,16 @@
+div.dataTables_wrapper div.dataTables_processing {
+  background-color: #17a2b8;
+  color: #ffffff;
+}
+
+.update-account,
+.edit-status,
+.edit-company {
+  cursor: pointer;
+}
+.swal-button--activated {
+  background-color: #0f569c;
+}
+.swal-button--disabled {
+  background-color: red;
+}

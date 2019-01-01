@@ -27,11 +27,8 @@ export class OfferService {
   }
 
   collectDataEditor(): Observable<any[]> {
-    let regions = this.http.get(`${config.itApi}/taxonomies/region`, { responseType: 'json' });
-    let towns = this.http.get(`${config.itApi}/taxonomies/city`, { responseType: 'json' });
-    let abranchs = this.http.get(`${config.itApi}/taxonomies/branch_activity`, { responseType: 'json' });
-
-    return Observable.forkJoin([regions, towns, abranchs]);
+    let regions = this.http.get(`${config.itApi}/taxonomies/region`, { responseType: 'json', observe: 'response' });
+    return Observable.forkJoin([regions]);
   }
 
   saveOffer(offer: any): Observable<any> {

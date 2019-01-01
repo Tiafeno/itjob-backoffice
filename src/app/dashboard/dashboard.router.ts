@@ -8,9 +8,8 @@ import { CandidateEditComponent } from "./candidat/candidate-edit/candidate-edit
 import { OfferListsComponent } from "./offers/offer-lists/offer-lists.component";
 import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
 import { CompanyListsComponent } from './company/company-lists/company-lists.component';
-import { CompanyEditComponent } from './company/company-edit/company-edit.component';
-import { UserListsComponent } from './users/user-lists/user-lists.component';
-import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { TaxonomyComponent } from './taxonomy/taxonomy.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -31,10 +30,7 @@ export const DashboardRouter: Route[] = [
           { path: 'edit', component: CandidateEditComponent },
         ]
       },
-      {
-        path: "offer-lists",
-        component: OfferListsComponent
-      },
+      { path: "offer-lists", component: OfferListsComponent },
       {
         path: "offer/:id",
         children: [
@@ -42,28 +38,13 @@ export const DashboardRouter: Route[] = [
           { path: 'edit', component: OfferEditComponent }
         ]
       },
+      { path: "company-lists", component: CompanyListsComponent },
+      { path: "settings", component: SettingsComponent },
       {
-        path: "company-lists",
-        component: CompanyListsComponent
+        path: 'taxonomy/:term',
+        component: TaxonomyComponent
       },
-      {
-        path: "company/:id",
-        children: [
-          { path: "", redirectTo: 'edit', pathMatch: 'full' },
-          { path: 'edit', component: CompanyEditComponent }
-        ]
-      },
-      {
-        path: "user-lists",
-        component: UserListsComponent
-      },
-      {
-        path: "user/:id",
-        children: [
-          { path: "", redirectTo: 'edit', pathMatch: 'full' },
-          { path: 'edit', component: UserEditComponent }
-        ]
-      }
+      
     ]
   },
 

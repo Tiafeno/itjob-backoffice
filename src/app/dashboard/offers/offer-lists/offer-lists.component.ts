@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
@@ -6,85 +6,134 @@ import swal from 'sweetalert2';
 import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 import { OfferService } from '../../../services/offer.service';
+import { Helpers } from '../../../helpers';
+import { FeaturedOfferComponent } from '../../../directives/offers/featured-offer/featured-offer.component';
+import { RatePlanComponent } from '../../../directives/offers/rate-plan/rate-plan.component';
+import { AuthService } from '../../../services/auth.service';
+import { DeadlineOfferComponent } from '../../../directives/offers/deadline-offer/deadline-offer.component';
 declare var $: any;
 @Component({
-  selector: 'app-offer-lists',
-  templateUrl: './offer-lists.component.html',
-  styleUrls: ['./offer-lists.component.css'],
+   selector: 'app-offer-lists',
+   templateUrl: './offer-lists.component.html',
+   styleUrls: ['./offer-lists.component.css'],
+   encapsulation: ViewEncapsulation.None
 })
-export class OfferListsComponent implements OnInit {
-  public listsOffers: Array<any> = [];
-  constructor(
-    private router: Router,
-    private offerService: OfferService
-  ) { }
 
-  ngOnInit() {
-    moment.locale('fr');
-    const component = this;
-    let searchs = "";
-    let searchPublication = " ";
-    let searchStatus = " ";
-    let searchKey = " ";
-    // Ajouter ici un code pour recuperer les candidats...
-    setTimeout(() => {
+export class OfferListsComponent implements OnInit {
+   public listsOffers: Array<any> = [];
+   public Helper: any;
+   private table: any;
+   public sStatus: string = "";
+   public sKey: string = "";
+   public sActivityArea: number = 0;
+   public sDate: string = "";
+   public sRateplan: string = "";
+
+   @ViewChild(FeaturedOfferComponent) private featuredComp: FeaturedOfferComponent;
+   @ViewChild(RatePlanComponent) private ratePlanComp: RatePlanComponent;
+   @ViewChild(DeadlineOfferComponent) private deadlineOfferEditor: DeadlineOfferComponent;
+
+   constructor(
+      private router: Router,
+      private offerService: OfferService,
+      private authService: AuthService
+   ) {
+      this.Helper = Helpers
+   }
+
+   onChoosed(areaId: number) {
+      this.sActivityArea = areaId;
+      this.createSearch();
+   }
+
+   public reload(): void {
+      this.table.ajax.reload(null, false);
+   }
+
+   public resetFilterSearch() {
+      $('.page-content').find('input').val('');
+      $('.page-content').find('select:not("#activity_area_search")').val('');
+      $('.page-content').find('.selectpicker').selectpicker("refresh");
+      this.table.search("", true, false).draw();
+   }
+
+   public createSearch() {
+      let searchs: string = `${this.sKey}|${this.sStatus}|${this.sActivityArea}|${this.sDate}|${this.sRateplan}`;
+      this.table.search(searchs, true, false).draw();
+   }
+
+   ngOnInit() {
+      moment.locale('fr');
+      // Ajouter ici un code pour recuperer les candidats...
       const offerLists = $('#orders-table');
       offerLists
-        .on('page.dt', () => {
-          let info = table.page.info();
-          localStorage.setItem('offer-page', info.page);
-        })
-        .on('init.dt', (e, settings, json) => {
-          setTimeout(() => {
-            let offerPage: string = localStorage.getItem('offer-page');
-            let pageNum: number = parseInt(offerPage);
-            if (_.isNumber(pageNum) && !_.isNaN(pageNum)) {
-              table.page(pageNum).draw("page");
-            }
-          }, 800);
-        });
+         .on('page.dt', () => {
+            let info = this.table.page.info();
+            localStorage.setItem('offer-page', info.page);
+         })
+         .on('init.dt', () => {
+            setTimeout(() => {
+               let offerPage: string = localStorage.getItem('offer-page');
+               let pageNum: number = parseInt(offerPage);
+               if (!_.isNaN(pageNum)) {
+                  this.table.page(pageNum).draw("page");
+                  this.table.ajax.reload(null, false);
+               }
+            }, 600);
+         })
+         .on('xhr.dt', (e, settings, json, xhr) => {
+            this.Helper.setLoading(false);
+         });
 
-      const table = offerLists.DataTable({
-        pageLength: 20,
-        page: 0,
-        fixedHeader: true,
-        responsive: false,
-        "sDom": 'rtip',
-        processing: true,
-        serverSide: true,
-        columns: [
-          { data: 'ID' },
-          { data: 'postPromote', render: (data, type, row, meta) => data },
-          { data: 'reference' },
-          { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
-          {
-            data: 'activated', render: (data, type, row) => {
-              let status = data && row.offer_status === 'publish' ? 'Publier' : row.offer_status === 'pending'  ? "En attente" : "Désactiver";
-              let style = data && row.offer_status === 'publish'? 'primary' :  row.offer_status === 'pending' ? "warning" : "danger";
-              return `<span class="badge badge-${style}">${status}</span>`;
-            }
-          },
-          {
-            data: 'branch_activity', render: (data) => {
-              if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
-              return data.name;
-            }
-          },
-          {
-            data: 'contractType', render: (data) => {
-              if (!_.isObject(data)) return "Non renseigner";
-              return data.label;
-            }
-          },
-          {
-            data: 'region', render: (data) => {
-              if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
-              return data.name;
-            }
-          },
-          {
-            data: null,
-            render: (data, type, row, meta) => `
+      this.table = offerLists.DataTable({
+         pageLength: 10,
+         page: 1,
+         fixedHeader: true,
+         responsive: false,
+         "sDom": 'rtip',
+         processing: true,
+         serverSide: true,
+         columns: [
+            { data: 'ID' },
+            { data: 'postPromote', render: (data, type, row, meta) => data },
+            { data: 'reference' },
+            {
+               data: '_featured', render: data => {
+                  let featured: string = data ? 'À LA UNE' : 'AUCUN';
+                  let style: string = data ? 'blue' : 'secondary';
+                  return `<span class="badge update-position badge-${style}">${featured}</span>`;
+               }
+            },
+            {
+               data: 'rateplan', render: (data, type, row) => {
+                  let plan: string = data === 'sereine' ? 'SEREINE' : (data === 'premium' ? 'PREMIUM' : 'STANDARD');
+                  let style: string = data === 'sereine' ? 'blue' : (data === 'premium' ? 'success' : 'secondary');
+                  return `<span class="badge edit-rateplan badge-${style}">${plan}</span>`;
+               }
+            },
+            { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
+            {
+               data: 'activated', render: (data, type, row) => {
+                  let status = data && row.offer_status === 'publish' ? 'Publier' : (row.offer_status === 'pending' ? "En attente" : "Désactiver");
+                  let style = data && row.offer_status === 'publish' ? 'primary' : (row.offer_status === 'pending' ? "warning" : "danger");
+                  return `<span class="badge badge-${style}">${status}</span>`;
+               }
+            },
+            {
+               data: 'branch_activity', render: (data) => {
+                  if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
+                  return data.name;
+               }
+            },
+            {
+               data: 'region', render: (data) => {
+                  if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
+                  return data.name;
+               }
+            },
+            {
+               data: null,
+               render: (data, type, row, meta) => `
               <div class="fab fab-left">
                 <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
                   <i class="fab-icon la la-bars"></i>
@@ -97,102 +146,174 @@ export class OfferListsComponent implements OnInit {
                 </ul>
               </div>
             `
-          }
-        ],
-        initComplete: (setting, json) => {
-
-        },
-        ajax: {
-          url: `${config.itApi}/offers/`,
-          dataType: 'json',
-          data: {
-            //columns: false,
-            order: false,
-          },
-          type: 'POST',
-          beforeSend: function (xhr) {
-            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser && currentUser.token) {
-              xhr.setRequestHeader("Authorization",
-                `Bearer ${currentUser.token}`);
             }
-          }
-        }
+         ],
+         initComplete: (setting, json) => {
+            $('#key-search').on('keypress', (event) => {
+               this.sKey = event.currentTarget.value;
+               if (event.which === 13) {
+                  this.createSearch();
+               }
+            });
+
+            $("#type-status").on('change', (event) => {
+               this.sStatus = event.currentTarget.value;
+               this.createSearch();
+            });
+
+            $("#type-rateplan").on('change', (event) => {
+               this.sRateplan = event.currentTarget.value;
+               this.createSearch();
+            });
+         },
+         ajax: {
+            url: `${config.itApi}/offers/`,
+            dataType: 'json',
+            data: {
+               //columns: false,
+               order: false,
+            },
+            type: 'POST',
+            beforeSend: (xhr) => {
+               this.Helper.setLoading(true);
+               let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+               if (currentUser && currentUser.token) {
+                  xhr.setRequestHeader("Authorization",
+                     `Bearer ${currentUser.token}`);
+               }
+            }
+         }
 
       });
-
 
       $('#orders-table tbody')
-        .on('click', '.edit-offer', (e) => {
-          e.preventDefault();
-          let data = $(e.currentTarget).data();
-          component.router.navigate(['/offer', parseInt(data.id)]);
-        })
-        .on('click', '.status-offer', (e) => {
-          e.preventDefault();
-          let El = e.currentTarget;
-          let trElement = $(El).parents('tr');
-          let DATA = table.row(trElement).data();
-
-          let Element = e.currentTarget;
-          let data = $(Element).data();
-          let statusChange: boolean = data.status;
-          let offerId: number = data.id;
-          let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
-          let cancelButton: string = "Annuler";
-          if (DATA.activated === statusChange) {
-            swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} une offre qui es déja ${confirmButton.toLowerCase()}.`, 'warning');
-            return false;
-          }
-          swal({
-            title: '',
-            text: `Vous voulez vraiment ${confirmButton.toLowerCase()} cette offre?`,
-            type: statusChange ? 'warning' : 'error',
-            showCancelButton: true,
-            confirmButtonText: confirmButton,
-            cancelButtonText: cancelButton
-          }).then((result) => {
-            if (result.value) {
-              component.offerService
-                .activated(offerId, statusChange)
-                .subscribe(response => {
-                  swal(
-                    '',
-                    'Offre mis à jour avec succès',
-                    'success'
-                  )
-                  table.ajax.reload(null, false);
-                })
-              // For more information about handling dismissals please visit
-              // https://sweetalert2.github.io/#handling-dismissals
-            } else if (result.dismiss === swal.DismissReason.cancel) {
-
+         // Modifier l'offre (allez vers la page de modification)
+         .on('click', '.edit-offer', (e) => {
+            e.preventDefault();
+            // Réfuser l'accès au commercial de modifier cette option
+            if (!this.authService.hasAccess(false)) { // Sans alert
+               let el = $(e.currentTarget).parents('tr');
+               let Offer = this.table.row(el).data();
+               this.deadlineOfferEditor.open(Offer);
+               return;
             }
-          })
-        });
 
-      $('#key-search').on('keypress', function (event) {
-        if (event.which === 13) {
-          searchKey = this.value;
-          createSearch();
-        }
-      });
+            let data = $(e.currentTarget).data();
+            this.router.navigate(['/offer', parseInt(data.id)]);
+         })
+         // Modifier le mode tarifaire de l'offre
+         .on('click', '.edit-rateplan', e => {
+            e.preventDefault();
+            // Réfuser l'accès au commercial de modifier cette option
+            if (!this.authService.hasAccess()) return;
 
-      $("#type-publication").on('change', function(event) {
-        searchPublication = this.value;
-        createSearch();
-      });
+            let el = $(e.currentTarget).parents('tr');
+            let DATA = this.table.row(el).data();
+            this.ratePlanComp.onOpen(DATA.ID, DATA.rateplan);
+         })
+         // Modifier la position de l'offre
+         .on('click', '.update-position', e => {
+            e.preventDefault();
+            // Réfuser l'accès au commercial de modifier cette option
+            if (!this.authService.hasAccess()) return;
 
-      $("#type-status").on('change', function(event) {
-        searchStatus = this.value;
-        createSearch();
-      });
+            let el = $(e.currentTarget).parents('tr');
+            let DATA = this.table.row(el).data();
+            this.featuredComp.open(DATA);
+         })
+         // Modifier le status de l'offre
+         .on('click', '.status-offer', (e) => {
+            e.preventDefault();
+            // Réfuser l'accès au commercial de modifier cette option
+            if (!this.authService.hasAccess()) return;
 
-      function createSearch() {
-        searchs = `${searchKey}|${searchStatus}`;
-        table.search(searchs, true, false).draw();
-      }
-    }, 600);
-  }
+            let el = $(e.currentTarget).parents('tr');
+            // Récuperer l'objet offre
+            let DATA = this.table.row(el).data();
+            // Récuperer les data attributs de l'element
+            let data = $(e.currentTarget).data();
+            let statusChange: boolean = data.status;
+            let offerId: number = data.id;
+            let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
+            let cancelButton: string = "Annuler";
+            if (DATA.activated === statusChange && DATA.offer_status === 'publish') {
+               swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} une offre qui es déja ${confirmButton.toLowerCase()}.`, 'warning');
+               return false;
+            }
+            swal({
+               title: '',
+               text: `Vous voulez vraiment ${confirmButton.toLowerCase()} cette offre?`,
+               type: statusChange ? 'warning' : 'error',
+               showCancelButton: true,
+               confirmButtonText: confirmButton,
+               cancelButtonText: cancelButton
+            }).then((result) => {
+               if (result.value) {
+                  this.offerService
+                     .activated(offerId, statusChange)
+                     .subscribe(response => {
+                        swal(
+                           '',
+                           'Offre mis à jour avec succès',
+                           'success'
+                        )
+                        this.table.ajax.reload(null, false);
+                     })
+                  // For more information about handling dismissals please visit
+                  // https://sweetalert2.github.io/#handling-dismissals
+               } else if (result.dismiss === swal.DismissReason.cancel) {
+
+               }
+            })
+         });
+
+      // effectuer une recherche par date
+      $('#daterange')
+         .daterangepicker({
+            locale: {
+               format: 'DD/MM/YYYY',
+               "applyLabel": "Confirmer",
+               "cancelLabel": "Annuler",
+               "fromLabel": "De",
+               "toLabel": "A",
+               "customRangeLabel": "Aléatoire",
+               "daysOfWeek": [
+                  "Dim",
+                  "Lun",
+                  "Mar",
+                  "Mer",
+                  "Jeu",
+                  "Ven",
+                  "San"
+               ],
+               "monthNames": [
+                  "Janvier",
+                  "Février",
+                  "Mars",
+                  "Avril",
+                  "Mai",
+                  "Juin",
+                  "Juillet",
+                  "Août",
+                  "Septembre",
+                  "Octobre",
+                  "Novembre",
+                  "Décembre"
+               ],
+               "firstDay": 1
+            }
+         })
+         .on('apply.daterangepicker', (ev, picker) => {
+            let startDate = picker.startDate.format('YYYY-MM-DD');
+            let endDate = picker.endDate.format('YYYY-MM-DD');
+            this.sDate = `${startDate}x${endDate}`;
+            this.createSearch();
+         })
+         .on('cancel.daterangepicker', (ev, picker) => {
+            $('#daterange').val('');
+            this.sDate = '';
+            this.createSearch();
+         });
+   }
 
 }
