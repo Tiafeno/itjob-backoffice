@@ -102,6 +102,9 @@
               "node_modules/clockpicker/dist/bootstrap-clockpicker.min.js",
               "node_modules/jquery-minicolors/jquery.minicolors.min.js",
               "node_modules/clipboard/dist/clipboard.min.js",
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/tinymce/themes/modern/theme.js",
+              "node_modules/tinymce/plugins/fullscreen/plugin.js",
               "src/assets/js/app.js"
             ]
           },
@@ -116,12 +119,10 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }]
             }
           }
         },

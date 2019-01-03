@@ -30,6 +30,13 @@ import { FeaturedOfferComponent } from '../directives/offers/featured-offer/feat
 import { SettingsComponent } from './settings/settings.component';
 import { RatePlanComponent } from '../directives/offers/rate-plan/rate-plan.component';
 import { DeadlineOfferComponent } from '../directives/offers/deadline-offer/deadline-offer.component';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { BlogsComponent } from './blogs/blogs.component';
+import { NewslettersComponent } from './newsletters/newsletters.component';
+import { NewNewsletterComponent } from './newsletters/new-newsletter/new-newsletter.component';
+import { EditBlogComponent } from './blogs/edit-blog/edit-blog.component';
+import { NewBlogComponent } from './blogs/new-blog/new-blog.component';
+import { ViewNewsletterComponent } from './newsletter/view-newsletter/view-newsletter.component';
 
 @NgModule({
   imports: [
@@ -39,7 +46,8 @@ import { DeadlineOfferComponent } from '../directives/offers/deadline-offer/dead
     ReactiveFormsModule,
     HttpClientModule,
     NgSelectModule,
-    SweetAlert2Module
+    SweetAlert2Module,
+    EditorModule
   ],
   declarations: [
     HomeComponent,
@@ -66,7 +74,13 @@ import { DeadlineOfferComponent } from '../directives/offers/deadline-offer/dead
     FeaturedOfferComponent,
     RatePlanComponent,
     SettingsComponent,
-    DeadlineOfferComponent
+    DeadlineOfferComponent,
+    BlogsComponent,
+    NewslettersComponent,
+    NewNewsletterComponent,
+    EditBlogComponent,
+    NewBlogComponent,
+    ViewNewsletterComponent
   ],
   providers: [
     {

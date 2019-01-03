@@ -4,6 +4,7 @@ import { Helpers } from '../../helpers';
 
 import * as _ from 'lodash';
 import Chart from 'chart.js';
+import { tinyMceSettings } from '../../../environments/environment';
 declare var $: any;
 @Component({
   selector: 'app-home',
@@ -13,8 +14,11 @@ declare var $: any;
 export class HomeComponent implements OnInit, AfterViewInit {
   public Dashboard: any = {};
   public loading: boolean = false;
+  public tinySettings: any = {};
 
-  constructor(private requestServices: RequestService) { }
+  constructor(private requestServices: RequestService) {
+    this.tinySettings = tinyMceSettings;
+   }
 
   ngOnInit() {
     Helpers.setLoading(true);

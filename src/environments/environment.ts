@@ -22,6 +22,15 @@ export const dateTimePickerFr = {
   format: "dd/mm/yyyy"
 };
 
+export const tinyMceSettings = {
+  skin_url: '/assets/tinymce/skins/lightgray',
+  inline: false,
+  statusbar: false,
+  browser_spellcheck: true,
+  height: 320,
+  plugins: '',
+};
+
 export const config = {
   jwtAuthUrl: 'http://localhost/itjobmada/wp-json/jwt-auth/v1/token',
   wpApi: 'http://localhost/itjobmada/wp-json/wp/v2',

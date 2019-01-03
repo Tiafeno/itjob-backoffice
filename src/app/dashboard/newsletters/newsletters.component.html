@@ -1,0 +1,59 @@
+<div class="page-content fade-in-up">
+  <app-view-newsletter></app-view-newsletter>
+  <app-new-newsletter></app-new-newsletter>
+  <div class="ibox">
+    <div class="ibox-body">
+      <h5 class="font-strong mb-4">LES NEWSLETTERS</h5>
+
+      <form class="form-success mb-4">
+
+        <div class="row">
+          <div class="col-md-4 form-check mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+              <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="table-responsive row">
+        <table class="table table-bordered table-hover" id="newsletter-table">
+          <thead class="thead-default thead-lg">
+            <tr>
+              <th>#</th>
+              <th>Titre</th>
+              <th>Date d'ajout</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="ibox ibox-fullheight">
+        <div class="ibox-head">
+          <div class="ibox-title">
+            <span class="btn-icon-only btn-circle bg-primary-50 text-primary mr-3"><i class="ti-email"></i></span>Email
+            distribution</div>
+        </div>
+        <div class="ibox-body">
+          <div class="flexbox mb-4">
+            <div class="flexbox">
+              <span class="flexbox mr-3">
+                <span class="mr-2 text-muted">Envoyer</span>
+                <span class="h3 mb-0 text-primary font-strong">{{offset}}</span>
+              </span>
+            </div>
+            <a class="flexbox" (click)="sendWelcomeMail()" target="_blank">WELCOME EMAIL<i class="ti-arrow-circle-right ml-2 font-18"></i></a>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

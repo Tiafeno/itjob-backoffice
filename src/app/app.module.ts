@@ -24,6 +24,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CompanyService } from './services/company.service';
 import { AdminGuard } from './guards/admin.guard';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { AdminGuard } from './guards/admin.guard';
     DashboardModule,
     LayoutModule,
     FormsModule,
+    EditorModule,
     RouterModule.forRoot(routes)
   ],
   providers: [

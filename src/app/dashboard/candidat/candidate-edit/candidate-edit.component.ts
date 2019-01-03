@@ -40,6 +40,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
+  public tinyMCESettings: any = {
+    skin_url: '/assets/tinymce/skins/lightgray',
+    inline: false,
+    statusbar: false,
+    browser_spellcheck: true,
+    height: 320,
+    plugins: '',
+  };
   constructor(
     private Http: HttpClient,
     private route: ActivatedRoute,
@@ -220,7 +228,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   onUpdateExperience(experienceId: any) {
-    if ( ! _.isEmpty(this.editor.Experience) && _.isNumber(experienceId) ) {
+    if (!_.isEmpty(this.editor.Experience) && _.isNumber(experienceId)) {
       this.loadingSaveExperience = true;
       // Crée une nouvelle liste sans l'expérience actuellement modifier
       let Experiences = _.reject(this.editor.experiences, ['ID', experienceId]);
@@ -233,7 +241,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       editExperience.exp_dateBegin = expBegin = moment(dateBegin, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
       editExperience.exp_dateEnd = expEnd = moment(dateEnd, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
       if (expBegin === "Invalid date" || expEnd === "Invalid date") return;
-      
+
 
       this.editor.experiences = _.cloneDeep(Experiences); // Modifier la liste des experiences
       this.editor.experiences.push(editExperience); // Ajouter la nouvelle experience dans la liste
@@ -408,13 +416,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         .on('shown.bs.modal', function (e) {
           $(this).find('.select2').select2({
             width: "100%"
-          });
-          $('#summernote-experience').summernote({
-            callbacks: {
-              onChange: (contents, $editable) => {
-                component.editor.Experience.exp_mission = contents;
-              }
-            }
           });
         })
 

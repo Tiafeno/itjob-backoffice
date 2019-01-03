@@ -11,6 +11,8 @@ import { CompanyListsComponent } from './company/company-lists/company-lists.com
 import { TaxonomyComponent } from './taxonomy/taxonomy.component';
 import { SettingsComponent } from './settings/settings.component';
 import { AdminGuard } from '../guards/admin.guard';
+import { BlogsComponent } from './blogs/blogs.component';
+import { NewslettersComponent } from './newsletters/newsletters.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -41,11 +43,9 @@ export const DashboardRouter: Route[] = [
       },
       { path: "company-lists", component: CompanyListsComponent },
       { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
-      {
-        path: 'taxonomy/:term',
-        component: TaxonomyComponent
-      },
-      
+      { path: 'taxonomy/:term', component: TaxonomyComponent },
+      { path: 'blogs', component: BlogsComponent },
+      { path: 'newsletters', component: NewslettersComponent }      
     ]
   },
 

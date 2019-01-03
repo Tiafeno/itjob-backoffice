@@ -130,7 +130,7 @@
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
+                  <input class="form-control" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday" type="text" value=""
                     placeholder="Date de naissance" required>
                 </div>
               </div>
@@ -271,8 +271,7 @@
               <div class="col-md-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Projet personnel</label>
-                  <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
-                    placeholder="Ajouter une projet personnel"></textarea>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Form.Project" name="projet" [init]="tinyMCESettings"></editor>
                 </div>
               </div>
             </div>
@@ -467,9 +466,7 @@
                   </div>
                   <div class="form-group mb-4">
                     <label>Mission</label>
-                    <textarea class="form-control form-control-solid" [(ngModel)]="editor.Experience.exp_mission" name="mission"
-                      id="summernote-experience" data-plugin="summernote" data-air-mode="true" placeholder="Mission">
-                    </textarea>
+                    <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Experience.exp_mission" name="mission" [init]="tinyMCESettings"></editor>
                   </div>
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
