@@ -7,6 +7,7 @@ import { NewNewsletterComponent } from './new-newsletter/new-newsletter.componen
 import { HttpClient } from '@angular/common/http';
 import swal from 'sweetalert';
 import { Helpers } from '../../helpers';
+import { Observable } from 'rxjs';
 declare var $: any;
 
 @Component({
@@ -26,7 +27,7 @@ export class NewslettersComponent implements OnInit {
    ) { }
 
    sendWelcomeMail(): void {
-      this.Http.get(`${config.itApi}/users/`, { responseType: 'json' })
+      this.getUsers()
          .subscribe(users => {
             let query: any = _.clone(users);
             let avail_roles = query.avail_roles;
@@ -64,6 +65,10 @@ export class NewslettersComponent implements OnInit {
                   reject(error);
                });
       })
+   }
+
+   getUsers():Observable<any> {
+      return this.Http.get(`${config.itApi}/users/`, { responseType: 'json' });
    }
 
    async asyncCall(totalPage: number, form: FormData) {
