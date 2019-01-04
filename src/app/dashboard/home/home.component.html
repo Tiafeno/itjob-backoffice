@@ -47,38 +47,13 @@
 
 
   <div class="row" *ngIf="!loading">
-    <div class="col-xl-4">
-      <div class="ibox ibox-fullheight" style="min-height:480px;">
-        <div class="ibox-head">
-          <div class="ibox-title">ABONNEMENTS</div>
-          <div class="ibox-tools">
-            <a class="font-18" href="javascript:;"><i class="ti-control-record"></i></a>
-          </div>
-        </div>
-        <div class="ibox-body">
-          <div class="flexbox mb-3">
-            <span class="flexbox">
-              <span>CANDIDATS A LA UNE</span>
-            </span>
-            <span class="h3 mb-0 text-success font-strong ml-2">{{Dashboard.candidate.countFeatured}}</span>
-          </div>
-          <div class="flexbox mb-3">
-            <span class="flexbox">
-              <span>OFFRE SEREINE</span>
-            </span>
-            <span class="h3 mb-0 text-pink font-strong ml-2">{{Dashboard.offer.countFeatured}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-8">
+    <div class="col-xl-12">
       <div class="ibox ibox-fullheight">
         <div class="ibox-body">
           <div class="ibox-body">
             <div class="d-flex justify-content-between mb-4">
               <div>
                 <h3 class="m-0">Analyse des visiteurs</h3>
-                <div>Votre analyse de visiteurs de site</div>
               </div>
               <ul class="nav nav-pills nav-pills-rounded nav-pills-air" id="chart_tabs">
                 <li class="nav-item ml-1">

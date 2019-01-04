@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
 import { CompanyService } from './services/company.service';
 import { AdminGuard } from './guards/admin.guard';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { BlogService } from './services/blog.service';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     CandidateService,
     CompanyService,
     OfferService,
+    BlogService,
     RequestService,
     AuthService,
     AuthGuard,

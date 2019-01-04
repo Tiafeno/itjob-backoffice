@@ -9,6 +9,7 @@ import { NgForm } from '@angular/forms';
 import { RequestService } from '../../../services/request.service';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
+import { PlatformLocation } from '@angular/common';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -52,11 +53,13 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     private Http: HttpClient,
     private route: ActivatedRoute,
     private candidatService: CandidateService,
-    private requestServices: RequestService
+    private requestServices: RequestService,
+    public platformLocation: PlatformLocation
   ) {
     this.Candidate.status = true;
     this.editor.Form = {};
     this.editor.Form.Address = {};
+    this.avatar.preview = (this.platformLocation as any).location.origin + "/assets/img/image.png";
   }
 
   ngOnInit() {
@@ -93,7 +96,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       training.ID = index;
       return training;
     });
-    this.avatar.preview = this.Candidate.privateInformations.avatar ? this.Candidate.privateInformations.avatar[0] : '';
+    this.avatar.preview = this.Candidate.privateInformations.avatar ? this.Candidate.privateInformations.avatar[0] : this.avatar.preview;
     this.avatar.value = '';
     let pI = _.clone(this.Candidate.privateInformations);
     let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];

@@ -1,5 +1,5 @@
 <div class="page-content fade-in-up">
-  <app-company-edit  (refresh)="ngOnInit()"></app-company-edit>
+  <app-company-edit (refresh)="ngOnInit()"></app-company-edit>
   <div class="ibox">
     <div class="ibox-body" *ngIf="loadingForm">
       <div class="row">
@@ -10,8 +10,10 @@
       </div>
       <h5 class="font-strong mb-3">
         {{Editor.postPromote}}
-        <div *ngIf="Editor.offer_status === 'pending'"><span class="badge badge-pill badge-warning"> En attente de validation</span></div>
-        <div *ngIf="Editor.offer_status === 0 || Editor.offer_status === '0'"><span class="badge badge-pill badge-pink">Candidat désactiver</span></div>
+        <div *ngIf="Editor.offer_status === 'pending'"><span class="badge badge-pill badge-warning"> En attente de
+            validation</span></div>
+        <div *ngIf="Editor.offer_status === 0 || Editor.offer_status === '0'"><span class="badge badge-pill badge-pink">Candidat
+            désactiver</span></div>
       </h5>
       <div class="row">
         <div class="col-lg-7">
@@ -28,8 +30,8 @@
             <div class="row">
               <div class="form-group mb-4 col-sm-8">
                 <label class="font-bold">Référence </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" [disabled]='true' type="text" name="reference"
-                  placeholder="Référence de l'offre">
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.reference" [disabled]='true' type="text"
+                  name="reference" placeholder="Référence de l'offre">
               </div>
             </div>
 
@@ -68,14 +70,14 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Région</label>
-                <ng-select name="region"  [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+                <ng-select name="region" [(ngModel)]="Editor.region" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
                   [items]="Regions">
                 </ng-select>
               </div>
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
-                <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                  [(ngModel)]="Editor.town" aria-required="true" required>
+                <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
+                  [searchFn]="customSearchFn" [(ngModel)]="Editor.town" aria-required="true" required>
                 </ng-select>
               </div>
             </div>
@@ -83,8 +85,8 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Secteur d'activité</label>
-                <ng-select name="branch_activity" [items]="branchActivitys" [loading]="areaLoading" bindLabel="name" bindValue="term_id"
-                  [(ngModel)]="Editor.branch_activity" [searchFn]="customSearchFn">
+                <ng-select name="branch_activity" [items]="branchActivitys" [loading]="areaLoading" bindLabel="name"
+                  bindValue="term_id" [(ngModel)]="Editor.branch_activity" [searchFn]="customSearchFn">
                 </ng-select>
               </div>
             </div>
@@ -93,7 +95,7 @@
                 <label class="font-bold">Date limite de candidature</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="date_limit" [(ngModel)]="Editor.dateLimit" type="text" value=""
+                  <input class="form-control" name="date_limit" readonly="readonly" [(ngModel)]="Editor.dateLimit" type="text" value=""
                     placeholder="Date limite de publication">
                 </div>
               </div>
@@ -102,25 +104,28 @@
               <div class="col-sm-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Profil recherché</label>
-                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.profil" name="profil" id="summernote-profil"
-                    data-plugin="summernote" data-air-mode="true" placeholder="Profil recherché">
-                      </textarea>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Editor.profil"
+                    name="profil" [init]="tinyMCESettings">
+
+                  </editor>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Mission</label>
-                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.mission" name="mission" id="summernote-mission"
-                    data-plugin="summernote" data-air-mode="true" placeholder="Mission">
-                          </textarea>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Editor.mission"
+                    name="mission" [init]="tinyMCESettings">
+
+                  </editor>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Autre information</label>
-                  <textarea class="form-control form-control-solid" [(ngModel)]="Editor.otherInformation" name="otherInformation"
-                    id="summernote-other" data-plugin="summernote" data-air-mode="true" placeholder="Autre information">
-                      </textarea>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Editor.otherInformation"
+                    name="otherInformation" [init]="tinyMCESettings">
+
+                  </editor>
                 </div>
               </div>
             </div>
@@ -156,8 +161,11 @@
                 <div class="col-4 text-light">Numéro de téléphone</div>
                 <div class="col-8">{{Offer.__info.phone}}</div>
               </div>
-              <div class="row">
-                  <button class="btn btn-outline-pink btn-sm btn-square" (click)="editCompany($event)">Modifier l'entreprise</button>
+              <div class="row mt-4">
+                <div class="col-12">
+                  <button class="btn btn-outline-pink btn-sm btn-square" (click)="editCompany($event)">Modifier
+                    l'entreprise</button>
+                </div>
               </div>
             </div>
           </div>

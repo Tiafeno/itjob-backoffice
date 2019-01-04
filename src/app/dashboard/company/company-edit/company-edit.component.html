@@ -1,4 +1,4 @@
-<div class="modal fade" id="edit-company-modal">
+<div class="modal fade" id="edit-company-modal" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <form class="modal-content" #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
       <div class="modal-header p-4">
@@ -28,8 +28,8 @@
         <div class="row">
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Secteur d'activité</label>
-            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name" bindValue="term_id"
-              [searchFn]="customSearchFn" [items]="AreaActivity" required>
+            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name"
+              bindValue="term_id" [searchFn]="customSearchFn" [items]="AreaActivity" required>
             </ng-select>
           </div>
         </div>
@@ -51,13 +51,13 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">NIF </label>
             <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
-              autocomplete="off" >
+              autocomplete="off">
           </div>
 
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Numéro statistique </label>
             <input class="form-control form-control-solid" name="stat" [(ngModel)]="editor.stat" type="text"
-              placeholder="Numéro statistique" autocomplete="off" >
+              placeholder="Numéro statistique" autocomplete="off">
           </div>
         </div>
 
@@ -85,7 +85,8 @@
               <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
                 <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire">
                 <span class="input-group-btn ml-2">
-                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
+                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
+                    title="Enlever ce numero">
                     <i class="la la-close"></i>
                   </button>
                 </span>
@@ -122,10 +123,10 @@
         </div>
         <div class="row">
           <div class="col-sm-8 form-group mb-4">
-              <label class="font-bold">Ville</label>
-              <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                [items]="Towns" [loading]="loadingTown" required>
-              </ng-select>
+            <label class="font-bold">Ville</label>
+            <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+              [items]="Towns" [loading]="loadingTown" required>
+            </ng-select>
           </div>
         </div>
 
@@ -134,6 +135,9 @@
         <div>
           <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
             <span>Enregistrer</span>
+          </button>
+          <button class="btn btn-secondary mr-3" data-dismiss="modal" type="button" [disabled]="loading">
+            <span>Fermer</span>
           </button>
         </div>
       </div>

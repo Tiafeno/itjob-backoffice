@@ -48,5 +48,4 @@ export const DashboardRouter: Route[] = [
       { path: 'newsletters', component: NewslettersComponent }      
     ]
   },
-
 ]

@@ -40,8 +40,8 @@ export class NewslettersComponent implements OnInit {
                buttons: true,
                dangerMode: true,
             } as any)
-               .then((willDelete) => {
-                  if (willDelete) {
+               .then((willSend) => {
+                  if (willSend) {
                      let formData = new FormData();
                      formData.append('post', JSON.stringify({ title: 'Bonjour', for: 'welcome' }));
                      this.asyncCall(totalPage, formData);
