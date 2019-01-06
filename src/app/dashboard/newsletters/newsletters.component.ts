@@ -59,7 +59,8 @@ export class NewslettersComponent implements OnInit {
             .subscribe(
                response => {
                   let data: any = response;
-                  resolve(data);
+                  if (data.success)
+                     resolve(data);
                },
                error => {
                   reject(error);

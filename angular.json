@@ -94,6 +94,7 @@
               "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
               "src/assets/vendors/bootstrap-maxlength/src/bootstrap-maxlength.js",
+              "src/assets/vendors/jquery-ui/jquery-ui.min.js",
               "src/assets/vendors/jquery-knob/dist/jquery.knob.min.js",
               "node_modules/ion-rangeslider/js/ion.rangeSlider.min.js",
               "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",

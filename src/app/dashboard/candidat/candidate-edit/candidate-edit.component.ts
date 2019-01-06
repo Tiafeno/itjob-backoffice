@@ -110,6 +110,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       { id: 4, value: 'D', name: 'd', checked: false },
     ];
     let jobSought = this.Candidate.jobSought;
+    let jobNotif = this.Candidate.jobNotif;
+    let trainingNotif = this.Candidate.trainingNotif;
     let currentJobs = _.isArray(jobSought) ? _.map(jobSought, 'term_id') : (_.isObject(jobSought) ? jobSought.name : '');
     let args = {
       ID: this.Candidate.ID,
@@ -136,11 +138,39 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Email: pI.author.data.user_email,
       Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : '',
       Interest: this.Candidate.centerInterest,
+      jobNotif: this.createJobNotification(jobNotif),
+      trainingNotif: this.createTrainNotification(trainingNotif),
+      Newsletter: this.Candidate.newsletter,
       Divers: this.Candidate.centerInterest.various,
       Project: this.Candidate.centerInterest.projet
     };
     this.setEditorForm(args);
     this.ngReadyContent();
+  }
+
+  // Crée une notification pour les emplois
+  createJobNotification(Notif: any): any {
+    let Notification: any = {};
+    if (_.isObject(Notif)) {
+      Notification.notification = Notif.notification;
+      Notification.branch_activity = _.isObject(Notif.branch_activity) ? Notif.branch_activity.term_id : 0;
+      Notification.job_sought = Notif.job_sought;
+      return Notification;
+    } else {
+      return {notification: false, branch_activity: 0, job_sought: '' };
+    }
+  }
+
+  // Crée une object notification pour les formation
+  createTrainNotification(Notif: any): any {
+    let Notification: any = {};
+    if (_.isObject(Notif)) {
+      Notification.notification = Notif.notification;
+      Notification.branch_activity = _.isObject(Notif.branch_activity) ? Notif.branch_activity.term_id : 0;
+      return Notification;
+    } else {
+      return {notification: false, branch_activity: 0};
+    }
   }
 
   onAddedCellphone() {
@@ -294,6 +324,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   onSubmitForm(editForm: NgForm) {
+    console.log(editForm.value);
     if (editForm.valid) {
       this.loadingSave = true;
       let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 };
@@ -362,6 +393,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.areaLoading = true;
     this.requestServices.getArea().subscribe(x => {
       this.branchActivitys = _.cloneDeep(x)
+      this.branchActivitys.push({name: "Tous les métiers", term_id: 0});
       this.areaLoading = false;
     })
   }

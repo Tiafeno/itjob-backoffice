@@ -43,7 +43,7 @@ export class NewTaxonomyComponent implements OnInit {
               this.refresh.emit();
               swal('Succès', response.message, 'success');
             } else {
-              swal('Erreur', "Une erreur s'est produite", 'warning');
+              swal('Information', response.message, 'info');
             }
             this.loading = false;
           },

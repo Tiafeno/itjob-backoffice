@@ -13,6 +13,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { AdminGuard } from '../guards/admin.guard';
 import { BlogsComponent } from './blogs/blogs.component';
 import { NewslettersComponent } from './newsletters/newsletters.component';
+import { PublicityComponent } from './publicity/publicity.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -45,7 +46,8 @@ export const DashboardRouter: Route[] = [
       { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
       { path: 'taxonomy/:term', component: TaxonomyComponent },
       { path: 'blogs', component: BlogsComponent },
-      { path: 'newsletters', component: NewslettersComponent }      
+      { path: 'newsletters', component: NewslettersComponent }, 
+      { path: 'ads', component: PublicityComponent }      
     ]
   },
 ]

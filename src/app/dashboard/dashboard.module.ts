@@ -37,6 +37,7 @@ import { NewNewsletterComponent } from './newsletters/new-newsletter/new-newslet
 import { EditBlogComponent } from './blogs/edit-blog/edit-blog.component';
 import { NewBlogComponent } from './blogs/new-blog/new-blog.component';
 import { ViewNewsletterComponent } from './newsletter/view-newsletter/view-newsletter.component';
+import { PublicityComponent } from './publicity/publicity.component';
 
 @NgModule({
   imports: [
@@ -80,7 +81,8 @@ import { ViewNewsletterComponent } from './newsletter/view-newsletter/view-newsl
     NewNewsletterComponent,
     EditBlogComponent,
     NewBlogComponent,
-    ViewNewsletterComponent
+    ViewNewsletterComponent,
+    PublicityComponent
   ],
   providers: [
     {

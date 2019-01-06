@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  SITE_URL: 'http://proto.itjobmada.com'
+  SITE_URL: 'https://www.itjobmada.com'
 };
 
 export const tinyMceSettings = {
@@ -27,8 +27,8 @@ export const dateTimePickerFr = {
 };
 
 export const config = {
-  jwtAuthUrl: 'http://proto.itjobmada.com/wp-json/jwt-auth/v1/token',
-  apiEndpoint: 'http://proto.itjobmada.com/wp-json',
-  wpApi: 'http://proto.itjobmada.com/wp-json/wp/v2',
-  itApi: 'http://proto.itjobmada.com/wp-json/it-api'
+  jwtAuthUrl: 'https://www.itjobmada.com/wp-json/jwt-auth/v1/token',
+  apiEndpoint: 'https://www.itjobmada.com/wp-json',
+  wpApi: 'https://www.itjobmada.com/wp-json/wp/v2',
+  itApi: 'https://www.itjobmada.com/wp-json/it-api'
 };

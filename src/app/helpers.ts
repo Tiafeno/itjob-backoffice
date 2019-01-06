@@ -1,5 +1,3 @@
-import * as $ from "jquery";
-
 declare var toastr: any;
 declare var jQuery: any;
 declare var $: any;

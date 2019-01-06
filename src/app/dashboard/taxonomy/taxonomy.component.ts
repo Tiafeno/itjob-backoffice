@@ -69,10 +69,13 @@ export class TaxonomyComponent implements OnInit {
       taxonomyLists.find('tbody').empty();
     }
     taxonomyLists
-      .on('preXhr.dt', function (e, settings, data) {
+      .on('preXhr.dt', (e, settings, data) => {
         Helpers.setLoading(true);
       })
-      .on('init.dt', function () {
+      .on('xhr.dt', (e, settings, json, xhr) => {
+        Helpers.setLoading(false);
+      })
+      .on('init.dt', () => {
         Helpers.setLoading(false);
       })
     this.table = taxonomyLists

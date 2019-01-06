@@ -20,7 +20,6 @@
               <label class="font-bold">Nom de l'entreprise</label>
               <input class="form-control from-control-solid" autocomplete="off" name="title" type="text" [(ngModel)]="editor.title"
                 placeholder="Nom de l'entreprise" required>
-              <span class="help-block mt-2">This is some placeholder block-level help text for the above input.</span>
             </div>
           </div>
         </div>
@@ -121,12 +120,36 @@
             </ng-select>
           </div>
         </div>
+
         <div class="row">
           <div class="col-sm-8 form-group mb-4">
             <label class="font-bold">Ville</label>
             <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
               [items]="Towns" [loading]="loadingTown" required>
             </ng-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.notification" [(ngModel)]="editor.notification"
+                      name="notification" type="checkbox">
+                    <span class="input-span"></span>Voulez-vous recevoir nos nouvelles du moisa</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.newsletter" [(ngModel)]="editor.newsletter"
+                      name="newsletter" type="checkbox">
+                    <span class="input-span"></span>Notification quand un nouveau CV est insérer</label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

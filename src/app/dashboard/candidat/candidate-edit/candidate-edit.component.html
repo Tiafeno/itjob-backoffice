@@ -44,11 +44,11 @@
                     <div class="d-flex align-items-center">
                       <img [src]="avatar.preview" alt="image" width="90">
                       <div class="text-left ml-4">
-                        <div class="h1" appUploadfile><i class="la la-camera text-primary"></i>
+                        <div class="h1" style="cursor: pointer" appUploadfile><i class="la la-camera text-primary"></i>
                           <div style="display: none">
-                              <input type="file" name="avatar" (change)="onFileChange($event)"/>
+                            <input type="file" name="avatar" (change)="onFileChange($event)" />
                           </div>
-                          
+
                         </div>
                       </div>
                     </div>
@@ -130,8 +130,8 @@
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday" type="text" value=""
-                    placeholder="Date de naissance" required>
+                  <input class="form-control" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday"
+                    type="text" value="" placeholder="Date de naissance" required>
                 </div>
               </div>
             </div>
@@ -262,6 +262,69 @@
             </div>
 
             <div class="row">
+              <div class="col-12 mb-4">
+                <div class="row mb-4" ngModelGroup="jobNotification" #jobNotificationCtrl="ngModelGroup">
+                  <div class="col-12">
+                    <div class="form-group mb-3">
+                      <label class="checkbox checkbox-info">
+                        <input [checked]="editor.Form.jobNotif.notification" [(ngModel)]="editor.Form.jobNotif.notification"
+                          name="notification" type="checkbox">
+                        <span class="input-span"></span>Souhaitez-vous recevoir une notification quand une offre
+                        d’emploi est postée sur Itjobmada</label>
+                    </div>
+                  </div>
+                  <div class="col-6" *ngIf="editor.Form.jobNotif.notification">
+                    <div class="form-group mb-3">
+                      <label>Recevoir une notification pour quel métier ?</label>
+                      <div>
+                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" name="activityarea"
+                          bindValue="term_id" bindLabel="name" [multiple]='false' [items]='branchActivitys'>
+                        </ng-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12" *ngIf="editor.Form.jobNotif.notification">
+                    <div class="form-group ">
+                      <input class="form-control form-control-solid" [(ngModel)]="editor.Form.jobNotif.job_sought" name="jobsought"
+                        placeholder="Emploi que souhaite avoir une notification" type="text">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row mb-4" ngModelGroup="trainNotification" #trainNotificationCtrl="ngModelGroup">
+                    <div class="col-12">
+                      <div class="form-group mb-3">
+                        <label class="checkbox checkbox-info">
+                          <input [checked]="editor.Form.trainingNotif.notification" [(ngModel)]="editor.Form.trainingNotif.notification"
+                            name="notification" type="checkbox">
+                          <span class="input-span"></span
+                            >Souhaitez-vous recevoir une notification quand une formation est postée sur Itjobmada</label>
+                      </div>
+                    </div>
+                    <div class="col-6" *ngIf="editor.Form.trainingNotif.notification">
+                      <div class="form-group mb-3">
+                        <label>Recevoir une notification pour quelle métier ?</label>
+                        <div>
+                          <ng-select [(ngModel)]="editor.Form.trainingNotif.branch_activity" name="activityarea"
+                            bindValue="term_id" bindLabel="name" [multiple]='false' [items]='branchActivitys'>
+                          </ng-select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.Form.Newsletter" [(ngModel)]="editor.Form.Newsletter" name="newsletter" type="checkbox">
+                    <span class="input-span"></span>Voulez-vous recevoir nos nouvelles du mois</label>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
               <div class="col-md-6 mb-4">
                 <h5 class="font-strong text-uppercase mb-4">Centre d'intérêt</h5>
                 <label class="font-bold">Divers</label>
@@ -271,7 +334,8 @@
               <div class="col-md-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Projet personnel</label>
-                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Form.Project" name="projet" [init]="tinyMCESettings"></editor>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Form.Project"
+                    name="projet" [init]="tinyMCESettings"></editor>
                 </div>
               </div>
             </div>
@@ -466,7 +530,8 @@
                   </div>
                   <div class="form-group mb-4">
                     <label>Mission</label>
-                    <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Experience.exp_mission" name="mission" [init]="tinyMCESettings"></editor>
+                    <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Experience.exp_mission"
+                      name="mission" [init]="tinyMCESettings"></editor>
                   </div>
                 </div>
                 <div class="modal-footer justify-content-between bg-primary-50">
