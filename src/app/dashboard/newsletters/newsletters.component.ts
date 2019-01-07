@@ -59,8 +59,7 @@ export class NewslettersComponent implements OnInit {
             .subscribe(
                response => {
                   let data: any = response;
-                  if (data.success)
-                     resolve(data);
+                  resolve(data);
                },
                error => {
                   reject(error);
@@ -75,7 +74,7 @@ export class NewslettersComponent implements OnInit {
    async asyncCall(totalPage: number, form: FormData) {
       for (let page = 1; page <= totalPage; page++) {
          let offset = page * 20;
-         form.append('query', JSON.stringify({ number: 20, offset: offset }));
+         form.set('query', JSON.stringify({ number: 20, offset: offset }));
          await this.sendMail(form);
          this.offset = offset;
       }

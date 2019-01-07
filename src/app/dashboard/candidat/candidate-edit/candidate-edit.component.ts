@@ -464,8 +464,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         show: false
       });
 
-      $('.input-group.date').datepicker({
+      $('.input-group.date').datetimepicker({
         format: "mm/dd/yyyy",
+        minView: "days",
         todayBtn: false,
         keyboardNavigation: false,
         forceParse: false,
