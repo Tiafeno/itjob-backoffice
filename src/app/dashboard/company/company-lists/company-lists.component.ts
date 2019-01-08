@@ -234,7 +234,7 @@ export class CompanyListsComponent implements OnInit {
                       'Entreprise mis à jour avec succès',
                       'success'
                     )
-                    this.TABLE.ajax.reload(null, false);
+                    this.reloadDatatable();
                   })
                 break;
 

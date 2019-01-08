@@ -87,7 +87,7 @@
           <ul class="logs-list">
             <li class="log-item" data-type="app" *ngFor="let notification of Notifications">
               <i class="la la-circle log-icon text-success"></i>
-              <div><a [href]="notification.url" [innerHTML]="notification.title"></a>
+              <div><a [href]="notification.guid" [innerHTML]="notification.title"></a>
                 <small class="float-right text-muted">{{notification.date_create|date:"medium"}}</small>
               </div>
             </li>

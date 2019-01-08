@@ -129,7 +129,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Town: _.isObject(pI.address.country) ? pI.address.country.term_id : '',
       Address: pI.address,
       Jobs: _.isArray(currentJobs) ? currentJobs : false,
-      _oldJob: !_.isArray(currentJobs) ? currentJobs : false,
+      _Jobs: !_.isArray(currentJobs) ? currentJobs : false,
       Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
       Cellphones: _.map(cellphones, (cel, index) => { return { value: cel, id: index } }),
       Avatar: pI.avatar,
@@ -173,37 +173,54 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Crée un champ pour une numéro de téléphone
+   */
   onAddedCellphone() {
     let index = this.editor.Form.Cellphones.length;
     this.editor.Form.Cellphones.push({ value: '', id: index });
   }
 
+  /**
+   * Effacer un numéro dans le formulaire
+   * @param cellId number
+   */
   onRemoveCellphone(cellId: number) {
     this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, { id: cellId });
   }
 
-  onEditTraining(tId) {
+  /**
+   * Afficher une formulaire de modification de formation
+   * @param tId - Formation id
+   */
+  onEditTraining(tId: number) {
     let currentTraining = _.find(this.editor.trainings, ['ID', tId]);
     if (!_.isObject(currentTraining)) return false;
     this.editor.Training = _.cloneDeep(currentTraining);
     let dateBegin = String(this.editor.Training.training_dateBegin);
     let dateEnd = String(this.editor.Training.training_dateEnd);
     moment.locale('fr');
+    // Trouver les formats exacte de la date de formation
     let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
     let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
     this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
+    // Afficher le formulaire
     $('#edit-training-modal').modal('show')
   }
 
-  onEditExperience(eId) {
+  /**
+   * Afficher une formulaire de modification de l'expérience
+   * @param eId 
+   */
+  onEditExperience(eId: number) {
     let currentExperience = _.find(this.editor.experiences, ['ID', eId]);
     if (!_.isObject(currentExperience)) return false;
     this.editor.Experience = _.cloneDeep(currentExperience);
     let dateBegin = this.editor.Experience.exp_dateBegin;
     let dateEnd = this.editor.Experience.exp_dateEnd;
 
-    if (_.isNull(dateBegin) || _.isEmpty(dateBegin)) {
+    if (_.isNull(dateBegin) || _.isEmpty(dateBegin) || dateBegin === 'Invalid date') {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateBegin)) {
         dateBegin = this.editor.Experience.old_value.exp_dateBegin;
       }
@@ -211,7 +228,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       dateBegin = String(dateBegin);
     }
 
-    if (_.isNull(dateEnd) || _.isEmpty(dateEnd)) {
+    if (_.isNull(dateEnd) || _.isEmpty(dateEnd) || dateEnd === 'Invalid date') {
       if (!_.isEmpty(this.editor.Experience.old_value.exp_dateEnd)) {
         dateEnd = this.editor.Experience.old_value.exp_dateEnd;
       }
@@ -239,6 +256,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     $('#edit-experience-modal').modal('show');
   }
 
+  /**
+   * Mettre à jours la formation dans la base de donnée avec les autres formations existantes
+   * @param trainingId 
+   */
   onUpdateTraining(trainingId) {
     if (!_.isEmpty(this.editor.Training) && _.isNumber(trainingId)) {
       let Trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
@@ -260,6 +281,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Mettre à jour l'experience et les autres expériences dans la base de donnée
+   * @param experienceId 
+   */
   onUpdateExperience(experienceId: any) {
     if (!_.isEmpty(this.editor.Experience) && _.isNumber(experienceId)) {
       this.loadingSaveExperience = true;
@@ -287,6 +312,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Effacer une expérience et mettre à jours la base de donné
+   * @param experienceId 
+   */
   onDeleteExperience(experienceId: any) {
     let id: number = parseInt(experienceId);
     let Experiences: any = _.reject(this.editor.experiences, ['ID', id]);
@@ -299,6 +328,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * Effacer une formation et mettre à jours la base de donné
+   * @param trainingId 
+   */
   onDeleteTraining(trainingId: any) {
     let id: number = parseInt(trainingId);
     let Training: any = _.reject(this.editor.trainings, ['ID', id]);
@@ -311,6 +344,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * Cette function se déclanche quand on choisi une image d'avatar
+   * @param ev event
+   */
   onFileChange(ev: any) {
     if (ev.target.files && ev.target.files[0]) {
       var reader = new FileReader();
@@ -323,8 +360,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Vérifier les entrées
+   * @param editForm NgForm
+   */
   onSubmitForm(editForm: NgForm) {
-    console.log(editForm.value);
     if (editForm.valid) {
       this.loadingSave = true;
       let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 };
@@ -362,6 +402,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Envoyer les modifications au serveur
+   * @param Form any
+   * @param attachment_id number (facultatif)
+   */
   private saveCandidate(Form: any, attachment_id?: number) {
     if (!_.isUndefined(attachment_id))
       Form.attachment_id = attachment_id;
@@ -372,6 +417,10 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * Crée une variable pour la modification du formulaire
+   * @param contents object
+   */
   private setEditorForm(contents) {
     if (!_.isObject(contents)) return false;
     let keys = Object.keys(contents);
@@ -381,6 +430,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     Helpers.setLoading(false);
   }
 
+  /**
+   * Charger les nom de la ville et les code postal
+   */
   townLoadingFn() {
     this.townLoading = true;
     this.requestServices.getTown().subscribe(x => {
@@ -389,6 +441,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     })
   }
 
+  /**
+   * Charger les secteurs d'activités
+   */
   areaLoadingFn() {
     this.areaLoading = true;
     this.requestServices.getArea().subscribe(x => {
@@ -476,6 +531,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }, 1500);
   }
 
+  /**
+   * Filtrage pour des recherches dans une element "select"
+   * @param term 
+   * @param item 
+   */
   customSearchFn(term: string, item: any) {
     var inTerm = [];
     term = term.toLocaleLowerCase();

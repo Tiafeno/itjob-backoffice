@@ -153,6 +153,14 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-sm-12 mb-4">
+            <div class="form-group">
+              <button class="btn btn-info" (click)="viewCompanyOffers( editForm )" [disabled]="loading" type="button">Voir les offres de l'entreprise</button>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="modal-footer justify-content-between bg-primary-50">
         <div>
@@ -167,3 +175,4 @@
     </form>
   </div>
 </div>
+<app-company-offers [id]="companyId"></app-company-offers>

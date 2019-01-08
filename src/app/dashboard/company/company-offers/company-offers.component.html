@@ -1,0 +1,49 @@
+<div class="modal fade" id="company-offers-modal" tabindex="-1" role="dialog" aria-labelledby="companyOfferModal" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">INFORMATIONS</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center mb-4 mt-4">
+              <i class="la la-building mr-4 text-primary" style="font-size: 56px;"></i>
+              <div>
+                <div class="h2 text-primary mb-1">{{Company.name}}</div>
+                <div>Tous les offres de l'entreprise.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="table-responsive row">
+            <table class="table table-bordered table-hover" id="offers-table">
+              <thead class="thead-default thead-lg">
+                <tr>
+                  <th>Poste occupé</th>
+                  <th>Réference</th>
+                  <th>Type</th>
+                  <th>Date limite</th>
+                  <th>Status</th>
+                  <th>Secteur d'activité</th>
+                  <th class="no-sort">Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <button class="btn btn-secondary mr-3" data-dismiss="modal" type="button">
+            <span>Fermer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

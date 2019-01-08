@@ -38,6 +38,7 @@ import { EditBlogComponent } from './blogs/edit-blog/edit-blog.component';
 import { NewBlogComponent } from './blogs/new-blog/new-blog.component';
 import { ViewNewsletterComponent } from './newsletter/view-newsletter/view-newsletter.component';
 import { PublicityComponent } from './publicity/publicity.component';
+import { CompanyOffersComponent } from './company/company-offers/company-offers.component';
 
 @NgModule({
   imports: [
@@ -82,7 +83,8 @@ import { PublicityComponent } from './publicity/publicity.component';
     EditBlogComponent,
     NewBlogComponent,
     ViewNewsletterComponent,
-    PublicityComponent
+    PublicityComponent,
+    CompanyOffersComponent
   ],
   providers: [
     {

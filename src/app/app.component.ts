@@ -16,6 +16,7 @@ import swal from 'sweetalert';
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'ITJobMada';
   public Notifications: any = [];
+  public intervalRef: any;
   constructor(
     private router: Router,
     private requestService: RequestService,
@@ -27,39 +28,48 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (route instanceof NavigationStart) {
         if (this.Auth.isLogged()) {
           //Helpers.setLoading(true);
-          this.requestService.collectNotice().subscribe(
-            response => {
-              if (response.success) {
-                this.Notifications = _.cloneDeep(response.body);
-              }
-            },
-            error => {
-              if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
-                this.Auth.logout();
-                return;
-              }
-              if (error.status === 0) {
-                swal({
-                  title: 'Internal Server Error',
-                  text: 'There is a problem with server.',
-                  icon: 'error',
-                  button: false
-                } as any);
-              }
-            });
+          this.loadNotification();
         }
       }
       if (route instanceof NavigationEnd) {
         window.scrollTo(0, 0);
         Helpers.setLoading(false);
-
         // Initialize page: handlers ...
         Helpers.initPage();
+        this.intervalRef = setInterval( async () => {
+          await this.loadNotification();
+          console.info('Notification init ...');
+        }, 15000);
       }
 
     });
   }
 
-  ngAfterViewInit() { }
+  loadNotification(): void {
+    this.requestService.collectNotice().subscribe(
+      response => {
+        if (response.success) {
+          this.Notifications = _.cloneDeep(response.body);
+        }
+      },
+      error => {
+        if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
+          this.Auth.logout();
+          return;
+        }
+        if (error.status === 0) {
+          swal({
+            title: 'Internal Server Error',
+            text: 'There is a problem with server.',
+            icon: 'error',
+            button: false
+          } as any);
+          clearInterval(this.intervalRef);
+        }
+      });
+  }
+
+  ngAfterViewInit() {
+  }
 
 }
