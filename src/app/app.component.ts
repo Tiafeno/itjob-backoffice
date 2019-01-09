@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.Auth.isLogged()) {
           //Helpers.setLoading(true);
           this.loadNotification();
+          clearInterval(this.intervalRef);
         }
       }
       if (route instanceof NavigationEnd) {
@@ -58,12 +59,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           return;
         }
         if (error.status === 0) {
-          swal({
-            title: 'Internal Server Error',
-            text: 'There is a problem with server.',
-            icon: 'error',
-            button: false
-          } as any);
           clearInterval(this.intervalRef);
         }
       });

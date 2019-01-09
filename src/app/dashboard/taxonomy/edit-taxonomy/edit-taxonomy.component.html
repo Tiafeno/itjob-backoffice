@@ -31,14 +31,53 @@
       <div class="modal-footer justify-content-between bg-primary-50">
         <div>
           <div style="display: none">
-              <input type="number" name="term_id" [(ngModel)]="term.term_id">
-              <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
+            <input type="number" name="term_id" [(ngModel)]="term.term_id">
+            <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
           </div>
           <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
             <span>Enregistrer</span>
           </button>
+          <button class="btn btn-secondary mr-3" type="button" (click)="onReplace()" [disabled]="loading">
+            <span>Remplacer</span>
+          </button>
         </div>
         <a class="text-danger" (click)="onRemove()"><i class="la la-trash font-20"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="replace-taxonomy-modal">
+  <div class="modal-dialog" role="document">
+    <form #replaceForm="ngForm" (ngSubmit)="onSubmitReplace( replaceForm )" class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Remplacer</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group mb-4">
+              <label>Replacer <b>{{term.name}}</b> par:</label>
+              <ng-select name="by" [(ngModel)]="by" [loading]="loadingReplace" placeholder="Tapez et séléctionner une autre term" bindLabel="name"
+                bindValue="term_id" [hideSelected]="true" [multiple]="false" [typeahead]="byInput" [items]="Terms" required>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <div style="display: none">
+              <input type="number" name="needle" [(ngModel)]="term.term_id">
+            <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
+          </div>
+          <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
+            <span>Remplacer le term</span>
+          </button>
+        </div>
       </div>
     </form>
   </div>

@@ -88,7 +88,7 @@
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [items]="Regions" required>
+                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [items]="Regions" required>
                 </ng-select>
               </div>
             </div>
@@ -97,7 +97,7 @@
               <div class="col-sm-8 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
+                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [(ngModel)]="editor.Form.Town" aria-required="true" required>
                 </ng-select>
               </div>
             </div>
@@ -178,7 +178,7 @@
                   <label class="font-bold">Emploi recherché</label>
                   <div>
                     <ng-select [(ngModel)]="editor.Form.Jobs" [multiple]="true" name="jobs" bindLabel="name" bindValue="term_id"
-                      [items]="Jobs" required>
+                      [items]="Jobs" [hideSelected]="true">
                     </ng-select>
 
                     <p class="text-muted" *ngIf="editor.Form._Jobs">{{editor.Form._Jobs}}</p>
@@ -193,7 +193,7 @@
                 <div class="form-group">
                   <label class="font-bold">Les langues</label>
                   <ng-select [(ngModel)]="editor.Form.Language" name="languages" bindLabel="name" bindValue="term_id"
-                    [multiple]='true' [items]="Languages" required>
+                    [multiple]='true' [hideSelected]="true" [items]="Languages" required>
                   </ng-select>
                 </div>
               </div>
@@ -470,11 +470,14 @@
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_positionHeld"
                       name="diploma" placeholder="Diplôme">
                   </div>
-                  <div class="form-group mb-4" *ngIf="editor.Experience.exp_branch_activity">
-                    <select class="form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
-                      required>
-                      <option [value]="abranch.term_id" *ngFor="let abranch of branchActivitys">{{abranch.name}}</option>
-                    </select>
+                  <div class="form-group mb-4">
+                    <ng-select name="branch_activity" placeholder="Les sécteurs d'activités" [(ngModel)]="editor.Experience.exp_branch_activity"  bindLabel="name"
+                      bindValue="term_id" [hideSelected]="true" [multiple]="false"  [items]="branchActivitys" required>
+                    </ng-select>
+
+                    <div *ngIf="(editor.Experience.old_value && editor.Experience.old_value.exp_branch_activity) && !editor.Experience.exp_branch_activity">
+                      <span class="badge badge-default d-block text-left mt-2">{{editor.Experience.old_value.exp_branch_activity}}</span>
+                    </div>
                   </div>
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_country"

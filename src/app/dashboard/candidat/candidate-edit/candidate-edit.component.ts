@@ -10,6 +10,7 @@ import { RequestService } from '../../../services/request.service';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
 import { PlatformLocation } from '@angular/common';
+import { sample } from 'rxjs/operators';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -63,6 +64,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    moment.locale('fr');
     Helpers.setLoading(true);
     this.loadingForm = true;
     this.route.parent.params.subscribe(params => {
@@ -118,25 +120,25 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       isActive: this.Candidate.isActive,
       Reference: this.Candidate.reference,
       Greeting: _.isObject(this.Candidate.greeting) ? this.Candidate.greeting.value : this.Candidate.greeting,
-      Region: !_.isObject(this.Candidate.region) ? '' : this.Candidate.region.term_id,
-      Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : '',
+      Region: !_.isObject(this.Candidate.region) ? null : this.Candidate.region.term_id,
+      Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : [],
       State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending' ? "pending" : 0),
-      Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : "",
+      Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : null,
       DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
         dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
         return dLicence;
       }) : dLicences,
-      Town: _.isObject(pI.address.country) ? pI.address.country.term_id : '',
+      Town: _.isObject(pI.address.country) ? pI.address.country.term_id : null,
       Address: pI.address,
-      Jobs: _.isArray(currentJobs) ? currentJobs : false,
+      Jobs: _.isArray(currentJobs) ? currentJobs : [],
       _Jobs: !_.isArray(currentJobs) ? currentJobs : false,
-      Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : '',
+      Language: _.isArray(this.Candidate.languages) ? _.map(this.Candidate.languages, 'term_id') : [],
       Cellphones: _.map(cellphones, (cel, index) => { return { value: cel, id: index } }),
       Avatar: pI.avatar,
       Firstname: pI.firstname,
       Lastname: pI.lastname,
       Email: pI.author.data.user_email,
-      Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : '',
+      Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : null,
       Interest: this.Candidate.centerInterest,
       jobNotif: this.createJobNotification(jobNotif),
       trainingNotif: this.createTrainNotification(trainingNotif),
@@ -157,7 +159,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Notification.job_sought = Notif.job_sought;
       return Notification;
     } else {
-      return {notification: false, branch_activity: 0, job_sought: '' };
+      return { notification: false, branch_activity: 0, job_sought: '' };
     }
   }
 
@@ -169,7 +171,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Notification.branch_activity = _.isObject(Notif.branch_activity) ? Notif.branch_activity.term_id : 0;
       return Notification;
     } else {
-      return {notification: false, branch_activity: 0};
+      return { notification: false, branch_activity: 0 };
     }
   }
 
@@ -199,14 +201,50 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.editor.Training = _.cloneDeep(currentTraining);
     let dateBegin = String(this.editor.Training.training_dateBegin);
     let dateEnd = String(this.editor.Training.training_dateEnd);
-    moment.locale('fr');
     // Trouver les formats exacte de la date de formation
-    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', true) : moment(new Date(dateBegin)));
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', true) : moment(new Date(dateEnd)));
     this.editor.Training.training_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     this.editor.Training.training_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     // Afficher le formulaire
     $('#edit-training-modal').modal('show')
+  }
+
+  /**
+ * Mettre à jours la formation dans la base de donnée avec les autres formations existantes
+ * @param trainingId 
+ */
+  onUpdateTraining(trainingId) {
+    if (!_.isEmpty(this.editor.Training) && _.isNumber(trainingId)) {
+      this.loadingSaveTraining = true;
+      let Trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
+      let editTraining = _.clone(this.editor.Training);
+      editTraining.validated = true;
+      let dateBegin = moment(editTraining.training_dateBegin.month + ' ' + editTraining.training_dateBegin.year, 'MMMM YYYY', true);
+      let dateEnd = moment(editTraining.training_dateEnd.month + ' ' + editTraining.training_dateEnd.year, 'MMMM YYYY', true);
+      if (!dateBegin.isValid() || !dateEnd.isValid()) return;
+
+      editTraining.training_dateBegin = dateBegin.format('MM/DD/YYYY');
+      editTraining.training_dateEnd = dateEnd.format('MM/DD/YYYY');
+      this.editor.trainings = _.cloneDeep(Trainings);
+      this.editor.trainings.push(editTraining);
+      this.editor.trainings = _.orderBy(this.editor.trainings, ['ID'], ['asc']);
+      this.candidatService.updateTraining(this.editor.trainings, this.Candidate.ID)
+        .subscribe(
+          response => {
+            this.editor.trainings = _.map(response, (training, index) => {
+              training.ID = index;
+              return training;
+            });
+            this.Candidate.loadingSaveTraining = false;
+            $('#edit-training-modal').modal('hide');
+          },
+          error => {
+            this.loadingSaveTraining = false;
+          });
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -235,50 +273,41 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     } else {
       dateEnd = String(dateEnd);
     }
-
-    moment.locale('fr');
-    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', 'fr') : moment(new Date(dateBegin)));
-    if (_dateBegin.format('YYYY') === 'Invalid date') {
+    
+    let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', true) : moment(dateBegin));
+    if (!_dateBegin.isValid()) {
       this.editor.Experience.exp_dateBegin = { month: '', year: '' };
     } else {
       this.editor.Experience.exp_dateBegin = { month: _dateBegin.format('MMMM'), year: _dateBegin.format('YYYY') };
     }
 
-    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', 'fr') : moment(new Date(dateEnd)));
-    if (_dateEnd.format('YYYY') === 'Invalid date') {
+    let _dateEnd = dateEnd.indexOf('/') > -1 ? moment(dateEnd) : (dateEnd.indexOf(' ') > -1 ? moment(dateEnd, 'MMMM YYYY', true) : moment(dateEnd));
+    if (!_dateEnd.isValid()) {
       this.editor.Experience.exp_dateEnd = { month: '', year: '' };
     } else {
       this.editor.Experience.exp_dateEnd = { month: _dateEnd.format('MMMM'), year: _dateEnd.format('YYYY') };
     }
 
     let abranch = this.editor.Experience.exp_branch_activity;
-    this.editor.Experience.exp_branch_activity = abranch && _.isObject(abranch) ? abranch.term_id : abranch;
+    this.editor.Experience.exp_branch_activity = abranch && _.isObject(abranch) ? abranch.term_id : null;
     $('#edit-experience-modal').modal('show');
   }
 
+
   /**
-   * Mettre à jours la formation dans la base de donnée avec les autres formations existantes
+   * Effacer une formation et mettre à jours la base de donné
    * @param trainingId 
    */
-  onUpdateTraining(trainingId) {
-    if (!_.isEmpty(this.editor.Training) && _.isNumber(trainingId)) {
-      let Trainings = _.reject(this.editor.trainings, ['ID', trainingId]);
-      let editTraining = _.clone(this.editor.Training);
-      editTraining.validated = true;
-      editTraining.training_dateBegin = moment(editTraining.training_dateBegin.month + ' ' + editTraining.training_dateBegin.year).format('MM/DD/YYYY');
-      editTraining.training_dateEnd = moment(editTraining.training_dateEnd.month + ' ' + editTraining.training_dateEnd.year).format('MM/DD/YYYY');
-      if (editTraining.training_dateBegin === "Invalid date" || editTraining.training_dateEnd === "Invalid date") return;
-
-      this.editor.trainings = _.cloneDeep(Trainings);
-      this.editor.trainings.push(editTraining);
-      this.editor.trainings = _.orderBy(this.editor.trainings, ['ID'], ['asc']);
-      this.candidatService.updateTraining(this.editor.trainings, this.Candidate.ID)
-        .subscribe(response => {
-          $('#edit-training-modal').modal('hide');
-        });
-    } else {
-      return false;
-    }
+  onDeleteTraining(trainingId: any) {
+    let id: number = parseInt(trainingId);
+    let Training: any = _.reject(this.editor.trainings, ['ID', id]);
+    this.loadingSaveTraining = true;
+    this.candidatService.updateTraining(Training, this.Candidate.ID)
+      .subscribe(response => {
+        $('#edit-training-modal').modal('hide');
+        this.editor.trainings = _.cloneDeep(Training);
+        this.loadingSaveTraining = false;
+      });
   }
 
   /**
@@ -296,19 +325,31 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       let expEnd = _.clone(editExperience.exp_dateEnd);
       let dateBegin = `${expBegin.month} ${expBegin.year}`;
       let dateEnd = `${expEnd.month} ${expEnd.year}`;
-      editExperience.exp_dateBegin = expBegin = moment(dateBegin, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
-      editExperience.exp_dateEnd = expEnd = moment(dateEnd, 'MMMM YYYY', 'fr').format('MM/DD/YYYY');
-      if (expBegin === "Invalid date" || expEnd === "Invalid date") return;
 
+      expBegin = moment(dateBegin, 'MMMM YYYY', true);
+      expEnd = moment(dateEnd, 'MMMM YYYY', true);
+
+      if (!expBegin.isValid() || !expEnd.isValid()) return;
+
+      editExperience.exp_dateBegin = expBegin.format('MM/DD/YYYY');
+      editExperience.exp_dateEnd = expEnd.format('MM/DD/YYYY');
 
       this.editor.experiences = _.cloneDeep(Experiences); // Modifier la liste des experiences
       this.editor.experiences.push(editExperience); // Ajouter la nouvelle experience dans la liste
       this.editor.experiences = _.orderBy(this.editor.experiences, ['ID'], ['asc']);
       this.candidatService.updateExperience(this.editor.experiences, this.Candidate.ID)
-        .subscribe(response => {
-          $('#edit-experience-modal').modal('hide');
-          this.loadingSaveExperience = false;
-        });
+        .subscribe(
+          response => {
+            this.editor.experiences = _.map(response, (experience, index) => {
+              experience.ID = index;
+              return experience;
+            });
+            $('#edit-experience-modal').modal('hide');
+            this.loadingSaveExperience = false;
+          },
+          error => {
+            this.loadingSaveExperience = false;
+          });
     }
   }
 
@@ -325,22 +366,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         $('#edit-experience-modal').modal('hide');
         this.editor.experiences = _.cloneDeep(Experiences);
         this.loadingSaveExperience = false;
-      });
-  }
-
-  /**
-   * Effacer une formation et mettre à jours la base de donné
-   * @param trainingId 
-   */
-  onDeleteTraining(trainingId: any) {
-    let id: number = parseInt(trainingId);
-    let Training: any = _.reject(this.editor.trainings, ['ID', id]);
-    this.loadingSaveTraining = true;
-    this.candidatService.updateTraining(Training, this.Candidate.ID)
-      .subscribe(response => {
-        $('#edit-training-modal').modal('hide');
-        this.editor.trainings = _.cloneDeep(Training);
-        this.loadingSaveTraining = false;
       });
   }
 
@@ -394,11 +419,16 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
                 swal('Erreur', "Une erreur s'est produite", 'warning');
               }
             },
-            error => console.log(error)
+            error => {
+              this.loadingSave = false;
+              swal('Erreur', error, 'error');
+            }
           )
       } else {
         this.saveCandidate(Form);
       }
+    } else {
+      swal('Avertissement', "Veuillez verifier les champs incorrect dans le formulaire", "error");
     }
   }
 
@@ -448,7 +478,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.areaLoading = true;
     this.requestServices.getArea().subscribe(x => {
       this.branchActivitys = _.cloneDeep(x)
-      this.branchActivitys.push({name: "Tous les métiers", term_id: 0});
+      this.branchActivitys.push({ name: "Tous les métiers", term_id: 0 });
       this.areaLoading = false;
     })
   }
