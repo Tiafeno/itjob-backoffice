@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CandidateService } from '../../../services/candidate.service';
+import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import * as lightbox from 'lightbox2';
 import swal from 'sweetalert2';
 import { Helpers } from '../../../helpers';
 import { NgForm } from '@angular/forms';
@@ -10,7 +12,7 @@ import { RequestService } from '../../../services/request.service';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
 import { PlatformLocation } from '@angular/common';
-import { sample } from 'rxjs/operators';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -22,6 +24,7 @@ declare var Bloodhound: any;
 })
 export class CandidateEditComponent implements OnInit, AfterViewInit {
   public id: number;
+  public WPEndpoint: any;
   public loadingForm: boolean = false;
   public loadingSave: boolean = false;
   public loadingSaveExperience: boolean = false;
@@ -37,8 +40,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
   public branchActivitys: any = [];
   public editor: any = {};
   public avatar: any = {};
+  public noAvatar: string;
   public inputAvatar: FileList;
-  public apiUploadEndPoint: string = `${config.itApi}/upload/`;
   public Months: Array<any> = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
@@ -55,12 +58,14 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private candidatService: CandidateService,
     private requestServices: RequestService,
+    private authService: AuthService,
     public platformLocation: PlatformLocation
   ) {
+    this.noAvatar = (this.platformLocation as any).location.origin + "/assets/img/image.png";
     this.Candidate.status = true;
     this.editor.Form = {};
     this.editor.Form.Address = {};
-    this.avatar.preview = (this.platformLocation as any).location.origin + "/assets/img/image.png";
+    this.avatar.preview = _.clone(this.noAvatar);
   }
 
   ngOnInit() {
@@ -71,21 +76,38 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.id = params.id;
       this.candidatService
         .getCandidate(this.id)
-        .subscribe(candidate => {
-          this.Candidate = _.clone(candidate);
-          this.candidatService.collectDataEditor()
-            .subscribe(responseList => {
-              this.Regions = _.cloneDeep(responseList[0]);
-              this.Jobs = _.cloneDeep(responseList[1]);
-              this.Languages = _.cloneDeep(responseList[2]);
-              this.Softwares = _.cloneDeep(responseList[3]);
+        .subscribe(
+          candidate => {
+            this.Candidate = _.clone(candidate);
+            this.candidatService.collectDataEditor()
+              .subscribe(responseList => {
+                this.Regions = _.cloneDeep(responseList[0]);
+                this.Jobs = _.cloneDeep(responseList[1]);
+                this.Languages = _.cloneDeep(responseList[2]);
+                this.Softwares = _.cloneDeep(responseList[3]);
 
-              this.townLoadingFn();
-              this.areaLoadingFn();
+                this.townLoadingFn();
+                this.areaLoadingFn();
 
-              this.loadForm();
-            })
-        });
+                this.loadForm();
+              });
+
+            // Added Endpoints
+            this.WPEndpoint = new WPAPI({
+              endpoint: config.apiEndpoint,
+            });
+
+            var namespace = 'wp/v2'; // use the WP API namespace
+            var route = '/candidate/(?P<id>)'; // route string - allows optional ID parameter
+
+            // wpapi = an instance of `node-wpapi`
+            this.WPEndpoint.candidate = this.WPEndpoint.registerRoute(namespace, route);
+
+            let currentUser = this.authService.getCurrentUser();
+            this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` })
+          }, error => {
+
+          });
     });
   }
 
@@ -99,7 +121,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       return training;
     });
     this.avatar.preview = this.Candidate.privateInformations.avatar ? this.Candidate.privateInformations.avatar[0] : this.avatar.preview;
-    this.avatar.value = '';
+    this.avatar.value = this.Candidate.privateInformations.avatar ? true : false;
     let pI = _.clone(this.Candidate.privateInformations);
     let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
@@ -273,7 +295,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     } else {
       dateEnd = String(dateEnd);
     }
-    
+
     let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', true) : moment(dateBegin));
     if (!_dateBegin.isValid()) {
       this.editor.Experience.exp_dateBegin = { month: '', year: '' };
@@ -377,11 +399,76 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     if (ev.target.files && ev.target.files[0]) {
       var reader = new FileReader();
       this.inputAvatar = ev.target.files;
-      const component = this;
-      reader.onload = function (e: any) {
-        component.avatar.preview = e.target.result;
+      reader.onload = (e: any) => {
+        this.avatar.preview = e.target.result;
+        this.avatar.value = true;
       }
-      reader.readAsDataURL(ev.target.files[0]);
+
+      this.WPEndpoint.media()
+        // Specify a path to the file you want to upload, or a Buffer
+        .file(this.inputAvatar[0])
+        .create({
+          title: this.Candidate.privateInformations.firstname + " " + this.Candidate.privateInformations.lastname,
+          alt_text: this.Candidate.title
+        })
+        .then( (crM) => {
+          // Your media is now uploaded: let's associate it with a post
+          var newImageId = crM.id;
+          this.WPEndpoint.media().id(newImageId)
+            .update({
+              post: this.Candidate.ID
+            })
+            .then(rpM => {
+              reader.readAsDataURL(ev.target.files[0]);
+              this.WPEndpoint.candidate().id(this.Candidate.ID).update({featured_media: rpM.ID});
+            })
+        })
+        .then( (resp) => {
+          console.log('Media ID #' + resp.id);
+          console.log('is now associated with Post ID #' + resp.post);
+        });
+    }
+  }
+
+  onRemoveFile(): void {
+    if (this.avatar.value) {
+      swal({
+        title: 'Confirmation',
+        text: `Voulez-vous supprimer la photo de profil du candidat ?`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: "Oui",
+        cancelButtonText: "Annuler"
+      }).then((result) => {
+        if (result.value) {
+          this.WPEndpoint.candidate().id(this.Candidate.ID).then(resp => {
+            let post: any = resp;
+            if (_.isNumber(post.featured_media) && post.featured_media !== 0) {
+              this.WPEndpoint.media().id(post.featured_media)
+                .update({
+                  post: null
+                })
+                .then(response => {
+                  let attachment: any = response;
+                  this.WPEndpoint.media().id(attachment.id)
+                    .delete({ force: true })
+                    .then(() => {
+                      this.WPEndpoint.candidate().id(this.Candidate.ID).update({featured_media: null});
+                      this.avatar.preview = _.clone(this.noAvatar);
+                      this.avatar.value = false;
+                    });
+                });
+            } else {
+              this.avatar.preview = _.clone(this.noAvatar);
+              this.avatar.value = false;
+            }
+          })
+          // For more information about handling dismissals please visit
+          // https://sweetalert2.github.io/#handling-dismissals
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+
+        }
+      })
     }
   }
 
@@ -399,34 +486,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
         return value ? driveLicences[key] : '';
       });
       Form.drivelicences = _.without(Form.drivelicences, '');
-
-      if (_.isObject(this.inputAvatar) && this.inputAvatar.length > 0) {
-        let file: File = this.inputAvatar[0];
-        let formData: FormData = new FormData();
-        formData.append('upload', file);
-        let headers = new Headers();
-        headers.append('Content-Type', 'multipart/form-data');
-        headers.append('Accept', 'application/json');
-        this.Http.post(`${this.apiUploadEndPoint}`, formData)
-          .subscribe(
-            data => {
-              let response: any = data;
-              if (response.success) {
-                // Success upload
-                this.saveCandidate(Form, response.attachment_id);
-              } else {
-                this.loadingSave = false;
-                swal('Erreur', "Une erreur s'est produite", 'warning');
-              }
-            },
-            error => {
-              this.loadingSave = false;
-              swal('Erreur', error, 'error');
-            }
-          )
-      } else {
-        this.saveCandidate(Form);
-      }
+      this.saveCandidate(Form);
     } else {
       swal('Avertissement', "Veuillez verifier les champs incorrect dans le formulaire", "error");
     }
@@ -487,6 +547,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     this.loadingForm = false;
     const component = this;
     setTimeout(() => {
+      lightbox.option({
+        'resizeDuration': 200,
+        'wrapAround': true
+      })
+
       $(".select2").select2({
         element: 'tag label label-success',
         placeholder: "Select a item",

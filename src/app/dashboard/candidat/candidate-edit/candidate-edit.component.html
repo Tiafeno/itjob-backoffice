@@ -40,15 +40,30 @@
               </div>
               <div class="col-sm-6 form-group">
                 <div class="card">
-                  <div class="card-body text-center">
-                    <div class="d-flex align-items-center">
-                      <img [src]="avatar.preview" alt="image" width="90">
-                      <div class="text-left ml-4">
-                        <div class="h1" style="cursor: pointer" appUploadfile><i class="la la-camera text-primary"></i>
-                          <div style="display: none">
-                            <input type="file" name="avatar" (change)="onFileChange($event)" />
+                  <div class="card-body">
+                    <div>
+                      <div class="">
+                        <a [href]="avatar.preview" data-lightbox="avatar" data-title="Photo du candidat">
+                          <img [src]="avatar.preview" alt="image" width="90">
+                        </a>
+                        <div class="mt-2">
+                          <div class="col-12">
+                            <div class="row d-flex align-items-center">
+                              <div class="mr-2" *ngIf="avatar.value">
+                                <button type="button" (click)="onRemoveFile()" class="btn-icon-only btn btn-sm btn-danger">
+                                  <i class="la la-trash"></i>
+                                </button>
+                              </div>
+                              <div>
+                                <button type="button" style="cursor: pointer" appUploadfile class="btn-icon-only btn btn-sm btn-secondary">
+                                  <i class="la la-camera"></i>
+                                  <div style="display: none">
+                                    <input type="file" name="avatar" (change)="onFileChange($event)" />
+                                  </div>
+                                </button>
+                              </div>
+                            </div>
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -97,7 +112,8 @@
               <div class="col-sm-8 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [(ngModel)]="editor.Form.Town" aria-required="true" required>
+                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [(ngModel)]="editor.Form.Town"
+                  aria-required="true" required>
                 </ng-select>
               </div>
             </div>
@@ -277,8 +293,8 @@
                     <div class="form-group mb-3">
                       <label>Recevoir une notification pour quel métier ?</label>
                       <div>
-                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" name="activityarea"
-                          bindValue="term_id" bindLabel="name" [multiple]='false' [items]='branchActivitys'>
+                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" name="activityarea" bindValue="term_id"
+                          bindLabel="name" [multiple]='false' [items]='branchActivitys'>
                         </ng-select>
                       </div>
                     </div>
@@ -298,8 +314,8 @@
                         <label class="checkbox checkbox-info">
                           <input [checked]="editor.Form.trainingNotif.notification" [(ngModel)]="editor.Form.trainingNotif.notification"
                             name="notification" type="checkbox">
-                          <span class="input-span"></span
-                            >Souhaitez-vous recevoir une notification quand une formation est postée sur Itjobmada</label>
+                          <span class="input-span"></span>Souhaitez-vous recevoir une notification quand une formation
+                          est postée sur Itjobmada</label>
                       </div>
                     </div>
                     <div class="col-6" *ngIf="editor.Form.trainingNotif.notification">
@@ -317,7 +333,8 @@
 
                 <div class="form-group">
                   <label class="checkbox checkbox-info">
-                    <input [checked]="editor.Form.Newsletter" [(ngModel)]="editor.Form.Newsletter" name="newsletter" type="checkbox">
+                    <input [checked]="editor.Form.Newsletter" [(ngModel)]="editor.Form.Newsletter" name="newsletter"
+                      type="checkbox">
                     <span class="input-span"></span>Voulez-vous recevoir nos nouvelles du mois</label>
                 </div>
               </div>
@@ -471,8 +488,9 @@
                       name="diploma" placeholder="Diplôme">
                   </div>
                   <div class="form-group mb-4">
-                    <ng-select name="branch_activity" placeholder="Les sécteurs d'activités" [(ngModel)]="editor.Experience.exp_branch_activity"  bindLabel="name"
-                      bindValue="term_id" [hideSelected]="true" [multiple]="false"  [items]="branchActivitys" required>
+                    <ng-select name="branch_activity" placeholder="Les sécteurs d'activités" [(ngModel)]="editor.Experience.exp_branch_activity"
+                      bindLabel="name" bindValue="term_id" [hideSelected]="true" [multiple]="false" [items]="branchActivitys"
+                      required>
                     </ng-select>
 
                     <div *ngIf="(editor.Experience.old_value && editor.Experience.old_value.exp_branch_activity) && !editor.Experience.exp_branch_activity">

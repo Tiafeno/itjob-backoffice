@@ -35,19 +35,6 @@
 
         <div class="row">
           <div class="col-sm-6 form-group mb-4">
-            <label class="font-bold">Type de compte</label>
-            <div>
-              <select class="form-control" name="account" [(ngModel)]="editor.account" title="Type de compte" required>
-                <option value="0">Compte standard</option>
-                <option value="1">Compte premium</option>
-                <option value="2">En attente de validation</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">NIF </label>
             <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
               autocomplete="off">

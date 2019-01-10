@@ -15,6 +15,13 @@
             </div>
             <small class="text-muted">{{request.candidate.privateInformations.firstname}}
               {{request.candidate.privateInformations.lastname}}</small>
+
+            <div class="mt-2 mb-2" *ngIf="request.lm_link">
+              <a href="{{request.lm_link.scheme}}://{{request.lm_link.host}}{{request.lm_link.path}}" target="_blank" class="badge badge-default" [title]="request.lm_name">
+                <span class="btn-icon"><i class="la la-paperclip"></i>Lettre de motivation</span>
+              </a>
+
+            </div>
             <div>
               <span class="badge badge-default" *ngIf="request.type === 'apply'">Postuler</span>
               <span class="badge badge-default" *ngIf="request.type === 'interested'">Sélectionner</span>

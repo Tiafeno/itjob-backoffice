@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import * as moment from 'moment';
 import * as WPAPI from 'wpapi';
 import * as toastr from 'toastr';
 import * as _ from 'lodash';

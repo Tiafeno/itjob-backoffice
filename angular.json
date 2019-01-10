@@ -106,6 +106,7 @@
               "node_modules/tinymce/tinymce.min.js",
               "node_modules/tinymce/themes/modern/theme.js",
               "node_modules/tinymce/plugins/fullscreen/plugin.js",
+              "src/assets/tinymce/langs/fr_FR.js",
               "src/assets/js/app.js"
             ]
           },

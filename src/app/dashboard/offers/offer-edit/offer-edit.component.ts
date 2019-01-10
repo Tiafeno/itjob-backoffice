@@ -26,6 +26,10 @@ export class OfferEditComponent implements OnInit {
    public Regions: any = {};
    public branchActivitys: any = [];
    public tinyMCESettings: any = {
+      language: 'fr_FR',
+      content_css: [
+         '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+         '//www.tinymce.com/css/codepen.min.css'],
       skin_url: '/assets/tinymce/skins/lightgray',
       inline: false,
       statusbar: true,
@@ -86,10 +90,10 @@ export class OfferEditComponent implements OnInit {
             let region = this.Editor.region;
             let abranch = this.Editor.branch_activity;
             let town = this.Editor.town;
-            this.Editor.contractType = !_.isNull(contract) && !_.isEmpty(contract) ? contract.value : '';
-            this.Editor.region = _.isObject(region) ? region.term_id : '';
-            this.Editor.branch_activity = _.isObject(abranch) ? abranch.term_id : '';
-            this.Editor.town = _.isObject(town) ? town.term_id : '';
+            this.Editor.contractType = !_.isNull(contract) && !_.isEmpty(contract) ? contract.value : null;
+            this.Editor.region = _.isObject(region) ? region.term_id : null;
+            this.Editor.branch_activity = _.isObject(abranch) ? abranch.term_id : null;
+            this.Editor.town = _.isObject(town) ? town.term_id : null;
             this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending' ? "pending" : 0);
             this.Editor.rateplan = _.isNull(Offer.rateplan) || _.isEmpty(Offer.rateplan) ? 'standard' : Offer.rateplan;
             // Load script
