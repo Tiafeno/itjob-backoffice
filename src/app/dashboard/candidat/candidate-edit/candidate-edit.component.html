@@ -178,7 +178,7 @@
                   <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" name="{{driveLicence.name}}" [(ngModel)]="driveLicence.checked"
+                        <input type="checkbox" name="{{driveLicence.name}}" (change)="onChangeDriveLicence(drivelicencesCtrl, driveLicence.name)" [(ngModel)]="driveLicence.checked"
                           [checked]="driveLicence.checked">
                         <span class="input-span"></span>{{driveLicence.value}}</label>
                     </div>

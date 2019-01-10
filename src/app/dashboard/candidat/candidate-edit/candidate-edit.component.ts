@@ -126,13 +126,23 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     let cellphones: Array<any> = _.isArray(pI.cellphone) ? pI.cellphone : [];
     let currentDriveLicences = _.isArray(this.Candidate.driveLicences) ? _.map(this.Candidate.driveLicences, 'value') : [];
     currentDriveLicences = _.map(currentDriveLicences, _.unary(parseInt));
-    let dLicences = [
+    let dLicencesScheme = [
       { id: 0, value: 'A`', name: 'a_', checked: false },
       { id: 1, value: 'A', name: 'a', checked: false },
       { id: 2, value: 'B', name: 'b', checked: false },
       { id: 3, value: 'C', name: 'c', checked: false },
       { id: 4, value: 'D', name: 'd', checked: false },
+      { id: 5, value: 'Aucun', name: 'none', checked: false },
     ];
+    let dLicences = _.isArray(this.Candidate.driveLicences) ? _.map(dLicencesScheme, (dLicence) => {
+      dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0 ;
+      return dLicence;
+    }) : dLicencesScheme;
+
+    if (_.every(dLicences, ['checked', false])) {
+      dLicences[5].checked = true;
+    }
+
     let jobSought = this.Candidate.jobSought;
     let jobNotif = this.Candidate.jobNotif;
     let trainingNotif = this.Candidate.trainingNotif;
@@ -146,10 +156,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       Softwares: _.isArray(this.Candidate.softwares) ? _.map(this.Candidate.softwares, 'term_id') : [],
       State: this.Candidate.isActive && this.Candidate.state === 'publish' ? 1 : (this.Candidate.state === 'pending' ? "pending" : 0),
       Status: _.isObject(this.Candidate.status) ? parseInt(this.Candidate.status.value) : null,
-      DriveLicences: _.isArray(this.Candidate.driveLicences) ? _.map(dLicences, (dLicence) => {
-        dLicence.checked = _.indexOf(currentDriveLicences, dLicence.id) >= 0;
-        return dLicence;
-      }) : dLicences,
+      DriveLicences: dLicences,
       Town: _.isObject(pI.address.country) ? pI.address.country.term_id : null,
       Address: pI.address,
       Jobs: _.isArray(currentJobs) ? currentJobs : [],
@@ -472,23 +479,44 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onChangeDriveLicence(Drives: any, name: string): void {
+    let Dl: any = Drives.value;
+    if (name === 'none') {
+      this.editor.Form.DriveLicences = _.forEach(this.editor.Form.DriveLicences, (dLicence) => {
+        if (dLicence.name !== 'none' && Dl.none) {
+          dLicence.checked = false;
+        }
+        return dLicence;
+      });
+    } else {
+      this.editor.Form.DriveLicences = _.forEach(this.editor.Form.DriveLicences, (dLicence) => {
+        if (dLicence.name === 'none') {
+          dLicence.checked = false;
+        }
+        return dLicence;
+      });
+    }
+
+  }
+
   /**
    * Vérifier les entrées
    * @param editForm NgForm
    */
-  onSubmitForm(editForm: NgForm) {
+  onSubmitForm(editForm: NgForm): any {
     if (editForm.valid) {
       this.loadingSave = true;
-      let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 };
-      let Form = _.clone(editForm.value);
+      let driveLicences = { a_: 0, a: 1, b: 2, c: 3, d: 4 , none: 5};
+      let Form: any = _.clone(editForm.value);
       Form.cellphones = Object.values(Form.cellphones);
       Form.drivelicences = _.map(Form.drivelicences, (value: any, key) => {
-        return value ? driveLicences[key] : '';
+        return value ? driveLicences[key] : -1;
       });
-      Form.drivelicences = _.without(Form.drivelicences, '');
+      Form.drivelicences = _.without(Form.drivelicences, -1, 5, undefined);
       this.saveCandidate(Form);
     } else {
       swal('Avertissement', "Veuillez verifier les champs incorrect dans le formulaire", "error");
+      return false;
     }
   }
 
