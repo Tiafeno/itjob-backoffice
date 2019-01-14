@@ -116,8 +116,8 @@
                 <label class="font-bold">Numéro de téléphone</label>
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
-                    <input class="form-control mb-2" name="{{i}}" [id]="cellphone.id" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
-                      required>
+                    <input class="form-control mb-2" name="{{i}}" [id]="cellphone.id" [(ngModel)]="cellphone.value"
+                      type="text" placeholder="Numére de votre cellulaire" required>
                     <span class="input-group-btn ml-2">
                       <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
                         title="Enlever ce numero">
@@ -136,8 +136,8 @@
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday"
-                    type="text" value="" placeholder="Date de naissance" required>
+                  <input class="form-control" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly"
+                    [(ngModel)]="editor.Form.Birthday" type="text" value="" placeholder="Date de naissance" required>
                 </div>
               </div>
             </div>
@@ -166,8 +166,8 @@
                   <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" name="{{driveLicence.name}}" (change)="onChangeDriveLicence(drivelicencesCtrl, driveLicence.name)" [(ngModel)]="driveLicence.checked"
-                          [checked]="driveLicence.checked">
+                        <input type="checkbox" name="{{driveLicence.name}}" (change)="onChangeDriveLicence(drivelicencesCtrl, driveLicence.name)"
+                          [(ngModel)]="driveLicence.checked" [checked]="driveLicence.checked">
                         <span class="input-span"></span>{{driveLicence.value}}</label>
                     </div>
                   </div>
@@ -208,7 +208,8 @@
               <div class="col-12 mb-4">
                 <div class="ibox-body dd pl-0">
                   <h5 class="font-bold text-uppercase">Formations / Diplômes
-                      <button type="button" (click)="onNewTraining()" class="btn btn-sm btn-info ml-2"> Ajouter une formation</button>
+                    <button type="button" (click)="onNewTraining()" class="btn btn-sm btn-info ml-2"> Ajouter une
+                      formation</button>
                   </h5>
                   <ul class="media-list media-list-divider dd-list mr-2">
 
@@ -221,7 +222,8 @@
                               de validation</span>
                           </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
-                          <div class="font-weight-bold">{{training.training_dateBegin | momendate}} - {{training.training_dateEnd | momendate}}</div>
+                          <div class="font-weight-bold">{{training.training_dateBegin | momendate}} -
+                            {{training.training_dateEnd | momendate}}</div>
                         </div>
                         <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
@@ -235,8 +237,9 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body pl-0">
-                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles 
-                    <button type="button" (click)="onNewExperience()" class="btn btn-sm btn-info ml-2"> Ajouter une expérience</button>
+                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles
+                    <button type="button" (click)="onNewExperience()" class="btn btn-sm btn-info ml-2"> Ajouter une
+                      expérience</button>
                   </h5>
                   <ul class="media-list media-list-divider mr-2">
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
@@ -248,7 +251,8 @@
                               attente de validation</span>
                           </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
-                          <div class="font-weight-bold" *ngIf="experience.exp_dateBegin">{{experience.exp_dateBegin | momendate}} - {{experience.exp_dateEnd | momendate}}</div>
+                          <div class="font-weight-bold" *ngIf="experience.exp_dateBegin">{{experience.exp_dateBegin |
+                            momendate}} - {{experience.exp_dateEnd | momendate}}</div>
                           <div class="font-weight-bold" *ngIf="!experience.exp_dateBegin && experience.old_value">
                             {{experience.old_value.exp_dateBegin}} - {{experience.old_value.exp_dateEnd}}
                           </div>
@@ -569,7 +573,12 @@
         </div>
         <div class="col-lg-4">
           <div *ngIf="Candidate">
+            <div class="">
+              <button type="button" [disabled]="loadingPdf" (click)="onDownloadCV()" class="btn btn-info btn-sm"> 
+                <span class="btn-icon"><i class="la la-download"></i>Télécharger en PDF</span></button>
+            </div>
             <app-cover-letter [candidateId]="Candidate.ID"></app-cover-letter>
+
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { RequestService } from '../../../services/request.service';
 import { config } from '../../../../environments/environment';
 import { PlatformLocation } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
 declare var $: any;
 declare var Bloodhound: any;
 
@@ -24,6 +25,7 @@ declare var Bloodhound: any;
 export class CandidateEditComponent implements OnInit, AfterViewInit {
    public id: number;
    public WPEndpoint: any;
+   public loadingPdf: boolean = false;
    public loadingForm: boolean = false;
    public loadingSave: boolean = false;
    public loadingSaveExperience: boolean = false;
@@ -59,6 +61,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       private candidatService: CandidateService,
       private requestServices: RequestService,
       private authService: AuthService,
+      private Http: HttpClient,
       public platformLocation: PlatformLocation
    ) {
       moment.locale('fr');
@@ -239,8 +242,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     * Effacer un numéro dans le formulaire
     * @param cellId number
     */
-   onRemoveCellphone(cellId: string) {
-      this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, { id: cellId });
+   onRemoveCellphone(cellid: string) {
+      this.editor.Form.Cellphones = _.reject(this.editor.Form.Cellphones, { id: cellid });
    }
 
    /**
@@ -556,6 +559,16 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
             }
          })
       }
+   }
+
+   onDownloadCV(): void {
+      this.loadingPdf = true;
+      this.Http.get(`${config.itApi}/candidate/${this.Candidate.ID}?ref=downloadpdf`)
+         .subscribe(response => {
+            let data:any = response;
+            this.loadingPdf = false;
+            window.open(data.filepath, '_blank');
+         });
    }
 
    onChangeDriveLicence(Drives: any, name: string): void {

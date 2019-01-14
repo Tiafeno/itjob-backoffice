@@ -1,6 +1,6 @@
 <div class="ibox-fullheight">
   <div class="ibox-head">
-    <div class="ibox-title">Les lettres de motivations</div>
+    <div class="ibox-title">Lettres de motivations</div>
   </div>
   <div class="ibox-body">
     <ul class="media-list media-list-divider scroller" data-height="470px">
@@ -14,7 +14,7 @@
             <small class="float-right badge badge-warning ml-1 ml-2"><i class="ti-alarm-clock"></i> {{coverletter.date | momendate:'LLLL'}}</small></div>
           <div class="font-13 text-light">{{coverletter.title}}</div>
           <div>
-            <small (click)="onRemoveAttachment( converletter )" class="float-right badge badge-danger mt-2">Supprimer</small>
+            <small (click)="onRemoveAttachment( coverletter )" style="cursor: pointer" class="float-right badge badge-danger mt-2">Supprimer</small>
           </div>
         </div>
       </li>

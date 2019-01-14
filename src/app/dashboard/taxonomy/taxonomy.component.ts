@@ -20,6 +20,7 @@ export class TaxonomyComponent implements OnInit {
    public name: string = "";
    public taxonomy: string = "";
    public edit: any = { name: '', activated: 0 }; // term
+   public sStatus: string = "";
 
    @ViewChild(EditTaxonomyComponent) private EditComponent: EditTaxonomyComponent;
    @ViewChild(NewTaxonomyComponent) private NewComponent: NewTaxonomyComponent;
@@ -56,6 +57,18 @@ export class TaxonomyComponent implements OnInit {
       // Réfuser l'accès au commercial de modifier cette option
       if (!this.authSerice.hasAccess()) return;
       this.NewComponent.open();
+   }
+
+   public createSearch() {
+      let param: string = this.sStatus === '' ? '' :` |${this.sStatus}`;
+      let searchs: string = param;
+      this.table.search(searchs, true, false).draw();
+   }
+
+   public onStatusChange($event: any): void {
+      let el = $event.currentTarget;
+      this.sStatus = el.value;
+      this.createSearch();
    }
 
    initDatatable(): void {
