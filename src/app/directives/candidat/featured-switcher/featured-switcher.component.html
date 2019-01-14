@@ -29,7 +29,8 @@
                 <label>Date limite</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" readonly="readonly" name="datelimit" type="text" [value]="dateLimit" placeholder="Date limite"
+                  <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [minView]="0" readonly="readonly" 
+                    name="dateLimit" type="text" [value]="dateLimit" [(ngModel)]="dateLimit" placeholder="Date limite"
                     autocomplete="off" required>
 
                 </div>

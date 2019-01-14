@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular
 import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
 declare var $: any;
-import { config, dateTimePickerFr } from '../../../../environments/environment';
+import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
 
 @Component({
@@ -53,17 +53,6 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    }
 
    ngOnInit(): void {
-      $.fn.datetimepicker.dates['fr'] = dateTimePickerFr;
-      let dateLimitElement = $('.input-group.date');
-      dateLimitElement
-         .datetimepicker({
-            isRTL: true,
-            format: 'yyyy-mm-dd h:ii',
-            language: 'fr'
-         })
-         .on('changeDate', (ev) => {
-            this.dateLimit = ev.date.toISOString();
-         });
       $('#edit-featured-modal')
          .on('hidden.bs.modal', e => {
             this.warning = false;

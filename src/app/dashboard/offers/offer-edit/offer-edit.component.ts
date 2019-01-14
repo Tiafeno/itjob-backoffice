@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, Route } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
@@ -7,6 +7,7 @@ import { NgForm } from '@angular/forms';
 import swal from 'sweetalert2';
 import { RequestService } from '../../../services/request.service';
 import { CompanyEditComponent } from '../../company/company-edit/company-edit.component';
+import * as moment from 'moment';
 declare var $: any;
 @Component({
    selector: 'app-offer-edit',
@@ -29,7 +30,8 @@ export class OfferEditComponent implements OnInit {
       language: 'fr_FR',
       content_css: [
          '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-         '//www.tinymce.com/css/codepen.min.css'],
+         '//www.tinymce.com/css/codepen.min.css'
+      ],
       skin_url: '/assets/tinymce/skins/lightgray',
       inline: false,
       statusbar: true,
@@ -60,6 +62,17 @@ export class OfferEditComponent implements OnInit {
                this.loadForm(this.Offer);
             });
       });
+
+      this.router.events.subscribe((route) => {
+         if (route instanceof NavigationStart) {
+            Helpers.setLoading(true);
+         }
+
+         if (route instanceof NavigationEnd) {
+            Helpers.setLoading(false);
+         }
+   
+       });
    }
 
    townLoadingFn() {
@@ -96,6 +109,7 @@ export class OfferEditComponent implements OnInit {
             this.Editor.town = _.isObject(town) ? town.term_id : null;
             this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending' ? "pending" : 0);
             this.Editor.rateplan = _.isNull(Offer.rateplan) || _.isEmpty(Offer.rateplan) ? 'standard' : Offer.rateplan;
+            this.Editor.dateLimit = moment(Offer.dateLimit, 'MM/DD/YYYY').format('DD/MM/YYYY');
             // Load script
             Helpers.setLoading(false);
             this.loadingForm = true;
@@ -106,17 +120,6 @@ export class OfferEditComponent implements OnInit {
 
    loadScript() {
       setTimeout(() => {
-
-         $('.input-group.date').datetimepicker({
-            format: "mm/dd/yyyy",
-            minView: "days",
-            todayBtn: false,
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-         });
-
          $(".select2").select2({
             element: 'tag label label-success',
             placeholder: "Select a item",
@@ -155,6 +158,7 @@ export class OfferEditComponent implements OnInit {
       if (editForm.valid) {
          this.loadingSave = true;
          const Value = editForm.value;
+         Value.date_limit = moment(Value.date_limit, 'DD/MM/YYYY').format('MM/DD/YYYY')
          this.offerServices
             .saveOffer(Value)
             .subscribe(response => {
@@ -177,7 +181,7 @@ export class OfferEditComponent implements OnInit {
    // Modifier le compte proféssionnel
    editCompany(event: any) {
       let element = event.currentTarget;
-      let Company: any = this.Offer.__info; 
+      let Company: any = this.Offer.__info;
       this.companyEdit.onOpen(Company);
    }
 

@@ -25,7 +25,6 @@
           </div>
           <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
         </div>
-
         <div class="row">
           <div class="col-md-4 form-check mb-2 mb-sm-0">
             <div class="input-group-icon input-group-icon-left mr-3">
@@ -39,12 +38,10 @@
               <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
             </div>
           </div>
-
           <div class="col-md-4">
             <button type="button" (click)="resetFilterSearch()" class="btn btn-info">Reinitialiser les filtres</button>
           </div>
         </div>
-
       </form>
 
       <div class="table-responsive row">
@@ -52,13 +49,13 @@
           <thead class="thead-default thead-lg">
             <tr>
               <th>#</th>
-              <th>Poste occupé</th>
               <th>Réference</th>
+              <th>Poste occupé</th>
               <th>Position</th>
               <th>Type</th>
               <th>Date limite</th>
               <th>Statut</th>
-              <th>Secteur d'activité</th>
+              <th>Entreprise</th>
               <th>Région</th>
               <th class="no-sort">Action</th>
             </tr>

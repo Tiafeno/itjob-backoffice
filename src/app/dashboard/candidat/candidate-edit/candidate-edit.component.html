@@ -16,7 +16,6 @@
       </h5>
       <div class="row">
         <div class="col-lg-8">
-
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
             <div class="row mb-4">
               <div class="form-group col-sm-6">
@@ -71,9 +70,8 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
-              <div class="col-sm-6 form-group mb-4">
+              <div class="col-sm-4 form-group mb-4">
                 <label class="font-bold">Nom</label>
                 <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
                   type="text" placeholder="Nom du candidat" required>
@@ -84,7 +82,6 @@
                   placeholder="Prénom du candidat">
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 mb-4">
                 <label class="font-bold">Adresse email</label>
@@ -92,14 +89,12 @@
                   type="text" placeholder="Adresse Email" required>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-4 form-group mb-4">
                 <label class="font-bold">Adresse</label>
                 <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
                   type="text" placeholder="Adresse du candidat" required>
               </div>
-
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
@@ -107,7 +102,6 @@
                 </ng-select>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-8 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
@@ -117,13 +111,12 @@
                 </ng-select>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Numéro de téléphone</label>
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
-                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
+                    <input class="form-control mb-2" name="{{i}}" [id]="cellphone.id" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
                       required>
                     <span class="input-group-btn ml-2">
                       <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
@@ -131,27 +124,23 @@
                         <i class="la la-close"></i>
                       </button>
                     </span>
-
                   </div>
-
                 </div>
                 <div>
                   <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-success">Ajouter un numéro</button>
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday"
+                  <input class="form-control" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly" [(ngModel)]="editor.Form.Birthday"
                     type="text" value="" placeholder="Date de naissance" required>
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Status </label>
@@ -165,7 +154,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-6 mb-4">
                 <div class="row">
@@ -219,7 +207,9 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body dd pl-0">
-                  <h5 class="font-bold text-uppercase">Formations / Diplômes</h5>
+                  <h5 class="font-bold text-uppercase">Formations / Diplômes
+                      <button type="button" (click)="onNewTraining()" class="btn btn-sm btn-info ml-2"> Ajouter une formation</button>
+                  </h5>
                   <ul class="media-list media-list-divider dd-list mr-2">
 
                     <li class="media align-items-center dd-item" [attr.data-index]="i" *ngFor="let training of editor.trainings; let i = index">
@@ -231,6 +221,7 @@
                               de validation</span>
                           </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
+                          <div class="font-weight-bold">{{training.training_dateBegin | momendate}} - {{training.training_dateEnd | momendate}}</div>
                         </div>
                         <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
@@ -244,7 +235,9 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body pl-0">
-                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles</h5>
+                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles 
+                    <button type="button" (click)="onNewExperience()" class="btn btn-sm btn-info ml-2"> Ajouter une expérience</button>
+                  </h5>
                   <ul class="media-list media-list-divider mr-2">
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
@@ -255,6 +248,10 @@
                               attente de validation</span>
                           </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
+                          <div class="font-weight-bold" *ngIf="experience.exp_dateBegin">{{experience.exp_dateBegin | momendate}} - {{experience.exp_dateEnd | momendate}}</div>
+                          <div class="font-weight-bold" *ngIf="!experience.exp_dateBegin && experience.old_value">
+                            {{experience.old_value.exp_dateBegin}} - {{experience.old_value.exp_dateEnd}}
+                          </div>
                         </div>
                         <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
                       </div>
@@ -276,7 +273,7 @@
                 </div>
               </div>
             </div>
-
+            <!-- Les notifications -->
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="row mb-4" ngModelGroup="jobNotification" #jobNotificationCtrl="ngModelGroup">
@@ -340,6 +337,7 @@
               </div>
 
             </div>
+            <!-- .fin notification -->
 
             <div class="row">
               <div class="col-md-6 mb-4">
@@ -357,33 +355,13 @@
               </div>
             </div>
 
-            <!-- <div class="row">
-              <div class="col-12 d-flex mb-2">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une offre d’emploi
-                  est postée sur Itjobmada</span>
-              </div>
-
-              <div class="col-12 d-flex">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une formation est
-                  postée sur Itjobmada</span>
-              </div>
-            </div> -->
-
             <div class="text-right mt-4">
               <input type="hidden" name="ID" [(ngModel)]="editor.Form.ID">
               <button class="btn btn-primary btn-air mr-2" [disabled]="loadingSave" type="submit">Enregistrer</button>
             </div>
           </form>
 
+          <!-- Modal training -->
           <div class="modal fade" id="edit-training-modal">
             <div class="modal-dialog" role="document">
               <form class="modal-content" *ngIf="editor.Training">
@@ -455,7 +433,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="modal-footer justify-content-between bg-primary-50">
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeTraining && modeTraining === 'edit'">
                   <div>
                     <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
                       <span *ngIf="editor.Training.validated">Enregistrer</span>
@@ -465,10 +443,19 @@
                   <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i
                       class="la la-trash font-20"></i></a>
                 </div>
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeTraining && modeTraining === 'new'">
+                  <div>
+                    <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
+                      Ajouter une formation
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
+          <!-- .end modal -->
 
+          <!-- Modal experience -->
           <div class="modal fade" id="edit-experience-modal">
             <div class="modal-dialog" role="document">
               <form class="modal-content" *ngIf="editor.Experience">
@@ -555,9 +542,9 @@
                       name="mission" [init]="tinyMCESettings"></editor>
                   </div>
                 </div>
-                <div class="modal-footer justify-content-between bg-primary-50">
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeExperience && modeExperience === 'edit'">
                   <div>
-                    <button class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                    <button type="button" class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
                       <span *ngIf="editor.Experience.validated">Enregistrer</span>
                       <span *ngIf="!editor.Experience.validated">Valider & Enregistrer</span>
                     </button>
@@ -565,10 +552,25 @@
                   <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i
                       class="la la-trash font-20"></i></a>
                 </div>
+
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeExperience && modeExperience === 'new'">
+                  <div>
+                    <button type="button" class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                      Ajouter une expérience
+                    </button>
+                  </div>
+                </div>
+
               </form>
             </div>
           </div>
+          <!-- .end modal -->
 
+        </div>
+        <div class="col-lg-4">
+          <div *ngIf="Candidate">
+            <app-cover-letter [candidateId]="Candidate.ID"></app-cover-letter>
+          </div>
         </div>
       </div>
     </div>

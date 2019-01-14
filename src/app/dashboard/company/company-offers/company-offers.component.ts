@@ -60,16 +60,21 @@ export class CompanyOffersComponent implements OnInit {
       sDom: 'rtip',
       data: this.Offers,
       columns: [
-        { data: 'postPromote', render: (data, type, row, meta) => data },
+        { data: 'postPromote', render: (data) => data },
         { data: 'reference' },
         {
-          data: 'rateplan', render: (data, type, row) => {
+          data: 'rateplan', render: (data) => {
             let plan: string = data === 'sereine' ? 'SEREINE' : (data === 'premium' ? 'PREMIUM' : 'STANDARD');
             let style: string = data === 'sereine' ? 'blue' : (data === 'premium' ? 'success' : 'secondary');
             return `<span class="badge badge-${style}">${plan}</span>`;
           }
         },
-        { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
+        {
+          data: 'datePublication', render: (data) => {
+            if (_.isUndefined(data)) return 'Non renseigner';
+            return data;
+          }
+        },
         {
           data: 'activated', render: (data, type, row) => {
             let status = data && row.offer_status === 'publish' ? 'Publier' : (row.offer_status === 'pending' ? "En attente" : "Désactiver");
@@ -77,18 +82,13 @@ export class CompanyOffersComponent implements OnInit {
             return `<span class="badge badge-${style}">${status}</span>`;
           }
         },
-        {
-          data: 'branch_activity', render: (data) => {
-            if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
-            return data.name;
-          }
-        },
+        { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
         {
           data: null,
-          render: (data, type, row, meta) => `<span data-id='${row.ID}' class='edit-offer badge badge-blue'>Modifier</span>`
+          render: (data, type, row) => `<span data-id='${row.ID}' class='edit-offer badge badge-blue'>Modifier</span>`
         }
       ],
-      initComplete: (setting, json) => {
+      initComplete: () => {
         $('#company-offers-modal').modal('show');
       },
     });
@@ -101,9 +101,9 @@ export class CompanyOffersComponent implements OnInit {
         if (!this.authService.hasAccess()) {
           return;
         }
-        $('#company-offers-modal').modal('show');
         let data = $(e.currentTarget).data();
-        this.router.navigate(['/offer', parseInt(data.id)]);
+        $('#company-offers-modal').modal('hide');
+        this.router.navigate(['/offer', parseInt(data.id), 'edit']);
       })
   }
 

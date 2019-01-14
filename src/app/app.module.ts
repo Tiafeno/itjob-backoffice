@@ -31,7 +31,7 @@ import { BlogService } from './services/blog.service';
   declarations: [
     AppComponent,
     IndexComponent,
-    DashboardComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

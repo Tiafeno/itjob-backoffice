@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
+import { Router } from '@angular/router';
+import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { config } from '../../../../environments/environment';
-import * as moment from 'moment';
 import { OfferService } from '../../../services/offer.service';
 import { Helpers } from '../../../helpers';
 import { FeaturedOfferComponent } from '../../../directives/offers/featured-offer/featured-offer.component';
@@ -20,6 +20,7 @@ declare var $: any;
 })
 
 export class OfferListsComponent implements OnInit {
+   public WPEndpoint: any;
    public listsOffers: Array<any> = [];
    public Helper: any;
    private table: any;
@@ -38,7 +39,15 @@ export class OfferListsComponent implements OnInit {
       private offerService: OfferService,
       private authService: AuthService
    ) {
-      this.Helper = Helpers
+      this.Helper = Helpers;
+      this.WPEndpoint = new WPAPI({
+         endpoint: config.apiEndpoint,
+      });
+      let currentUser = this.authService.getCurrentUser();
+      this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
+      var namespace = 'wp/v2'; // use the WP API namespace
+      var route = '/offers/(?P<id>)'; // route string - allows optional ID parameter
+      this.WPEndpoint.offers = this.WPEndpoint.registerRoute(namespace, route);
    }
 
    onChoosed(areaId: number) {
@@ -88,6 +97,7 @@ export class OfferListsComponent implements OnInit {
       this.table = offerLists.DataTable({
          pageLength: 10,
          page: 1,
+         ordering: false, // Activer ou désactiver l'affichage d'ordre
          fixedHeader: true,
          responsive: false,
          "sDom": 'rtip',
@@ -95,8 +105,8 @@ export class OfferListsComponent implements OnInit {
          serverSide: true,
          columns: [
             { data: 'ID' },
-            { data: 'postPromote', render: (data, type, row, meta) => data },
             { data: 'reference' },
+            { data: 'postPromote', render: (data, type, row, meta) => data },
             {
                data: '_featured', render: data => {
                   let featured: string = data ? 'À LA UNE' : 'AUCUN';
@@ -120,8 +130,8 @@ export class OfferListsComponent implements OnInit {
                }
             },
             {
-               data: 'branch_activity', render: (data) => {
-                  if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
+               data: '_company', render: (data) => {
+                  if (_.isUndefined(data.name)) return 'Non renseigner';
                   return data.name;
                }
             },
@@ -134,18 +144,18 @@ export class OfferListsComponent implements OnInit {
             {
                data: null,
                render: (data, type, row, meta) => `
-              <div class="fab fab-left">
-                <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
-                  <i class="fab-icon la la-bars"></i>
-                  <i class="fab-icon-active la la-close"></i>
-                </button>
-                <ul class="fab-menu">
-                  <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-offer" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
-                  <li><button class="btn btn-pink btn-icon-only btn-circle btn-air status-offer" data-status="false" data-id="${row.ID}"><i class="la la-eye-slash"></i></button></li>
-                  <li><button class="btn btn-blue btn-icon-only btn-circle btn-air status-offer" data-status="true" data-id="${row.ID}" ><i class="la la-eye"></i></button></li>
-                </ul>
-              </div>
-            `
+                  <div class="fab fab-left">
+                     <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
+                        <i class="fab-icon la la-bars"></i>
+                        <i class="fab-icon-active la la-close"></i>
+                     </button>
+                     <ul class="fab-menu">
+                        <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-offer" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
+                        <li><button class="btn btn-pink btn-icon-only btn-circle btn-air status-offer" data-status="false" data-id="${row.ID}"><i class="la la-eye-slash"></i></button></li>
+                        <li><button class="btn btn-blue btn-icon-only btn-circle btn-air status-offer" data-status="true" data-id="${row.ID}" ><i class="la la-eye"></i></button></li>
+                        <li><button class="btn btn-danger btn-icon-only btn-circle btn-air remove-offer" data-id="${row.ID}" ><i class="la la-trash"></i></button></li>
+                     </ul>
+                  </div>`
             }
          ],
          initComplete: (setting, json) => {
@@ -191,12 +201,12 @@ export class OfferListsComponent implements OnInit {
          .on('click', '.edit-offer', (e) => {
             e.preventDefault();
             // Réfuser l'accès au commercial de modifier cette option
-            if (!this.authService.hasAccess(false)) { // Sans alert
-               let el = $(e.currentTarget).parents('tr');
-               let Offer = this.table.row(el).data();
-               this.deadlineOfferEditor.open(Offer);
-               return;
-            }
+            // if (!this.authService.hasAccess(false)) { // Sans alert
+            //    let el = $(e.currentTarget).parents('tr');
+            //    let Offer = this.table.row(el).data();
+            //    this.deadlineOfferEditor.open(Offer);
+            //    return;
+            // }
 
             let data = $(e.currentTarget).data();
             this.router.navigate(['/offer', parseInt(data.id)]);
@@ -208,10 +218,10 @@ export class OfferListsComponent implements OnInit {
             if (!this.authService.hasAccess()) return;
 
             let el = $(e.currentTarget).parents('tr');
-            let DATA = this.table.row(el).data();
-            let rateplan: string = DATA.rateplan;
+            let __offer = this.table.row(el).data();
+            let rateplan: string = __offer.rateplan;
             rateplan = _.isEmpty(rateplan) || _.isNull(rateplan) ? 'standard' : rateplan;
-            this.ratePlanComp.onOpen(DATA.ID, rateplan);
+            this.ratePlanComp.onOpen(__offer.ID, rateplan);
          })
          // Modifier la position de l'offre
          .on('click', '.update-position', e => {
@@ -220,8 +230,44 @@ export class OfferListsComponent implements OnInit {
             if (!this.authService.hasAccess()) return;
 
             let el = $(e.currentTarget).parents('tr');
-            let DATA = this.table.row(el).data();
-            this.featuredComp.open(DATA);
+            let __offer = this.table.row(el).data();
+            this.featuredComp.open(__offer);
+         })
+         // Supprimer l'offre
+         .on('click', '.remove-offer', e => {
+            e.preventDefault();
+            // Réfuser l'accès au commercial de modifier cette option
+            if (!this.authService.hasAccess()) return;
+
+            let el = $(e.currentTarget).parents('tr');
+            let __offer = this.table.row(el).data();
+            swal({
+               title: 'Confirmation',
+               html: `Vous voulez vraiment supprimer cette offre?<br> <b>${__offer.postPromote}</b>`,
+               type: 'warning',
+               showCancelButton: true,
+               confirmButtonText: "Supprimer",
+               cancelButtonText: "Annuler"
+            }).then((result) => {
+               if (result.value) {
+                  this.Helper.setLoading(true);
+                  this.WPEndpoint.offers().id(__offer.ID).delete({ force: true })
+                     .then(
+                        resp => {
+                           swal('Succès', "L'offre a bien été effacer avec succès", 'success');
+                           this.reload();
+                           this.Helper.setLoading(false);
+                        },
+                        error => {
+                           swal('Echec de suppression', "Une erreur s'est produite pendant la suppression de l'offre", 'error');
+                           this.Helper.setLoading(false);
+                        });
+                  // For more information about handling dismissals please visit
+                  // https://sweetalert2.github.io/#handling-dismissals
+               } else if (result.dismiss === swal.DismissReason.cancel) {
+
+               }
+            })
          })
          // Modifier le status de l'offre
          .on('click', '.status-offer', (e) => {
@@ -231,14 +277,14 @@ export class OfferListsComponent implements OnInit {
 
             let el = $(e.currentTarget).parents('tr');
             // Récuperer l'objet offre
-            let DATA = this.table.row(el).data();
+            let __offer = this.table.row(el).data();
             // Récuperer les data attributs de l'element
             let data = $(e.currentTarget).data();
             let statusChange: boolean = data.status;
             let offerId: number = data.id;
             let confirmButton: string = statusChange ? 'Activer' : 'Désactiver';
             let cancelButton: string = "Annuler";
-            if (DATA.activated === statusChange && DATA.offer_status === 'publish') {
+            if (__offer.activated === statusChange && __offer.offer_status === 'publish') {
                swal('', `Vous ne pouvez pas ${confirmButton.toLowerCase()} une offre qui es déja ${confirmButton.toLowerCase()}.`, 'warning');
                return false;
             }

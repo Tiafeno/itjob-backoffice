@@ -25,7 +25,7 @@ export class DeadlineOfferComponent implements OnInit {
    ngOnInit() {
       moment.locale('fr');
       $('.input-group.date.no-time')
-         .datepicker({
+         .datetimepicker({
             format: "mm/dd/yyyy",
             language: 'fr',
             todayBtn: false,

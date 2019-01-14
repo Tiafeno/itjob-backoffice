@@ -39,6 +39,9 @@ import { NewBlogComponent } from './blogs/new-blog/new-blog.component';
 import { ViewNewsletterComponent } from './newsletter/view-newsletter/view-newsletter.component';
 import { PublicityComponent } from './publicity/publicity.component';
 import { CompanyOffersComponent } from './company/company-offers/company-offers.component';
+import { MomendatePipe } from '../pipes/momendate.pipe';
+import { DatepickerDirective } from '../directives/datepicker.directive';
+import { CoverLetterComponent } from '../directives/candidat/cover-letter/cover-letter.component';
 
 @NgModule({
   imports: [
@@ -84,7 +87,10 @@ import { CompanyOffersComponent } from './company/company-offers/company-offers.
     NewBlogComponent,
     ViewNewsletterComponent,
     PublicityComponent,
-    CompanyOffersComponent
+    CompanyOffersComponent,
+    MomendatePipe,
+    CoverLetterComponent,
+    DatepickerDirective
   ],
   providers: [
     {
@@ -95,7 +101,8 @@ import { CompanyOffersComponent } from './company/company-offers/company-offers.
     }
   ],
   exports: [
-    UploadfileDirective
+    UploadfileDirective,
+    DatepickerDirective
   ]
 })
 export class DashboardModule { }

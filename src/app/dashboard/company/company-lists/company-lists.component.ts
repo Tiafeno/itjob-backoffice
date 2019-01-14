@@ -74,6 +74,7 @@ export class CompanyListsComponent implements OnInit {
     this.TABLE = companyLists.DataTable({
       pageLength: 20,
       page: 0,
+      ordering: false,
       fixedHeader: true,
       responsive: false,
       "sDom": 'rtip',
@@ -193,7 +194,7 @@ export class CompanyListsComponent implements OnInit {
         e.preventDefault();
         // Réfuser l'accès au commercial de modifier cette option
         // Seul l'administrateur peuvent modifier les entreprises
-        if (!this.authService.hasAccess()) return;
+        // if (!this.authService.hasAccess()) return;
 
         let el = $(e.currentTarget).parents('tr');
         let DATA = this.TABLE.row(el).data();

@@ -100,6 +100,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
     this.table = candidateLists
       .DataTable({
         pageLength: 10,
+        ordering: false,
         fixedHeader: true,
         responsive: false,
         select: 'single',
@@ -114,6 +115,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         serverSide: true,
         columns: [
           { data: 'ID' },
+          { data: 'reference' },
           {
             data: 'privateInformations.firstname'
           },
@@ -127,7 +129,6 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
               return `<span class="badge update-status badge-${style}">${status}</span>`;
             }
           },
-          { data: 'reference' },
           {
             data: 'featured', render: (data) => {
               let value: string = data ? 'à la une' : 'AUCUN';

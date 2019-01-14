@@ -47,10 +47,8 @@ export class TaxonomyComponent implements OnInit {
 
    onEdit(term: any): void {
       // Réfuser l'accès au commercial de modifier cette option
-      if (!this.authSerice.hasAccess()) return;
-
+      // if (!this.authSerice.hasAccess()) return;
       this.edit = _.cloneDeep(term);
-      let activated = this.edit.activated;
       this.EditComponent.open();
    }
 
@@ -91,7 +89,7 @@ export class TaxonomyComponent implements OnInit {
                { data: 'term_id' },
                { data: 'name' },
                {
-                  data: 'activated', render: (data, type, row) => {
+                  data: 'activated', render: (data) => {
                      let status = data ? 'Publier' : "En attente";
                      let style = data ? 'primary' : "warning";
                      return `<span class="badge badge-${style}">${status}</span>`;
@@ -99,17 +97,23 @@ export class TaxonomyComponent implements OnInit {
                },
                {
                   data: null,
-                  render: (data, type, row, meta) => `<span data-id='${row.ID}' class='edit-taxonomy badge badge-blue'>Modifier</span>`
+                  render: (data, type, row) => `<span data-id='${row.ID}' class='edit-taxonomy badge badge-blue'>Modifier</span>`
                }
             ],
-            initComplete: (setting, json) => {
-
+            initComplete: () => {
+               
             },
             ajax: {
                url: `${config.itApi}/taxonomy/${this.taxonomy}/`,
                dataType: 'json',
-               data: {
-                  order: false,
+               data: (dt) => {
+                  return {
+                     columns: dt.columns,
+                     sort: dt.order,
+                     search: dt.search,
+                     start: dt.start,
+                     length: dt.length,
+                  };
                },
                type: 'GET',
                beforeSend: function (xhr) {
@@ -121,7 +125,6 @@ export class TaxonomyComponent implements OnInit {
                }
             }
          });
-
 
       $('#taxonomy-table tbody')
          .on('click', '.edit-taxonomy', (e) => {

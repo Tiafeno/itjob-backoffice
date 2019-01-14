@@ -9,6 +9,7 @@
       </div>
       <div class="modal-body p-4">
         <div class="row">
+
           <div class="col-sm-12">
             <div class="form-group mb-4">
               <label>Nom</label>
@@ -16,14 +17,23 @@
                 type="text" autocomplete="off" required>
             </div>
           </div>
+
           <div class="col-sm-12">
-            <div class="form-group">
+            <div class="form-group mb-4">
               <label>Statut</label>
               <select class="form-control" name="activated" [(ngModel)]="term.activated" data-style="btn-solid"
                 required>
                 <option value="1">Publier</option>
                 <option value="0">Mettre en attente</option>
               </select>
+            </div>
+          </div>
+
+          <div class="col-sm-12" *ngIf="taxonomy === 'job_sought'">
+            <div class="form-group">
+              <label class="checkbox checkbox-warning">
+                <input type="checkbox" name="notified" [value]="false" [(ngModel)]="term.notified">
+                <span class="input-span"></span>Envoyer une notification et un email à l'utilisateur</label>
             </div>
           </div>
         </div>
@@ -41,7 +51,7 @@
             <span>Remplacer</span>
           </button>
         </div>
-        <a class="text-danger" (click)="onRemove()"><i class="la la-trash font-20"></i></a>
+        <a class="text-danger" *ngIf="!loading" (click)="onRemove( editForm )"><i class="la la-trash font-20"></i></a>
       </div>
     </form>
   </div>
@@ -61,8 +71,9 @@
           <div class="col-sm-12">
             <div class="form-group mb-4">
               <label>Replacer <b>{{term.name}}</b> par:</label>
-              <ng-select name="by" [(ngModel)]="by" [loading]="loadingReplace" placeholder="Tapez et séléctionner une autre term" bindLabel="name"
-                bindValue="term_id" [hideSelected]="true" [multiple]="false" [typeahead]="byInput" [items]="Terms" required>
+              <ng-select name="by" [(ngModel)]="by" [loading]="loadingReplace" placeholder="Tapez et séléctionner une autre term"
+                bindLabel="name" bindValue="term_id" [hideSelected]="true" [multiple]="false" [typeahead]="byInput"
+                [items]="Terms" required>
               </ng-select>
             </div>
           </div>
@@ -71,7 +82,7 @@
       <div class="modal-footer justify-content-between bg-primary-50">
         <div>
           <div style="display: none">
-              <input type="number" name="needle" [(ngModel)]="term.term_id">
+            <input type="number" name="needle" [(ngModel)]="term.term_id">
             <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
           </div>
           <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
