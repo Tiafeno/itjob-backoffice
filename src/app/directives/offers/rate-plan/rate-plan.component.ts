@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import * as _ from 'lodash';
 import { config } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 
 @Component({
@@ -20,6 +21,7 @@ export class RatePlanComponent implements OnInit, AfterViewInit {
   @Output() private refresh = new EventEmitter();
 
   constructor(
+    private auth: AuthService,
     private Http: HttpClient
   ) { }
 
@@ -41,6 +43,9 @@ export class RatePlanComponent implements OnInit, AfterViewInit {
   }
 
   public onUpdate(): any {
+    if (!this.auth.notUserAccess("contributor")) return;
+    if (!this.auth.notUserAccess("editor")) return;
+
     let typeOfValues = ['standard', 'sereine', 'premium'];
     if (this.type === this.currentType) {
       this.warning = true;

@@ -37,10 +37,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         Helpers.setLoading(false);
         // Initialize page: handlers ...
         Helpers.initPage();
-        this.intervalRef = setInterval( async () => {
-          await this.loadNotification();
-          console.info('Notification init ...');
-        }, 15000);
+        if (this.Auth.isLogged()) {
+          this.intervalRef = setInterval( async () => {
+            await this.loadNotification();
+          }, 15000);
+        }
       }
 
     });
@@ -55,11 +56,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       error => {
         if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
+          clearInterval(this.intervalRef);
           this.Auth.logout();
           return;
-        }
-        if (error.status === 0) {
-          clearInterval(this.intervalRef);
         }
       });
   }

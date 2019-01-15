@@ -203,7 +203,8 @@ export class CompanyListsComponent implements OnInit {
       .on('click', '.edit-status', (e) => {
         e.preventDefault();
         // Réfuser l'accès au commercial de modifier cette option
-        if (!this.authService.hasAccess()) return;
+        if (!this.authService.notUserAccess("contributor")) return;
+        if (!this.authService.notUserAccess("editor")) return;
 
         let el = $(e.currentTarget).parents('tr');
         let DATA = this.TABLE.row(el).data();

@@ -3,6 +3,7 @@ import { OfferService } from '../../../services/offer.service';
 
 import * as _ from 'lodash';
 import swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-postuled-candidates',
   templateUrl: './postuled-candidates.component.html',
@@ -12,6 +13,7 @@ export class PostuledCandidatesComponent implements OnInit {
   @Input('offerid') offerId: number;
   public Requests: any;
   constructor(
+    private auth: AuthService,
     private offerService: OfferService
   ) { }
 
@@ -23,6 +25,9 @@ export class PostuledCandidatesComponent implements OnInit {
   }
 
   public onValidate(idRequest: number, event: any){
+    if (!this.auth.notUserAccess("contributor")) return;
+    if (!this.auth.notUserAccess("editor")) return;
+
     let el = event.target;
     swal({
       title: '',
@@ -43,6 +48,9 @@ export class PostuledCandidatesComponent implements OnInit {
   }
 
   public onReject(idRequest: number, event: any) {
+    if (!this.auth.notUserAccess("contributor")) return;
+    if (!this.auth.notUserAccess("editor")) return;
+
     let el = event.target;
     swal({
       title: '',

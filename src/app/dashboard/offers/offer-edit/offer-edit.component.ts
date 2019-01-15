@@ -8,6 +8,7 @@ import swal from 'sweetalert2';
 import { RequestService } from '../../../services/request.service';
 import { CompanyEditComponent } from '../../company/company-edit/company-edit.component';
 import * as moment from 'moment';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 @Component({
    selector: 'app-offer-edit',
@@ -28,8 +29,9 @@ export class OfferEditComponent implements OnInit {
    public branchActivitys: any = [];
    public tinyMCESettings: any = {
       language: 'fr_FR',
+      menubar: false,
       content_css: [
-         '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+         '//fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i',
          '//www.tinymce.com/css/codepen.min.css'
       ],
       skin_url: '/assets/tinymce/skins/lightgray',
@@ -39,13 +41,15 @@ export class OfferEditComponent implements OnInit {
       browser_spellcheck: true,
       min_height: 230,
       selector: 'textarea',
-      plugins: '',
+      toolbar: 'undo redo | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ',
+      plugins: ['lists'],
    };
 
    @ViewChild(CompanyEditComponent) private companyEdit: CompanyEditComponent;
 
    constructor(
       private route: ActivatedRoute,
+      private authService: AuthService,
       private router: Router,
       private offerServices: OfferService,
       private requestServices: RequestService
@@ -155,6 +159,7 @@ export class OfferEditComponent implements OnInit {
    }
 
    onSubmitForm(editForm: NgForm): boolean {
+      if (!this.authService.notUserAccess("contributor")) return;
       if (editForm.valid) {
          this.loadingSave = true;
          const Value = editForm.value;

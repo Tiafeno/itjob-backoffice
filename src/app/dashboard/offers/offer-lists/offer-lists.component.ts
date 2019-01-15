@@ -207,6 +207,7 @@ export class OfferListsComponent implements OnInit {
             //    this.deadlineOfferEditor.open(Offer);
             //    return;
             // }
+            if (!this.authService.notUserAccess("editor")) return;
 
             let data = $(e.currentTarget).data();
             this.router.navigate(['/offer', parseInt(data.id)]);
@@ -215,7 +216,8 @@ export class OfferListsComponent implements OnInit {
          .on('click', '.edit-rateplan', e => {
             e.preventDefault();
             // Réfuser l'accès au commercial de modifier cette option
-            if (!this.authService.hasAccess()) return;
+            if (!this.authService.notUserAccess("editor")) return;
+            if (!this.authService.notUserAccess("contributor")) return;
 
             let el = $(e.currentTarget).parents('tr');
             let __offer = this.table.row(el).data();
@@ -227,7 +229,8 @@ export class OfferListsComponent implements OnInit {
          .on('click', '.update-position', e => {
             e.preventDefault();
             // Réfuser l'accès au commercial de modifier cette option
-            if (!this.authService.hasAccess()) return;
+            if (!this.authService.notUserAccess("contributor")) return;
+            if (!this.authService.notUserAccess("editor")) return;
 
             let el = $(e.currentTarget).parents('tr');
             let __offer = this.table.row(el).data();
@@ -237,7 +240,8 @@ export class OfferListsComponent implements OnInit {
          .on('click', '.remove-offer', e => {
             e.preventDefault();
             // Réfuser l'accès au commercial de modifier cette option
-            if (!this.authService.hasAccess()) return;
+            if (!this.authService.notUserAccess("contributor")) return;
+            if (!this.authService.notUserAccess("editor")) return;
 
             let el = $(e.currentTarget).parents('tr');
             let __offer = this.table.row(el).data();
@@ -273,7 +277,8 @@ export class OfferListsComponent implements OnInit {
          .on('click', '.status-offer', (e) => {
             e.preventDefault();
             // Réfuser l'accès au commercial de modifier cette option
-            if (!this.authService.hasAccess()) return;
+            if (!this.authService.notUserAccess("editor")) return;
+            if (!this.authService.notUserAccess("contributor")) return;
 
             let el = $(e.currentTarget).parents('tr');
             // Récuperer l'objet offre

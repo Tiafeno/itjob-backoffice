@@ -333,6 +333,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     * @param trainingId 
     */
    onDeleteTraining(trainingId: any) {
+      if (!this.authService.notUserAccess("contributor")) return;
+      
       let id: number = parseInt(trainingId);
       let Training: any = _.reject(this.editor.trainings, ['ID', id]);
       this.loadingSaveTraining = true;
@@ -469,6 +471,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
     * @param experienceId 
     */
    onDeleteExperience(experienceId: any) {
+      if (!this.authService.notUserAccess("contributor")) return;
+
       let id: number = parseInt(experienceId);
       let Experiences: any = _.reject(this.editor.experiences, ['ID', id]);
       this.loadingSaveExperience = true;

@@ -28,7 +28,7 @@ export class TaxonomyComponent implements OnInit {
    constructor(
       private activeRoute: ActivatedRoute,
       private requestServices: RequestService,
-      private authSerice: AuthService
+      private authService: AuthService
    ) { }
 
    ngOnInit() {
@@ -48,14 +48,16 @@ export class TaxonomyComponent implements OnInit {
 
    onEdit(term: any): void {
       // Réfuser l'accès au commercial de modifier cette option
-      // if (!this.authSerice.hasAccess()) return;
+      if (this.taxonomy === 'language')
+         if (!this.authService.notUserAccess('contributor')) return;
       this.edit = _.cloneDeep(term);
       this.EditComponent.open();
    }
 
    onNew(): void {
       // Réfuser l'accès au commercial de modifier cette option
-      if (!this.authSerice.hasAccess()) return;
+      if (!this.authService.notUserAccess("editor")) return;
+      if (!this.authService.notUserAccess('contributor')) return;
       this.NewComponent.open();
    }
 

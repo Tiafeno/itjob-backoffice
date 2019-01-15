@@ -19,7 +19,7 @@ export class AuthService {
                   // Verifier si l'utilisateur est valide
                   // Seul les utilisateur valide sont les administrateurs et les éditeurs
                   let roles: Array<string> = user.data.roles;
-                  if (_.indexOf(roles, 'administrator') > -1 || _.indexOf(roles, 'editor') > -1) {
+                  if (_.indexOf(roles, 'administrator') > -1 || _.indexOf(roles, 'editor') > -1 || _.indexOf(roles, 'contributor') > -1) {
                      localStorage.setItem('currentUser', JSON.stringify(user));
                   } else {
                      return false;
@@ -69,6 +69,10 @@ export class AuthService {
       return currentUser;
    }
 
+   /**
+    * Seul l'administrateur à l'access
+    * @param withAlert boolean
+    */
    public hasAccess(withAlert?: boolean): boolean {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (_.indexOf(currentUser.data.roles, 'administrator') === -1) {
@@ -86,4 +90,25 @@ export class AuthService {
       }
    }
 
+   /**
+    * Ne pas autoriser l'utilisateur pour une role definie
+    * @param role string
+    * @param withAlert boolean
+    */
+   public notUserAccess(role: string, withAlert?: boolean) : boolean {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (_.indexOf(currentUser.data.roles, role) >= 0) {
+         if (_.isUndefined(withAlert) || withAlert) {
+            swal({
+               title: 'FORBIDDEN',
+               text: 'You don\'t have permission to access.',
+               icon: 'error',
+               button: false
+            } as any);
+         }
+         return false;
+      } else {
+         return true
+      }
+   }
 }

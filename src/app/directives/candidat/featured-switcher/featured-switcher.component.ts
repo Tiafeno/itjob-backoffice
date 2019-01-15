@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 declare var $: any;
 import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
    selector: 'app-featured-switcher',
@@ -21,6 +22,7 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    @Output() refresh = new EventEmitter();
 
    constructor(
+      private auth: AuthService,
       private Http: HttpClient
    ) { }
 
@@ -36,6 +38,9 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    }
 
    public onUpdate(): boolean {
+      if (!this.auth.notUserAccess("contributor")) return;
+      if (!this.auth.notUserAccess("editor")) return;
+
       if (this.position === this.currentPosition && this.position === 0) {
          this.warning = true;
          return false;

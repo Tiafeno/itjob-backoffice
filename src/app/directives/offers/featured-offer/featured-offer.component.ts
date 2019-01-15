@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { dateTimePickerFr, config } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 declare var $:any;
 
 @Component({
@@ -21,7 +22,8 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
   @Output() refresh = new EventEmitter();
 
   constructor(
-    private Http: HttpClient
+    private Http: HttpClient,
+    private auth: AuthService
   ) { }
 
   public open(offer: any): void {
@@ -36,6 +38,9 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
   }
 
   public onUpdate(): boolean {
+    if (!this.auth.notUserAccess("contributor")) return;
+    if (!this.auth.notUserAccess("editor")) return;
+
     if (this.position === this.currentPosition && this.position === 0) {
       this.warning = true;
       return false;

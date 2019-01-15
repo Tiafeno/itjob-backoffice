@@ -6,6 +6,7 @@ import { config } from '../../../../environments/environment';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert2';
 import { CompanyOffersComponent } from '../company-offers/company-offers.component';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 @Component({
   selector: 'app-company-edit',
@@ -28,6 +29,7 @@ export class CompanyEditComponent implements OnInit {
   @ViewChild(CompanyOffersComponent) private ourOffers: CompanyOffersComponent;
 
   constructor(
+    private authService: AuthService,
     private Http: HttpClient
   ) { }
 
@@ -45,6 +47,9 @@ export class CompanyEditComponent implements OnInit {
   }
 
   onSubmitForm(editForm: NgForm) {
+    if (!this.authService.notUserAccess("contributor")) return;
+    if (!this.authService.notUserAccess("editor")) return;
+
     if (editForm.valid) {
       this.loading = true;
       let Form = _.clone(editForm.value);
