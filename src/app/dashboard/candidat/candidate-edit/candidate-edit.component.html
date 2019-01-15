@@ -573,10 +573,18 @@
         </div>
         <div class="col-lg-4">
           <div *ngIf="Candidate">
-            <div class="">
-              <button type="button" [disabled]="loadingPdf" (click)="onDownloadCV()" class="btn btn-info btn-sm"> 
-                <span class="btn-icon"><i class="la la-download"></i>Télécharger en PDF</span></button>
+
+            <div class="ibox">
+              <div class="ibox-head">
+                <div class="ibox-title">Pour télécharger le CV </div>
+              </div>
+              <div class="ibox-body pt-3">
+                <button type="button" [disabled]="loadingPdf" class="btn btn-danger btn-labeled btn-labeled-left btn-icon">
+                    <span class="btn-label"><i class="la la-download"></i></span>Télécharger en PDF</button>
+                    <small class="text-muted d-block mt-2">Autoriser ou Activer les pop-ups (fenêtres contextuelles) dans votre navigateur pour ce site</small>
+              </div>
             </div>
+
             <app-cover-letter [candidateId]="Candidate.ID"></app-cover-letter>
 
           </div>

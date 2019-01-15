@@ -1,4 +1,4 @@
-<div class="ibox-fullheight">
+<div class="ibox">
   <div class="ibox-head">
     <div class="ibox-title">Lettres de motivations</div>
   </div>
@@ -19,6 +19,7 @@
         </div>
       </li>
     </ul>
-    <div *ngIf="!loading && !coverLetters">Aucun</div>
+    <div *ngIf="coverLetters.length <= 0 && !loading">Aucun</div>
+    <div *ngIf="loading"> Chargement en cours ...</div>
   </div>
 </div>

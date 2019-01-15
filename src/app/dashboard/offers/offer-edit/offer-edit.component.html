@@ -147,7 +147,7 @@
                 <div class="col-8">{{Offer.__info.name}}</div>
               </div>
               <div class="row align-items-center mb-3">
-                <div class="col-4 text-light">Adress</div>
+                <div class="col-4 text-light">Adresse de l'entreprise</div>
                 <div class="col-8">{{Offer.__info.address}}</div>
               </div>
               <div class="row align-items-center mb-3">
@@ -166,13 +166,9 @@
               </div>
             </div>
           </div>
-          <div class="ibox">
-            <div class="ibox-body">
-              <app-postuled-candidates [offerid]="ID">
-                Chargement en cours...
-              </app-postuled-candidates>
-            </div>
-          </div>
+          <app-postuled-candidates [offerid]="ID">
+            Chargement en cours...
+          </app-postuled-candidates>
         </div>
       </div>
     </div>

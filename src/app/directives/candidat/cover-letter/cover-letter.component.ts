@@ -36,9 +36,11 @@ export class CoverLetterComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loading = true;
         this.getCoverLetter()
             .subscribe(resp => {
                 this.coverLetters = _.cloneDeep(resp);
+                this.loading = false;
             })
     }
 

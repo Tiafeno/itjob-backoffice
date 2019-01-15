@@ -1,4 +1,4 @@
-<div class="ibox-fullheight">
+<div class="ibox">
   <div class="ibox-head">
     <div class="ibox-title">Les candidats ayant été sélectionnés/postulés</div>
   </div>
@@ -13,10 +13,18 @@
               <span class="badge badge-success ml-2" *ngIf="request.status === 'validated'">Valider</span>
               <span class="badge badge-danger ml-2" *ngIf="request.status === 'reject'">Réjeter</span>
             </div>
-            <small class="text-muted">{{request.candidate.privateInformations.firstname}}
-              {{request.candidate.privateInformations.lastname}}</small>
 
-            <div class="mt-2 mb-2" *ngIf="request.lm_link">
+            <div class="flex-1">
+              <small class="badge badge-primary ml-1 ml-2"><i class="ti-alarm-clock"></i> {{request.date_add | momendate:'LLLL'}}</small>
+            </div>
+
+            <div class="flex-1">
+              <small class="text-muted">{{request.candidate.privateInformations.firstname}}
+                {{request.candidate.privateInformations.lastname}}</small>
+            </div>
+            
+
+            <div class="mt-2 mb-2 flex-1" *ngIf="request.lm_link">
               <a href="{{request.lm_link.scheme}}://{{request.lm_link.host}}{{request.lm_link.path}}" target="_blank" class="badge badge-info" [title]="request.lm_name">
                 <span class="btn-icon"><i class="la la-paperclip"></i>Lettre de motivation</span>
               </a>
@@ -32,6 +40,7 @@
         </div>
       </li>
     </ul>
-    <div *ngIf="!Requests">Néant</div>
+    <div *ngIf="Requests.length <= 0 && !loading">Néant</div>
+    <div *ngIf="loading"> Chargement en cours ...</div>
   </div>
 </div>
