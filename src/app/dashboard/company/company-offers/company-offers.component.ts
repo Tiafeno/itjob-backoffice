@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { Helpers } from '../../../helpers';
 declare var $: any;
 
 @Component({
@@ -25,22 +26,17 @@ export class CompanyOffersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    $('#company-offers-modal')
-      .on('show.bs.modal', (event) => {
-        $('#edit-company-modal').modal('hide');
-      })
-      .on('hide.bs.modal', (event) => {
-
-      })
   }
 
   public viewOffers(companyId: number) {
+    Helpers.setLoading(true);
     this.loading = true;
     this.Http.get(`${config.itApi}/company/${companyId}?ref=collect_offers`, { responseType: 'json' })
       .subscribe(response => {
         let result: any = _.clone(response);
         this.Company = _.cloneDeep(result.companyInfo);
         this.Offers = result.offers ? _.cloneDeep(result.offers) : [];
+        Helpers.setLoading(false);
         this.loadTable();
       })
   }
@@ -53,7 +49,7 @@ export class CompanyOffersComponent implements OnInit {
     }
 
     this.table = offerLists.DataTable({
-      pageLength: 2,
+      pageLength: 10,
       page: 1,
       fixedHeader: false,
       responsive: true,

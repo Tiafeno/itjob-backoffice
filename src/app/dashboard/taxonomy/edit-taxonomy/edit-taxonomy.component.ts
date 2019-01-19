@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
 import { config } from '../../../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, concat, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import { AuthService } from '../../../services/auth.service';
 declare var $: any;
 
 @Component({
@@ -16,8 +18,10 @@ declare var $: any;
 export class EditTaxonomyComponent implements OnInit {
    public loading: boolean = false;
    public loadingReplace: boolean = false;
+   public loadingCandidate: boolean = false;
    public replace: any = {};
-
+   public WPEndpoint: any;
+   public Candidates: Array<any> = [];
    public Terms = [];
    public byInput = new EventEmitter<string>();
    public by: any;
@@ -27,19 +31,54 @@ export class EditTaxonomyComponent implements OnInit {
    @Output() private refresh = new EventEmitter();
 
    constructor(
-      private Http: HttpClient
+      private Http: HttpClient,
+      private authService: AuthService
    ) { }
 
    ngOnInit() {
       this.typeahead();
+      // Added Endpoints
+      this.WPEndpoint = new WPAPI({
+         endpoint: config.apiEndpoint,
+      });
+      var namespace = 'wp/v2'; // use the WP API namespace
+      var routeCandidate = '/candidate/(?P<id>)'; // route string - allows optional ID parameter
+      this.WPEndpoint.candidate = this.WPEndpoint.registerRoute(namespace, routeCandidate, {
+         params: ['software', 'job_sought', 'language']
+      });
+
+      // site.books = site.registerRoute('myplugin/v1', 'books/(?P<id>)', {
+      //    params: ['genre']
+      // });
+      // yields "myplugin/v1/books?genre[]=19&genre[]=2000"
+      // site.books().genre([19, 2000]).toString()
+
+      let currentUser = this.authService.getCurrentUser();
+      this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` })
    }
 
    public open() {
+      if (!this.term.activated) {
+         this.loadingCandidate = true;
+         if (this.taxonomy === "software")
+            this.WPEndpoint.candidate().software(this.term.term_id).then(resp => {
+               this.populate(resp);
+            });
+         if (this.taxonomy === "job_sought")
+            this.WPEndpoint.candidate().job_sought(this.term.term_id).then(resp => {
+               this.populate(resp);
+            });
+      }
+      
       $('#edit-taxonomy-modal').modal('show');
       $('#replace-taxonomy-modal')
          .on('hide.bs.modal', (event) => {
             this.by = '';
          })
+      $('#edit-taxonomy-modal')
+         .on('hide.bs.modal', event => {
+            this.Candidates = [];
+         });
    }
 
    public onUpdate(Form: NgForm) {
@@ -100,6 +139,20 @@ export class EditTaxonomyComponent implements OnInit {
       }
    }
 
+   private populate(response: any): any {
+      if (!_.isArray(response)) return null;
+      this.Candidates = _.map(response, (candidate) => {
+         let info: any = {};
+         info.id = candidate.id;
+         info.reference = candidate.title.rendered;
+
+         return info;
+      });
+      this.loadingCandidate = false;
+
+      return true;
+   }
+
    private typeahead() {
       this.byInput.pipe(
          debounceTime(200),
@@ -114,7 +167,7 @@ export class EditTaxonomyComponent implements OnInit {
          })
    }
 
-   public onRemove(Fm : NgForm): void | boolean {
+   public onRemove(Fm: NgForm): void | boolean {
       if (!Fm.valid) return false;
       let modelValue = Fm.value;
       let formData = new FormData()

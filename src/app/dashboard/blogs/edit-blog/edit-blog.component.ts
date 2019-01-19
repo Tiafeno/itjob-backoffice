@@ -14,12 +14,21 @@ export class EditBlogComponent implements OnInit {
 
   public Form: any = {};
   public tinyMCESettings: any = {
+    language: 'fr_FR',
+    menubar: false,
+    content_css: [
+       '//fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i',
+       '//www.tinymce.com/css/codepen.min.css'
+    ],
     skin_url: '/assets/tinymce/skins/lightgray',
     inline: false,
-    statusbar: false,
+    statusbar: true,
+    resize: true,
     browser_spellcheck: true,
-    height: 320,
-    plugins: '',
+    min_height: 230,
+    selector: 'textarea',
+    toolbar: 'undo redo | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ',
+    plugins: ['lists'],
   };
 
   constructor() { }

@@ -17,7 +17,6 @@
                 type="text" autocomplete="off" required>
             </div>
           </div>
-
           <div class="col-sm-12">
             <div class="form-group mb-4">
               <label>Statut</label>
@@ -28,7 +27,6 @@
               </select>
             </div>
           </div>
-
           <div class="col-sm-12" *ngIf="taxonomy === 'job_sought'">
             <div class="form-group">
               <label class="checkbox checkbox-warning">
@@ -36,6 +34,26 @@
                 <span class="input-span"></span>Envoyer une notification et un email à l'utilisateur</label>
             </div>
           </div>
+
+          <div class="col-sm-12" *ngIf="Candidates.length > 0">
+            <div class="">Le candidate</div>
+            <div class="ibox-body">
+              <ul class="media-list media-list-divider mr-2">
+                <li class="media align-items-center" *ngFor="let candidate of Candidates">
+                  <div class="media-body d-flex align-items-center">
+                    <div class="flex-1">
+                      <div class="media-heading">
+                        {{candidate.reference}}
+                        <small class="text-muted"></small>
+                      </div>
+                    </div>
+                    <button [routerLink]="[ '/candidate', candidate.id, 'edit' ]" data-dismiss="modal" class="btn btn-sm btn-outline-info btn-rounded">Voir le CV</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12 text-muted" *ngIf="loadingCandidate">Changement en cours ...</div>
         </div>
       </div>
       <div class="modal-footer justify-content-between bg-primary-50">
@@ -51,7 +69,7 @@
             <span>Remplacer</span>
           </button>
         </div>
-        <a class="text-danger" *ngIf="!loading" (click)="onRemove( editForm )"><i class="la la-trash font-20"></i></a>
+        <a class="text-danger" title="Supprimer le term" *ngIf="!loading" (click)="onRemove( editForm )"><i class="la la-trash font-20"></i></a>
       </div>
     </form>
   </div>

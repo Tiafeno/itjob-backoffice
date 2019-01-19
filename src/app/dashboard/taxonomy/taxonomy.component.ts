@@ -7,6 +7,7 @@ import { RequestService } from '../../services/request.service';
 import { EditTaxonomyComponent } from './edit-taxonomy/edit-taxonomy.component';
 import { NewTaxonomyComponent } from './new-taxonomy/new-taxonomy.component';
 import { AuthService } from '../../services/auth.service';
+import { ErrorService } from '../../services/error.service';
 declare var $: any;
 
 @Component({
@@ -28,6 +29,7 @@ export class TaxonomyComponent implements OnInit {
    constructor(
       private activeRoute: ActivatedRoute,
       private requestServices: RequestService,
+      private errnoService: ErrorService,
       private authService: AuthService
    ) { }
 
@@ -35,10 +37,14 @@ export class TaxonomyComponent implements OnInit {
       this.activeRoute.params.subscribe(params => {
          this.taxonomy = params.term;
          this.requestServices.collectTaxonomies()
-            .subscribe(taxonomies => {
-               this.name = taxonomies[this.taxonomy].name;
-               this.initDatatable();
-            })
+            .subscribe(
+               taxonomies => {
+                  this.name = taxonomies[this.taxonomy].name;
+                  $('#type-status').val(''); // Initialiser la filtrer
+                  this.initDatatable();
+               }, error => {
+                  this.errnoService.handler(error);
+               })
       });
    }
 
@@ -51,7 +57,9 @@ export class TaxonomyComponent implements OnInit {
       if (this.taxonomy === 'language')
          if (!this.authService.notUserAccess('contributor')) return;
       this.edit = _.cloneDeep(term);
-      this.EditComponent.open();
+      setTimeout(() => {
+         this.EditComponent.open();
+      }, 600);
    }
 
    onNew(): void {
@@ -62,7 +70,7 @@ export class TaxonomyComponent implements OnInit {
    }
 
    public createSearch() {
-      let param: string = this.sStatus === '' ? '' :` |${this.sStatus}`;
+      let param: string = this.sStatus === '' ? '' : ` |${this.sStatus}`;
       let searchs: string = param;
       this.table.search(searchs, true, false).draw();
    }
@@ -116,7 +124,7 @@ export class TaxonomyComponent implements OnInit {
                }
             ],
             initComplete: () => {
-               
+
             },
             ajax: {
                url: `${config.itApi}/taxonomy/${this.taxonomy}/`,

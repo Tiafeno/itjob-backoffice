@@ -74,6 +74,11 @@ export class OfferListsComponent implements OnInit {
    ngOnInit() {
       moment.locale('fr');
       // Ajouter ici un code pour recuperer les candidats...
+      const getElementData = (ev: any): any => {
+         let el = $(ev.currentTarget).parents('tr');
+         let data = this.table.row(el).data();
+         return data;
+      };
       const offerLists = $('#orders-table');
       offerLists
          .on('page.dt', () => {
@@ -103,6 +108,10 @@ export class OfferListsComponent implements OnInit {
          "sDom": 'rtip',
          processing: true,
          serverSide: true,
+         columnDefs: [
+            { width: "15%", targets: 5 },
+            { width: "15%", targets: 6 }
+         ],
          columns: [
             { data: 'ID' },
             { data: 'reference' },
@@ -122,6 +131,7 @@ export class OfferListsComponent implements OnInit {
                }
             },
             { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
+            { data: 'datePublication', render: (data) => { return moment(data, 'DD MMMM, YYYY').fromNow(); } },
             {
                data: 'activated', render: (data, type, row) => {
                   let status = data && row.offer_status === 'publish' ? 'Publier' : (row.offer_status === 'pending' ? "En attente" : "Désactiver");
@@ -219,8 +229,7 @@ export class OfferListsComponent implements OnInit {
             if (!this.authService.notUserAccess("editor")) return;
             if (!this.authService.notUserAccess("contributor")) return;
 
-            let el = $(e.currentTarget).parents('tr');
-            let __offer = this.table.row(el).data();
+            let __offer = getElementData(e);
             let rateplan: string = __offer.rateplan;
             rateplan = _.isEmpty(rateplan) || _.isNull(rateplan) ? 'standard' : rateplan;
             this.ratePlanComp.onOpen(__offer.ID, rateplan);
@@ -232,8 +241,7 @@ export class OfferListsComponent implements OnInit {
             if (!this.authService.notUserAccess("contributor")) return;
             if (!this.authService.notUserAccess("editor")) return;
 
-            let el = $(e.currentTarget).parents('tr');
-            let __offer = this.table.row(el).data();
+            let __offer = getElementData(e);
             this.featuredComp.open(__offer);
          })
          // Supprimer l'offre
@@ -243,8 +251,7 @@ export class OfferListsComponent implements OnInit {
             if (!this.authService.notUserAccess("contributor")) return;
             if (!this.authService.notUserAccess("editor")) return;
 
-            let el = $(e.currentTarget).parents('tr');
-            let __offer = this.table.row(el).data();
+            let __offer = getElementData(e);
             swal({
                title: 'Confirmation',
                html: `Vous voulez vraiment supprimer cette offre?<br> <b>${__offer.postPromote}</b>`,

@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           }, 15000);
         }
       }
-
     });
   }
 

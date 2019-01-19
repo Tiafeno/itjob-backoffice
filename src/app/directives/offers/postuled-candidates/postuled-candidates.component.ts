@@ -22,7 +22,7 @@ export class PostuledCandidatesComponent implements OnInit {
 		this.loading = true;
 		this.offerService.getRequest(this.offerId)
 			.subscribe(response => {
-				this.Requests = _.cloneDeep(response);
+				this.Requests = response && _.isArray(response) ? _.cloneDeep(response) : [];
 				this.loading = false;
 			});
 	}
@@ -44,7 +44,7 @@ export class PostuledCandidatesComponent implements OnInit {
 				el.textContent = "Chargement...";
 				this.offerService.updateRequest(this.offerId, idRequest, 'validated')
 					.subscribe(response => {
-						this.Requests = _.cloneDeep(response);
+						this.Requests = response && _.isArray(response) ? _.cloneDeep(response) : [];
 					})
 			}
 		})
@@ -67,7 +67,7 @@ export class PostuledCandidatesComponent implements OnInit {
 				el.textContent = "Chargement...";
 				this.offerService.updateRequest(this.offerId, idRequest, 'reject')
 					.subscribe(response => {
-						this.Requests = _.cloneDeep(response);
+						this.Requests = response && _.isArray(response) ? _.cloneDeep(response) : [];
 					})
 			}
 		})

@@ -46,7 +46,8 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
       return false;
     }
       this.loading = true;
-      let changePosition = this.Http.get(`${config.itApi}/offer/${this.postId}?ref=featured&val=${this.position}&datelimit=${this.dateLimit}`, { responseType: 'json' });
+      let dateUnix = moment(this.dateLimit).utcOffset('+0300').unix();
+      let changePosition = this.Http.get(`${config.itApi}/offer/${this.postId}?ref=featured&val=${this.position}&datelimit=${dateUnix}`, { responseType: 'json' });
       changePosition.subscribe(response => {
         let resp: any = response;
         this.loading = false;
@@ -58,17 +59,6 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    $.fn.datetimepicker.dates['fr'] = dateTimePickerFr;
-    let dateLimitElement = $('.input-group.date:not(.no-time)');
-    dateLimitElement
-      .datetimepicker({
-        isRTL: true,
-        format: 'yyyy-mm-dd h:ii',
-        language: 'fr'
-      })
-      .on('changeDate', (ev) => {
-        this.dateLimit = ev.date.toISOString();
-      });
   }
 
   ngAfterViewInit(): void {

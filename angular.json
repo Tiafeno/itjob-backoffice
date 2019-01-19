@@ -105,6 +105,7 @@
               "node_modules/clipboard/dist/clipboard.min.js",
               "node_modules/tinymce/tinymce.min.js",
               "node_modules/tinymce/plugins/lists/plugin.min.js",
+              "node_modules/tinymce/plugins/image/plugin.min.js",
               "node_modules/tinymce/themes/modern/theme.js",
               "node_modules/tinymce/plugins/fullscreen/plugin.js",
               "src/assets/tinymce/langs/fr_FR.js",

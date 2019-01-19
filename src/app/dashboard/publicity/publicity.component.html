@@ -7,6 +7,7 @@
     </div>
   </div>
   <div class="row">
+
     <div class="col-md-3" *ngIf="false">
       <div class="ibox">
         <div class="ibox-head">
@@ -28,10 +29,11 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-9">
       <div class="ibox">
         <div class="ibox-head">
-          <div class="ibox-title">CALENDAR</div>
+          <div class="ibox-title">Calendrier</div>
           <button class="btn btn-primary btn-rounded btn-air my-3" data-toggle="modal" data-target="#new-event-modal">
             <span class="btn-icon"><i class="la la-plus"></i>New ADS</span>
           </button>
@@ -84,54 +86,54 @@
             </div>
           </div>
           <div class="form-group mb-4">
-            <input class="form-control form-control-line" id="new-event-title" type="text" name="title" placeholder="Titre ou Référence" required>
+            <input class="form-control form-control-line" id="new-event-title" type="text" name="title" placeholder="Titre ou Référence"
+              required>
           </div>
           <div class="form-group mb-4">
             <input id="new-event-file" type="file" name="file" placeholder="Image pour la publicité" required>
           </div>
           <div class="form-group mb-4">
-            <input class="form-control form-control-line" id="new-event-bill" type="text" name="bill" placeholder="Numéro de facture" required>
+            <input class="form-control form-control-line" id="new-event-bill" type="text" name="bill" placeholder="Numéro de facture"
+              required>
           </div>
           <div class="form-group mb-4">
-            <input class="form-control form-control-line" id="new-event-position" type="text" name="position" required
-              placeholder="Position">
+            <select [(ngModel)]="position" class="form-control form-control-line" name="position" id="new-event-position" aria-placeholder="Position de la publicité" required>
+              <option value="">Position de la publicité</option>
+              <option [value]="scheme.position" *ngFor="let scheme of schemes; let ps = index">{{scheme.name}}</option>
+            </select>
           </div>
           <div class="form-group">
-              <select class="form-control form-control-line" name="paid" id="new-event-image_size">
-                <option value="">Taille de la publicité</option>
-                <option value="1120x210">1120 x 210</option>
-                <option value="354x330">354 x 330</option>
-                <option value="354x570">354 x 570</option>
-              </select>
-            </div>
+            <select class="form-control form-control-line" [disabled]="!position" name="image_size" id="new-event-image_size">
+              <option value="">Taille de la publicité</option>
+              <option [value]="size.size" *ngFor="let size of schemes | imageSize:position">{{size.label}}</option>
+            </select>
+          </div>
 
           <div class="row mb-4">
             <div class="col-sm-12">
               <div class="form-group">
                 <div id="bloodhound">
-                  <input class="form-control form-control-line"  id="new-event-company" type="text" name="company"
+                  <input class="form-control form-control-line" id="new-event-company" type="text" name="company"
                     placeholder="Entreprise" required>
                 </div>
               </div>
             </div>
           </div>
-
-
           <div class="row">
             <div class="col-6 form-group mb-4">
               <label class="col-form-label text-muted">Début:</label>
               <div class="input-group-icon input-group-icon-right">
                 <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
-                <input class="form-control form-control-line datepicker date" id="new-event-start" type="text" autocomplete="off" name="start"
-                  value="">
+                <input class="form-control form-control-line datepicker date" id="new-event-start" type="text"
+                  autocomplete="off" name="start" value="">
               </div>
             </div>
             <div class="col-6 form-group mb-4">
               <label class="col-form-label text-muted">Fin:</label>
               <div class="input-group-icon input-group-icon-right">
                 <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
-                <input class="form-control form-control-line datepicker date" id="new-event-end" type="text" autocomplete="off" name="end"
-                  value="">
+                <input class="form-control form-control-line datepicker date" id="new-event-end" type="text"
+                  autocomplete="off" name="end" value="">
               </div>
             </div>
           </div>
@@ -153,14 +155,14 @@
     <div class="modal-dialog" role="document">
       <form class="modal-content form-horizontal" id="eventForm" action="javascript:;">
         <div class="modal-header p-4">
-          <h5 class="modal-title">EDIT EVENT</h5>
+          <h5 class="modal-title">Modification</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
         <div class="modal-body p-4">
           <div class="form-group mb-4">
-            <label class="text-muted mb-3">Category</label>
+            <label class="text-muted mb-3">Categorie</label>
             <div>
               <label class="radio radio-outline-primary radio-inline check-single" data-toggle="tooltip"
                 data-original-title="General">
@@ -194,7 +196,7 @@
           </div>
           <div class="row">
             <div class="col-6 form-group mb-4">
-              <label class="col-form-label text-muted">Start:</label>
+              <label class="col-form-label text-muted">Début:</label>
               <div class="input-group-icon input-group-icon-right">
                 <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
                 <input class="form-control form-control-line datepicker date" id="event-start" type="text" name="start"
@@ -202,7 +204,7 @@
               </div>
             </div>
             <div class="col-6 form-group mb-4">
-              <label class="col-form-label text-muted">End:</label>
+              <label class="col-form-label text-muted">Fin:</label>
               <div class="input-group-icon input-group-icon-right">
                 <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
                 <input class="form-control form-control-line datepicker date" id="event-end" type="text" name="end"
@@ -210,14 +212,9 @@
               </div>
             </div>
           </div>
-          <div class="form-group mb-4 pt-3">
-            <label class="ui-switch switch-icon mr-3 mb-0">
-              <input id="event-allDay" type="checkbox">
-              <span></span>
-            </label>All Day</div>
         </div>
         <div class="modal-footer justify-content-between bg-primary-50">
-          <button class="btn btn-primary btn-rounded" id="editEventButton" type="submit">Submit</button>
+          <button class="btn btn-primary btn-rounded" id="editEventButton" type="submit">Enregistrer</button>
           <a class="text-danger" id="deleteEventButton" data-dismiss="modal"><i class="la la-trash font-20"></i></a>
         </div>
       </form>

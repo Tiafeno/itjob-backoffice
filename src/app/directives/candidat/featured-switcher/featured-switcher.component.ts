@@ -46,7 +46,8 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
          return false;
       }
       this.loading = true;
-      let changePosition = this.Http.get(`${config.itApi}/candidate/${this.postId}?ref=featured&val=${this.position}&datelimit=${this.dateLimit}`, { responseType: 'json' });
+      let dateUnix = moment(this.dateLimit).utcOffset(3).unix();
+      let changePosition = this.Http.get(`${config.itApi}/candidate/${this.postId}?ref=featured&val=${this.position}&datelimit=${dateUnix}`, { responseType: 'json' });
       changePosition.subscribe(response => {
          let resp: any = response;
          this.loading = false;

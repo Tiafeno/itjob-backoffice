@@ -42,6 +42,7 @@ import { CompanyOffersComponent } from './company/company-offers/company-offers.
 import { MomendatePipe } from '../pipes/momendate.pipe';
 import { DatepickerDirective } from '../directives/datepicker.directive';
 import { CoverLetterComponent } from '../directives/candidat/cover-letter/cover-letter.component';
+import { ImageSizePipe } from '../pipes/image-size.pipe';
 
 @NgModule({
   imports: [
@@ -89,6 +90,7 @@ import { CoverLetterComponent } from '../directives/candidat/cover-letter/cover-
     PublicityComponent,
     CompanyOffersComponent,
     MomendatePipe,
+    ImageSizePipe,
     CoverLetterComponent,
     DatepickerDirective
   ],

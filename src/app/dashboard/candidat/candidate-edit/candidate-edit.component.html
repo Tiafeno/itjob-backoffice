@@ -136,7 +136,7 @@
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly"
+                  <input class="form-control" format="dd/mm/yyyy" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly"
                     [(ngModel)]="editor.Form.Birthday" type="text" value="" placeholder="Date de naissance" required>
                 </div>
               </div>
@@ -520,7 +520,7 @@
                       </div>
                       <div class="col-6">
                         <div class="col-sm-12">
-                          <p class="text-uppercase">à <span style="color: red">*</span></p>
+                          <p class="text-uppercase">à </p>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
@@ -579,7 +579,7 @@
                 <div class="ibox-title">Pour télécharger le CV </div>
               </div>
               <div class="ibox-body pt-3">
-                <button type="button" [disabled]="loadingPdf" class="btn btn-danger btn-labeled btn-labeled-left btn-icon">
+                <button type="button" [disabled]="loadingPdf"  (click)="onDownloadCV()" class="btn btn-danger btn-labeled btn-labeled-left btn-icon">
                     <span class="btn-label"><i class="la la-download"></i></span>Télécharger en PDF</button>
                     <small class="text-muted d-block mt-2">Autoriser ou Activer les pop-ups (fenêtres contextuelles) dans votre navigateur pour ce site</small>
               </div>

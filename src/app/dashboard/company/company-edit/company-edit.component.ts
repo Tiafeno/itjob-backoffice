@@ -77,8 +77,12 @@ export class CompanyEditComponent implements OnInit {
         cancelButtonText: "Annuler"
       }).then((result) => {
         if (result.value) {
+          $('#edit-company-modal').modal('hide');
           // Ouvrir la boite de dialog
-          this.ourOffers.viewOffers(this.companyId);
+          setTimeout(() => {
+            this.ourOffers.viewOffers(this.companyId);
+          }, 600);
+          
           // For more information about handling dismissals please visit
           // https://sweetalert2.github.io/#handling-dismissals
         } else if (result.dismiss === swal.DismissReason.cancel) {
@@ -87,7 +91,11 @@ export class CompanyEditComponent implements OnInit {
       })
     } else {
       // Ouvrir la boite de dialog
-      this.ourOffers.viewOffers(this.companyId);
+      $('#edit-company-modal').modal('hide');
+      // Ouvrir la boite de dialog
+      setTimeout(() => {
+        this.ourOffers.viewOffers(this.companyId);
+      }, 600);
     }
   }
 

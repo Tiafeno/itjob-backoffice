@@ -39,7 +39,7 @@ export class DatepickerDirective implements OnInit {
       autoclose: true
     })
       .on('changeDate', (ev) => {
-        let format:any = this.format === 'dd/mm/yyy' ? 'DD/MM/YYYY' : 'YYYY-MM-DD HH:mm:ss';
+        let format:any = this.format === 'dd/mm/yyyy' ? 'DD/MM/YYYY' : 'YYYY-MM-DD HH:mm:ss';
         this.value = moment(ev.date).format(format);
         this.update.emit(this.value);
       })

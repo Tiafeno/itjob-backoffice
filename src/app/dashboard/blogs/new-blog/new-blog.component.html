@@ -10,24 +10,40 @@
       <div class="modal-body p-4">
         <div class="row" *ngIf="message">
           <div class="col-12">
-              <div class="alert alert-warning">{{message}}</div>
+            <div class="alert alert-warning">{{message}}</div>
           </div>
-           
+
         </div>
         <div class="row">
           <div class="col-sm-12 mb-4">
             <div class="form-group">
               <label class="font-bold">Titre</label>
-              <input class="form-control from-control-solid" autocomplete="off" name="title" type="text" [(ngModel)]="Form.title"
+              <input class="form-control from-control-solid" autocomplete="off" name="title" id='title' type="text" [(ngModel)]="Form.title"
                 placeholder="Saisissez votre titre ici" required>
             </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-sm-6 form-group mb-4">
+          <div class="col-sm-12 form-group mb-4">
             <label class="font-bold">Contenue</label>
-            <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Form.content" name="content" [init]="tinyMCESettings"></editor>
+            <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Form.content" name="content"
+              [init]="tinyMCESettings"></editor>
+            <div class="mt-2">
+              <button (click)="voirMedia()" type="button" class="btn btn-default btn-labeled btn-sm btn-labeled-left btn-icon">
+                <span class="btn-label"><i class="la la-photo"></i></span>Gérer les medias</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Image à la une</label>
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" class="" id="featuredImage" name="featuredimage" required>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -40,8 +56,57 @@
           <button class="btn btn-secondary mr-3" type="button" (click)="onDraft( newActicleForm )" [disabled]="loading">
             <span>Enregistrer le brouillon</span>
           </button>
+          <button class="btn btn-warning mr-3" type="button" data-dismiss="modal" [disabled]="loading">
+              <span>Fermer</span>
+            </button>
         </div>
       </div>
     </form>
   </div>
+</div>
+
+
+<div class="modal fade" id="media-modal" data-keyboard="false" data-backdrop="static" style="background-color: rgba(12, 68, 147, 0.46)">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Bibliothèque de médias</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+
+        <div class="ibox-body">
+          <div class="row">
+            <div class="col-sm-6 form-group mb-4">
+              <label class="font-bold">Ajouter une image</label>
+              <div class="input-group mb-3">
+                <div class="custom-file">
+                  <input type="file" (change)="ajouterMedia($event)" id="newImage" name="newimage">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center alert alert-warning" *ngIf="loading">Chargement en cours ...</div>
+          <ul class="media-list media-list-divider mr-2 scroller" data-height="400px">
+            <li class="media align-items-center" *ngFor="let media of medias; let i = index">
+              <a class="media-img" href="javascript:;">
+                <img [src]="media.media_details.sizes['post-thumbnail'].source_url" alt="image" width="60" height="60"
+                  sizes="(max-width: 60px) 100vw, 60px" />
+              </a>
+              <div class="media-body d-flex align-items-center">
+                <div class="flex-1">
+                  <div class="media-heading text-truncate" style="width: 245px">{{ media.title.rendered }}</div>
+                  <input type="text" id="source_url-{{i}}" readonly="readonly" value="{{media.source_url}}" style="font-size: 10px; width: 260px">
+                </div>
+                <button  [attr.data-clipboard-target]="'#source_url-'+i" class="btn clipboard btn-sm btn-outline-secondary btn-rounded">Copier le lien</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

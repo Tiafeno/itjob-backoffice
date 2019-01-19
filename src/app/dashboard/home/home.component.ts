@@ -5,6 +5,7 @@ import { Helpers } from '../../helpers';
 import * as _ from 'lodash';
 import Chart from 'chart.js';
 import { tinyMceSettings } from '../../../environments/environment';
+import { ErrorService } from '../../services/error.service';
 declare var $: any;
 @Component({
   selector: 'app-home',
@@ -15,8 +16,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public Dashboard: any = {};
   public loading: boolean = false;
   public tinySettings: any = {};
-
-  constructor(private requestServices: RequestService) {
+  constructor(
+    private requestServices: RequestService,
+    private errnoService: ErrorService
+    ) {
     this.tinySettings = tinyMceSettings;
   }
 
@@ -24,23 +27,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
     Helpers.setLoading(true);
     this.loading = true;
     this.requestServices.collectDashboard()
-      .subscribe(response => {
-        this.Dashboard = _.cloneDeep(response);
-        let candidate = this.Dashboard.candidate;
-        let company = this.Dashboard.company
-        let offer = this.Dashboard.offer;
-        this.Dashboard.candidate.percent = (parseInt(candidate.countActive) * 100) / parseInt(candidate.count);
-        this.Dashboard.company.percent = (parseInt(company.countActive) * 100) / parseInt(company.count);
-        this.Dashboard.offer.percent = (parseInt(offer.countActive) * 100) / parseInt(offer.count);
-        this.loading = false;
-        Helpers.setLoading(false);
-        this.loadScript();
-      });
+      .subscribe(
+        response => {
+          this.Dashboard = _.cloneDeep(response);
+          let candidate = this.Dashboard.candidate;
+          let company = this.Dashboard.company
+          let offer = this.Dashboard.offer;
+          this.Dashboard.candidate.percent = (parseInt(candidate.countActive) * 100) / parseInt(candidate.count);
+          this.Dashboard.company.percent = (parseInt(company.countActive) * 100) / parseInt(company.count);
+          this.Dashboard.offer.percent = (parseInt(offer.countActive) * 100) / parseInt(offer.count);
+          this.loading = false;
+          Helpers.setLoading(false);
+          this.loadScript();
+        },
+        error => {
+          this.errnoService.handler(error);
+          this.loading = false;
+          Helpers.setLoading(false);
+        });
   }
 
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() { }
 
   loadScript() {
     setTimeout(() => {

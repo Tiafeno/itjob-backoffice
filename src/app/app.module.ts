@@ -26,6 +26,8 @@ import { CompanyService } from './services/company.service';
 import { AdminGuard } from './guards/admin.guard';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { BlogService } from './services/blog.service';
+import { ErrorService } from './services/error.service';
+import { ImageSizePipe } from './pipes/image-size.pipe';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,7 @@ import { BlogService } from './services/blog.service';
     AuthGuard,
     LoginGuard,
     AdminGuard,
+    ErrorService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
     {
       provide: NG_SELECT_DEFAULT_CONFIG,

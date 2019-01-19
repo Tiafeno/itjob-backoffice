@@ -9,7 +9,6 @@ import { BlogService } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
 import { EditBlogComponent } from './edit-blog/edit-blog.component';
 import { NewBlogComponent } from './new-blog/new-blog.component';
-import { NgForm } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -44,28 +43,49 @@ export class BlogsComponent implements OnInit {
 
    onPublish(Form: any): void {
       Helpers.setLoading(true);
+      let inputForm: any = _.clone(Form);
       let categories = this.WPEndpoint.categories().slug('blog');
       categories.then(cats => {
          let ctgs = cats[0];
          this.WPEndpoint.posts().create({
-            title: Form.title,
-            content: Form.title,
+            title: inputForm.title,
+            content: inputForm.title,
             status: 'publish',
             categories: [ctgs.id]
          })
             .then(
                response => {
+                  let postId: number = response.id;
                   // "response" will hold all properties of your newly-created post,
                   // including the unique `id` the post was assigned on creation
-                  swal('Succès', "Votre article à bien été publier", 'info');
-                  this.reload();
-                  Helpers.setLoading(false);
-               }, 
+                  console.log(inputForm);
+                  if (!_.isUndefined(inputForm.file) ) {
+                     this.WPEndpoint.media()
+                        // Specify a path to the file you want to upload, or a Buffer
+                        .file(inputForm.file)
+                        .create({
+                           title: inputForm.file,
+                           alt_text: inputForm.file
+                        })
+                        .then((attach) => {
+                           this.WPEndpoint.posts().id(postId).update({ featured_media: attach.id });
+                           swal('Succès', "Votre article à bien été publier", 'info');
+                           this.reload();
+                           Helpers.setLoading(false);
+                        })
+                  } else {
+                     swal('Succès', "Votre article à bien été publier", 'info');
+                     this.reload();
+                     Helpers.setLoading(false);
+                  }
+
+
+               },
                error => {
                   Helpers.setLoading(false);
                })
       })
-      
+
    }
 
    reload(): void {
@@ -96,8 +116,8 @@ export class BlogsComponent implements OnInit {
             { data: 'post_date', render: (data) => { return moment(data).fromNow(); } },
             {
                data: null, render: (data, type, row) => {
-                  let action = ` <span class='edit-article badge badge-blue'>Modifier</span>`;
-                  action += ` <span class='delete-article badge badge-danger'>Supprimer</span>`;
+                  //let action = ` <span class='edit-article badge badge-blue'>Modifier</span>`;
+                  let action = ` <span class='delete-article badge badge-danger'>Supprimer</span>`;
                   return action;
                }
             }

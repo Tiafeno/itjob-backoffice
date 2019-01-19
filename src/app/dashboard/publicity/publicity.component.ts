@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as WPAPI from 'wpapi';
+import * as moment from 'moment';
 import * as toastr from 'toastr';
 import * as _ from 'lodash';
 import { config } from '../../../environments/environment';
@@ -14,6 +15,8 @@ declare var Bloodhound: any;
 })
 export class PublicityComponent implements OnInit, AfterViewInit {
   public WPEndpoint: any;
+  public position: string = '';
+  public schemes: Array<any> = [];
   constructor(
     private Http: HttpClient,
     private authService: AuthService
@@ -22,11 +25,74 @@ export class PublicityComponent implements OnInit, AfterViewInit {
       endpoint: config.apiEndpoint,
     });
     let currentUser = this.authService.getCurrentUser();
-    this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` })
+    this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
+    let top = [
+      { size: '1120x210', label: '1120 x 210' }
+    ];
+    let sidebar = [
+      { size: '354x330', label: '354 x 330' },
+      { size: '354x570', label: '354 x 570 (Large)' }
+    ];
+    this.schemes = [
+      {
+        position: 'position-1',
+        name: 'Home Top (position-1)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-2',
+        name: 'Home Side Right (position-2)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-3',
+        name: 'Archive CV Top (position-3)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-4',
+        name: 'Archive CV Side Right (position-4)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-5',
+        name: 'Archive Offer Top (position-5)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-6',
+        name: 'Archive Offer Side Right (position-6)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-7',
+        name: 'Single Offer (position-7)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-8',
+        name: 'Single CV (position-8)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-9',
+        name: 'Inscription Particular (position-9)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-10',
+        name: 'Inscription Professional (position-10)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-11',
+        name: 'Search Side Right (position-11)',
+        sizes: _.clone(sidebar)
+      },
+    ]
   }
 
   ngOnInit() {
-
     this.loadCalendar();
   }
 
@@ -61,7 +127,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
     // Update event
     CalendarApp.prototype.updateEvent = function (calEvent, revertFunc) {
       // The same can be done for eventDrop and eventResize
-
+      console.log(calEvent);
       var $this = this;
       $this.$eventModal.modal();
       // fill in the values
@@ -70,29 +136,31 @@ export class PublicityComponent implements OnInit, AfterViewInit {
       $this.$eventModal.find('#event-end').val(calEvent.end ? $.fullCalendar.formatDate(calEvent.end, "YYYY-MM-DD HH:mm:ss") : '');
       if (calEvent.className.length) $this.$eventModal.find('input[name="category"][value="' + calEvent.className + '"]').prop("checked", true);
       else $this.$eventModal.find('#event-color :first-child').prop("selected", true);
-      $this.$eventModal.find('#event-allDay').prop("checked", calEvent.allDay);
 
       // set the handler to delete the event
       $this.$eventModal.find('#deleteEventButton').unbind('click').click(function () {
+        let adsId: number = parseInt(calEvent.id);
+        $.ajax({
+          url: `${config.itApi}/ads/${adsId}`,
+          type: "DELETE",
+          dataType: 'json',
+          beforeSend: function (xhr) {
+            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.token) {
+              xhr.setRequestHeader("Authorization",
+                `Bearer ${currentUser.token}`);
+            }
+          },
+          success: function (response) {
+            // Remove Event
+            $this.$calendarObj.fullCalendar('removeEvents', function (ev) {
+              return (ev._id == calEvent._id);
+            });
 
-        // execute the query to remove the event from the database
-        // for example
-
-        /*$.post('remove-event.php',{id: calEvent.id}).then(function(data){
-          // delete event
-        }).fail(function(){
-          alert('error');
-        });*/
-
-        console.info('Delete Event ...');
-
-        // Remove Event
-        $this.$calendarObj.fullCalendar('removeEvents', function (ev) {
-          return (ev._id == calEvent._id);
+            toastr.success('event successfully deleted');
+            $this.$eventModal.modal('hide');
+          }
         });
-
-        toastr.success('event successfully deleted');
-        $this.$eventModal.modal('hide');
       });
 
       // set the handler to update the event
@@ -104,23 +172,36 @@ export class PublicityComponent implements OnInit, AfterViewInit {
           if ($(this).find("#event-end").val()) calEvent.end = event.end = $(this).find("#event-end").val();
 
           calEvent.className = [$(this).find('input[name="category"]:checked').val()];
-          calEvent.allDay = event.allDay = $(this).find("#event-allDay").prop('checked');
+          calEvent.allDay = event.allDay = true;
           // execute the query to update the event in the database
-          // for example
-
-          /*$.post('update-event.php', {event: event}).then(function(){
+          event.className = calEvent.className[0];
+          event.img_size = calEvent.img_size;
+          event.position = calEvent.position;
+          event.paid = calEvent.paid;
+          let adsId: number = parseInt(calEvent.id);
+          $.ajax({
+            url: `${config.itApi}/ads/${adsId}`,
+            type: "POST",
+            dataType: 'json',
+            data: {
+              ads: JSON.stringify(event)
+            },
+            beforeSend: function (xhr) {
+              let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+              if (currentUser && currentUser.token) {
+                xhr.setRequestHeader("Authorization",
+                  `Bearer ${currentUser.token}`);
+              }
+            },
+            success: function (response) {
               // update event
-          }).fail(function(){ 
-              if(revertFunc) revertFunc();
-          });*/
+              $this.$calendarObj.fullCalendar('updateEvent', calEvent);
+              toastr.success('event successfully updated');
 
-          console.log('Update Selected Event ...');
+              $this.$eventModal.modal('hide');
+            }
+          });
 
-          // update event
-          $this.$calendarObj.fullCalendar('updateEvent', calEvent);
-          toastr.success('event successfully updated');
-
-          $this.$eventModal.modal('hide');
         }
       });
     }
@@ -211,11 +292,17 @@ export class PublicityComponent implements OnInit, AfterViewInit {
               var events = [];
               _.map(response, (ads) => {
                 events.push({
-                  id: ads.id_ads,
+                  id: parseInt(ads.id_ads),
                   title: ads.title,
                   start: ads.start,
                   end: ads.end,
-                  className: ads.classname
+                  className: ads.classname,
+                  id_attachment: parseInt(ads.id_attachment),
+                  id_user: parseInt(ads.id_user),
+                  position: ads.position,
+                  paid: 1,
+                  bill: ads.bill,
+                  img_size: ads.img_size,
                 });
               });
 
@@ -291,18 +378,14 @@ export class PublicityComponent implements OnInit, AfterViewInit {
           // Specify a path to the file you want to upload, or a Buffer
           .file(fileUpload)
           .create({
-            title: 'My awesome image',
-            alt_text: 'an image of something awesome',
-            caption: 'This is the caption text',
-            description: 'More explanatory information'
+            title: $('#new-event-title').val(),
+            alt_text: $('#new-event-title').val(),
+            caption: '',
+            description: ''
           })
           .then((response) => {
             // Your media is now uploaded: let's associate it with a post
             var newImageId = response.id;
-            // return this.WPEndpoint.media().id(newImageId).update({
-            //   post: associatedPostId
-            // });
-
             var CalendarApp = $.CalendarApp;
             var newAds = {
               id: Math.random(),
@@ -311,7 +394,6 @@ export class PublicityComponent implements OnInit, AfterViewInit {
               end: CalendarApp.$modal.find('#new-event-end').val(),
               allDay: true,
               className: CalendarApp.$modal.find('input[name="category"]:checked').val(),
-
               id_attachment: newImageId,
               id_user: companyId,
               position: CalendarApp.$modal.find('#new-event-position').val(),
@@ -357,8 +439,8 @@ export class PublicityComponent implements OnInit, AfterViewInit {
         filter: function (data) {
           return _.map(data, (item) => {
             return {
-              value: (item as any).post_author,
-              label: (item as any).post_title
+              value: (item as any).author.ID,
+              label: (item as any).title
             };
           });
         }
@@ -368,12 +450,9 @@ export class PublicityComponent implements OnInit, AfterViewInit {
     Company.initialize();
     // Initier l'element DOM
     var inputCompanyTypeahead = $('#new-event-company');
-
-
     inputCompanyTypeahead.on('typeahead:selected', function (evt, item) {
       companyId = parseInt(item.value);
     });
-
 
     inputCompanyTypeahead.typeahead(null, {
       hint: false,

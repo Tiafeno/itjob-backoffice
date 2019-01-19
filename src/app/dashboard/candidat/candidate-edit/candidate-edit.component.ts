@@ -123,8 +123,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       // Afficher les expériences par ordre de date
       this.editor.experiences = _.orderBy(experiences, (exp) => {
          let dateBegin: any = _.isNull(exp.exp_dateBegin) ? exp.old_value.exp_dateBegin : exp.exp_dateBegin;
+         if (_.isEmpty(dateBegin) || _.isNull(dateBegin)) return exp.ID;
          dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : moment(dateBegin.toLowerCase(), 'MMMM YYYY');
-         console.info('Experience: ', dateBegin);
          if (dateBegin.isValid())
             return new Date(dateBegin.format('MM-DD-YYYY'));
          return exp.ID;
@@ -193,7 +193,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
          Firstname: pI.firstname,
          Lastname: pI.lastname,
          Email: pI.author.data.user_email,
-         Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("MM/DD/YYYY") : null,
+         Birthday: !_.isEmpty(pI.birthday_date) ? moment(pI.birthday_date, 'DD/MM/YYYY').format("DD/MM/YYYY") : null,
          Interest: this.Candidate.centerInterest,
          jobNotif: this.createJobNotification(jobNotif),
          trainingNotif: this.createTrainNotification(trainingNotif),
@@ -362,6 +362,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       if (_.isNull(dateBegin) || _.isEmpty(dateBegin) || dateBegin === 'Invalid date') {
          if (!_.isEmpty(this.editor.Experience.old_value.exp_dateBegin)) {
             dateBegin = this.editor.Experience.old_value.exp_dateBegin;
+         } else {
+            dateBegin = '';
          }
       } else {
          dateBegin = dateBegin;
@@ -370,11 +372,12 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       if (_.isNull(dateEnd) || _.isEmpty(dateEnd) || dateEnd === 'Invalid date') {
          if (!_.isEmpty(this.editor.Experience.old_value.exp_dateEnd)) {
             dateEnd = this.editor.Experience.old_value.exp_dateEnd;
+         } else {
+            dateEnd = '';
          }
       } else {
          dateEnd = dateEnd;
       }
-
       let _dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin) : (dateBegin.indexOf(' ') > -1 ? moment(dateBegin, 'MMMM YYYY', true) : moment(dateBegin));
       if (!_dateBegin.isValid()) {
          this.editor.Experience.exp_dateBegin = { month: '', year: '' };
@@ -428,15 +431,18 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
          let expBegin = _.clone(editExperience.exp_dateBegin);
          let expEnd = _.clone(editExperience.exp_dateEnd);
          let dateBegin = `${expBegin.month} ${expBegin.year}`;
-         let dateEnd = `${expEnd.month} ${expEnd.year}`;
+         let dateEnd = _.isEmpty(expEnd.month) || _.isEmpty(expEnd.year) ? '' : `${expEnd.month} ${expEnd.year}`;
 
          expBegin = moment(dateBegin, 'MMMM YYYY');
-         expEnd = moment(dateEnd, 'MMMM YYYY');
-
-         if (!expBegin.isValid() || !expEnd.isValid()) return;
+         expEnd = _.isEmpty(dateEnd) ? '' :  moment(dateEnd, 'MMMM YYYY');
+            
+         if (!expBegin.isValid()) {
+            this.loadingSaveExperience = false;
+            return;
+         }
 
          editExperience.exp_dateBegin = expBegin.format('MM/DD/YYYY');
-         editExperience.exp_dateEnd = expEnd.format('MM/DD/YYYY');
+         editExperience.exp_dateEnd = _.isEmpty(expEnd) ? '' : expEnd.format('MM/DD/YYYY');
 
          this.editor.experiences = _.cloneDeep(Experiences); // Modifier la liste des experiences
          this.editor.experiences.push(editExperience); // Ajouter la nouvelle experience dans la liste
@@ -449,6 +455,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
                   });
                   this.editor.experiences = _.orderBy(experiences, (exp) => {
                      let dateBegin: any = _.isNull(exp.exp_dateBegin) ? exp.old_value.exp_dateBegin : exp.exp_dateBegin;
+                     if (_.isEmpty(dateBegin) || _.isNull(dateBegin)) return exp.ID;
                      dateBegin = dateBegin.indexOf('/') > -1 ? moment(dateBegin.toLowerCase()) : moment(dateBegin.toLowerCase(), 'MMMM YYYY');
                      console.info('Experience: ', dateBegin);
                      if (dateBegin.isValid())

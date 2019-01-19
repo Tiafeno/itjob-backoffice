@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { CompanyService } from '../../../services/company.service';
-
+import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
 import swal from 'sweetalert';
+import swal2 from 'sweetalert2';
 import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
-import { SwitcherComponent } from '../../../directives/account/switcher/switcher.component';
 import { CompanyEditComponent } from '../company-edit/company-edit.component';
 import { AuthService } from '../../../services/auth.service';
+import { Helpers } from '../../../helpers';
 declare var $: any;
 @Component({
   selector: 'app-company-lists',
@@ -22,13 +23,18 @@ export class CompanyListsComponent implements OnInit {
   public sDate: string = "";
   public sActivityArea: number = 0;
   public TABLE: any;
+  public wp: any;
 
   @ViewChild(CompanyEditComponent) private companyEdit: CompanyEditComponent
 
   constructor(
     private companyService: CompanyService,
     private authService: AuthService
-  ) { }
+  ) { 
+    this.wp = new WPAPI({ endpoint: config.apiEndpoint });
+    let currentUser = this.authService.getCurrentUser();
+    this.wp.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
+  }
 
   onChoosed(areaId: number) {
     this.sActivityArea = areaId;
@@ -55,6 +61,12 @@ export class CompanyListsComponent implements OnInit {
     moment.locale('fr');
     // Ajouter ici un code pour recuperer les candidats...
     const companyLists = $('#orders-table');
+    const getElementData = (ev: any): any => {
+      let el = $(ev.currentTarget).parents('tr');
+      let DATA = this.TABLE.row(el).data();
+
+      return DATA;
+    };
     companyLists
       .on('page.dt', () => {
         let info = this.TABLE.page.info();
@@ -104,9 +116,18 @@ export class CompanyListsComponent implements OnInit {
           }
         },
         {
-          data: null, render: (data, type, row) => {
-            return `<span data-id='${row.ID}' class='edit-company badge badge-blue'>Modifier</span>`;
-          }
+          data: null, 
+          render: (data, type, row, meta) => `
+                  <div class="fab fab-left">
+                     <button class="btn btn-sm btn-primary btn-icon-only btn-circle btn-air" data-toggle="button">
+                        <i class="fab-icon la la-bars"></i>
+                        <i class="fab-icon-active la la-close"></i>
+                     </button>
+                     <ul class="fab-menu">
+                        <li><button class="btn btn-primary btn-icon-only btn-circle btn-air edit-company" data-id="${row.ID}"><i class="la la-edit"></i></button></li>
+                        <li><button class="btn btn-danger btn-icon-only btn-circle btn-air remove-company" data-id="${row.ID}" ><i class="la la-trash"></i></button></li>
+                     </ul>
+                  </div>`
         }
       ],
       initComplete: (setting, json) => {
@@ -190,28 +211,60 @@ export class CompanyListsComponent implements OnInit {
       });
 
     $('#orders-table tbody')
-      .on('click', '.edit-company', (e) => {
+      .on('click', '.edit-company', e => {
         e.preventDefault();
         // Réfuser l'accès au commercial de modifier cette option
         // Seul l'administrateur peuvent modifier les entreprises
         // if (!this.authService.hasAccess()) return;
 
-        let el = $(e.currentTarget).parents('tr');
-        let DATA = this.TABLE.row(el).data();
-        this.companyEdit.onOpen(DATA);
+        let __company = getElementData(e);
+        this.companyEdit.onOpen(__company);
       })
-      .on('click', '.edit-status', (e) => {
+      .on('click', '.remove-company', e => {
+        // Réfuser l'accès au commercial de modifier cette option
+        if (!this.authService.notUserAccess("contributor")) return;
+        if (!this.authService.notUserAccess("editor")) return;
+
+        let __company = getElementData(e);
+        swal2({
+          title: 'Confirmation',
+          html: `Vous voulez vraiment supprimer l'entrprise?<br> <b>${__company.title}</b>`,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: "Supprimer",
+          cancelButtonText: "Annuler"
+        }).then((result) => {
+          if (result.value) {
+            Helpers.setLoading(true);
+            let author: any = __company.author;
+            this.wp.users().id(author.ID).delete({force: true, reassign: 0}).then(
+              resp => {
+                swal2('Succès', "CV supprimer avec succès", 'success');
+                this.reloadDatatable();
+                Helpers.setLoading(false);
+              },
+              error => {
+                swal2('Erreur', error.message, 'error');
+                Helpers.setLoading(false);
+              }
+            )
+            // For more information about handling dismissals please visit
+            // https://sweetalert2.github.io/#handling-dismissals
+          } else if (result.dismiss === swal2.DismissReason.cancel) {
+
+          }
+        });
+      })
+      .on('click', '.edit-status', e => {
         e.preventDefault();
         // Réfuser l'accès au commercial de modifier cette option
         if (!this.authService.notUserAccess("contributor")) return;
         if (!this.authService.notUserAccess("editor")) return;
 
-        let el = $(e.currentTarget).parents('tr');
-        let DATA = this.TABLE.row(el).data();
-        let currentStatus: any = DATA.isActive && DATA.post_status === 'publish' ? true : (DATA.post_status === 'pending' ? 'pending' : false);
-        let data = $(e.currentTarget).data();
-        let companyId: number = data.id;
+        const __company = getElementData(e);
+        const currentStatus: any = __company.isActive && __company.post_status === 'publish' ? true : (__company.post_status === 'pending' ? 'pending' : false);
         swal("Modifier le status de l'entreprise", {
+          icon: 'warning',
           buttons: {
             activated: {
               text: "Activer"
@@ -228,16 +281,18 @@ export class CompanyListsComponent implements OnInit {
               case "disabled":
                 let status: boolean = value === 'activated' ? true : false;
                 if (status === currentStatus) return;
+                Helpers.setLoading(true);
                 this.companyService
-                  .activated(companyId, status)
-                  .subscribe(response => {
-                    swal(
-                      'Modification',
-                      'Entreprise mis à jour avec succès',
-                      'success'
-                    )
-                    this.reloadDatatable();
-                  })
+                  .activated(__company.ID, status)
+                  .subscribe(
+                    response => {
+                      swal2('Modification','Entreprise mis à jour avec succès','success');
+                      Helpers.setLoading(false);
+                      this.reloadDatatable();
+                    }, error => {
+                      swal2('Erreur', error.message, 'error');
+                      Helpers.setLoading(false);
+                    })
                 break;
 
             }
