@@ -472,11 +472,11 @@
                 <div class="modal-body p-4">
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_company"
-                      name="university" placeholder="Université/Ecole *">
+                      name="university" placeholder="Nom de l'entreprise">
                   </div>
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_positionHeld"
-                      name="diploma" placeholder="Diplôme">
+                      name="diploma" placeholder="Poste occupé">
                   </div>
                   <div class="form-group mb-4">
                     <ng-select name="branch_activity" placeholder="Les sécteurs d'activités" [(ngModel)]="editor.Experience.exp_branch_activity"
@@ -580,7 +580,7 @@
               </div>
               <div class="ibox-body pt-3">
                 <button type="button" [disabled]="loadingPdf"  (click)="onDownloadCV()" class="btn btn-danger btn-labeled btn-labeled-left btn-icon">
-                    <span class="btn-label"><i class="la la-download"></i></span>Télécharger en PDF</button>
+                    <span class="btn-label"><i class="la la-download"></i></span>Gestionnaire de téléchargement</button>
                     <small class="text-muted d-block mt-2">Autoriser ou Activer les pop-ups (fenêtres contextuelles) dans votre navigateur pour ce site</small>
               </div>
             </div>

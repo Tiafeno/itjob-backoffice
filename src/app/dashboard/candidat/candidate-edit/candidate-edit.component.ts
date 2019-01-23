@@ -14,7 +14,10 @@ import { PlatformLocation } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 declare var $: any;
+declare var jsPDF: any;
 declare var Bloodhound: any;
+declare var rasterizeHTML: any;
+declare var html2canvas: any;
 
 @Component({
    selector: 'app-candidate-edit',
@@ -576,9 +579,9 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       this.loadingPdf = true;
       this.Http.get(`${config.itApi}/candidate/${this.Candidate.ID}?ref=downloadpdf`)
          .subscribe(response => {
-            let data:any = response;
+            let options: any = response;
             this.loadingPdf = false;
-            window.open(data.filepath, '_blank');
+            window.open( options.link + "?cvId=" + this.Candidate.ID + "&key=" + options.key, '_blank');
          });
    }
 

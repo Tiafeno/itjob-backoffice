@@ -5,9 +5,11 @@ import { config } from '../../../environments/environment';
 import { ViewNewsletterComponent } from '../newsletter/view-newsletter/view-newsletter.component';
 import { NewNewsletterComponent } from './new-newsletter/new-newsletter.component';
 import { HttpClient } from '@angular/common/http';
+import * as WPAPI from 'wpapi';
 import swal from 'sweetalert';
 import { Helpers } from '../../helpers';
-import { Observable } from 'rxjs';
+import { NgForm } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 declare var $: any;
 
 @Component({
@@ -17,49 +19,33 @@ declare var $: any;
 })
 export class NewslettersComponent implements OnInit {
    public TABLE: any;
+   public letter: any = {};
    public offset: number = 0;
+   public WPEndpoint: any;
 
    @ViewChild(ViewNewsletterComponent) private viewNews: ViewNewsletterComponent;
    @ViewChild(NewNewsletterComponent) private newNews: NewNewsletterComponent;
 
    constructor(
-      private Http: HttpClient
-   ) { }
+      private Http: HttpClient,
+      private authService: AuthService
+   ) {
 
-   sendWelcomeMail(): void {
-      this.getUsers()
-         .subscribe(users => {
-            let query: any = _.clone(users);
-            let avail_roles = query.avail_roles;
-            let totalUsers = query.total_users;
-            let totalPage = Math.ceil(totalUsers / 20); // 20 is users per page
-            swal({
-               title: "Êtes-vous sûr?",
-               text: "Envoyer le message de bienvenue à tous les utilisateurs",
-               icon: "warning",
-               buttons: true,
-               dangerMode: true,
-            } as any)
-               .then((willSend) => {
-                  if (willSend) {
-                     let formData = new FormData();
-                     formData.append('post', JSON.stringify({ title: 'Bonjour', for: 'welcome' }));
-                     this.asyncCall(totalPage, formData);
-                     Helpers.setLoading(true);
-                  } else {
-
-                  }
-               });
-         })
+      this.WPEndpoint = new WPAPI({
+         endpoint: config.apiEndpoint,
+      });
+      let currentUser = this.authService.getCurrentUser();
+      this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` })
    }
 
-   sendMail(query: any) {
+   sendMail(form: any) {
       return new Promise((resolve, reject) => {
-         this.Http.post(`${config.itApi}/newsletters/`, query)
+         this.Http.post(`${config.itApi}/newsletters/`, form)
             .subscribe(
                response => {
                   let data: any = response;
-                  resolve(data);
+                  if (data.success) resolve(data);
+                  reject(data.message);
                },
                error => {
                   reject(error);
@@ -67,19 +53,48 @@ export class NewslettersComponent implements OnInit {
       })
    }
 
-   getUsers():Observable<any> {
-      return this.Http.get(`${config.itApi}/users/`, { responseType: 'json' });
+   onNewNewsletter(): void {
+      this.newNews.toggleDialog();
    }
 
-   async asyncCall(totalPage: number, form: FormData) {
-      for (let page = 1; page <= totalPage; page++) {
-         let offset = page * 20;
-         form.set('query', JSON.stringify({ number: 20, offset: offset }));
-         await this.sendMail(form);
-         this.offset = offset;
+   onSendNewsletter(Form: NgForm): void {
+      if (Form.valid) {
+         let values: any = _.clone(Form.value);
+         let form = new FormData();
+         form.append('to', values.send);
+         form.append('subject', values.subject);
+         form.append('content', values.content);
+         Helpers.setLoading(true);
+
+         let categories = this.WPEndpoint.categories().slug('newsletter');
+         categories.then(cats => {
+            if (_.isEmpty(cats)) {
+               swal("Erreur", "Categorie 'newsletter' est introuvable dans l'article", "warning");
+               return false;
+            }
+            let ctgs = cats[0];
+
+            this.sendMail(form).then(
+               response => {
+                  this.WPEndpoint.posts().create({
+                     title: values.subject,
+                     content: values.content,
+                     status: 'publish',
+                     categories: [ctgs.id]
+                  })
+                     .then(post => {
+                        swal('Succès', "Lettre d'information envoyer avec succès", 'success');
+                        this.TABLE.ajax.reload(null, false);
+                        this.newNews.toggleDialog();
+                        Helpers.setLoading(false);
+                     });
+               }, error => {
+                  let errno: string = _.isEmpty(error) ? "Une erreur s'est produite pendant l'envoie du lettre d'information" : error;
+                  swal("Erreur d'envoie", errno, "error");
+                  Helpers.setLoading(false);
+               })
+         });
       }
-      Helpers.setLoading(false);
-      swal('Succès', 'Message envoyer avec succès', 'info');
    }
 
    ngOnInit() {
@@ -123,6 +138,15 @@ export class NewslettersComponent implements OnInit {
             }
          }
       });
+
+      $('#newsletter-table tbody')
+         .on('click', '.view-newsletter', e => {
+            e.preventDefault();
+            let el = $(e.currentTarget).parents('tr');
+            let data = this.TABLE.row(el).data();
+            this.letter = _.clone(data);
+            this.viewNews.toggleDialog();
+         })
    }
 
 }

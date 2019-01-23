@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
 
@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 })
 export class ActivityAreaComponent implements OnInit {
   @Output() choosed = new EventEmitter<number>();
+  @Input() title: string;
   public Area: string = '0';
   public branchActivitys: any;
   public loading: boolean = false;

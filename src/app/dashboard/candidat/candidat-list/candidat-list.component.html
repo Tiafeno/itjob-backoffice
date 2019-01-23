@@ -22,7 +22,7 @@
                 <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
               </div>
             </div>
-            <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+            <app-activity-area [title]="'emplois rechercher'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
           </div>
 
           <div class="row">
@@ -68,7 +68,7 @@
                 <th>Prénom</th>
                 <th>Statut</th>
                 <th>Position</th>
-                <th>Secteur d'activité</th>
+                <th>Emploi rechercher</th>
                 <th>Date d'inscription</th>
                 <th class="no-sort">Action</th>
               </tr>

@@ -109,6 +109,9 @@
               "node_modules/tinymce/themes/modern/theme.js",
               "node_modules/tinymce/plugins/fullscreen/plugin.js",
               "src/assets/tinymce/langs/fr_FR.js",
+              "node_modules/rasterizehtml/dist/rasterizeHTML.allinone.js",
+              "node_modules/jspdf/dist/jspdf.debug.js",
+              "node_modules/html2canvas/dist/html2canvas.min.js",
               "src/assets/js/app.js"
             ]
           },

@@ -58,7 +58,6 @@ export class BlogsComponent implements OnInit {
                   let postId: number = response.id;
                   // "response" will hold all properties of your newly-created post,
                   // including the unique `id` the post was assigned on creation
-                  console.log(inputForm);
                   if (!_.isUndefined(inputForm.file) ) {
                      this.WPEndpoint.media()
                         // Specify a path to the file you want to upload, or a Buffer
@@ -68,10 +67,12 @@ export class BlogsComponent implements OnInit {
                            alt_text: inputForm.file
                         })
                         .then((attach) => {
-                           this.WPEndpoint.posts().id(postId).update({ featured_media: attach.id });
-                           swal('Succès', "Votre article à bien été publier", 'info');
-                           this.reload();
-                           Helpers.setLoading(false);
+                           this.WPEndpoint.posts().id(postId).update({ featured_media: attach.id }).then(resp => {
+                              swal('Succès', "Votre article à bien été publier", 'info');
+                              this.reload();
+                              Helpers.setLoading(false);
+                           })
+                           
                         })
                   } else {
                      swal('Succès', "Votre article à bien été publier", 'info');
