@@ -52,12 +52,22 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
    public Years: Array<number> = _.range(1959, new Date().getFullYear() + 1);
    public tinyMCESettings: any = {
+      language: 'fr_FR',
+      menubar: false,
+      content_css: [
+         '//fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i',
+         '//www.tinymce.com/css/codepen.min.css'
+      ],
+      content_style: ".mce-content-body p { margin: 5px 0; }",
       skin_url: '/assets/tinymce/skins/lightgray',
       inline: false,
-      statusbar: false,
+      statusbar: true,
+      resize: true,
       browser_spellcheck: true,
+      min_height: 320,
       height: 320,
-      plugins: '',
+      toolbar: 'undo redo | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ',
+      plugins: ['lists'],
    };
    constructor(
       private route: ActivatedRoute,
@@ -412,6 +422,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
          ID: id,
          exp_dateBegin: { month: null, year: null },
          exp_dateEnd: { month: null, year: null },
+         exp_mission: ''
       };
 
       $('#edit-experience-modal').modal('show');

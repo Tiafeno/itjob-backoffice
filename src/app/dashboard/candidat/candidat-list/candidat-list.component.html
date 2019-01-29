@@ -22,7 +22,7 @@
                 <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
               </div>
             </div>
-            <app-activity-area [title]="'emplois rechercher'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+            <app-activity-area [title]="'secteurs d\'activités'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
           </div>
 
           <div class="row">
@@ -54,7 +54,7 @@
               <button class="btn btn-sm btn-transparent btn-primary btn-fix ml-2"  (click)="archivedCandidate.openArchivedLists()">
                   <span class="btn-icon"><i class="la la-archive"></i>Les CV incomplets</span>
               </button>
-          </div>
+            </div>
           </div>
         </div>
 
@@ -64,8 +64,8 @@
               <tr>
                 <th>#</th>
                 <th>Réference</th>
-                <th>Nom</th>
                 <th>Prénom</th>
+                <th>Nom</th>
                 <th>Statut</th>
                 <th>Position</th>
                 <th>Emploi rechercher</th>

@@ -27,7 +27,7 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    ) { }
 
    public onOpen(candidate: any): void {
-      this.position = candidate.featured;
+      this.position = candidate.featured ? 1 : 0;
       this.currentPosition = candidate.featured;
       if (this.currentPosition && !_.isNull(candidate.featuredDateLimit)) {
          this.dateLimit = moment(candidate.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')

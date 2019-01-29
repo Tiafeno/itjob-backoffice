@@ -60,14 +60,8 @@ export class EditTaxonomyComponent implements OnInit {
    public open() {
       if (!this.term.activated) {
          this.loadingCandidate = true;
-         if (this.taxonomy === "software")
-            this.WPEndpoint.candidate().software(this.term.term_id).then(resp => {
-               this.populate(resp);
-            });
-         if (this.taxonomy === "job_sought")
-            this.WPEndpoint.candidate().job_sought(this.term.term_id).then(resp => {
-               this.populate(resp);
-            });
+         if (_.isArray(this.term.candidates))
+            this.populate(this.term.candidates);
       }
       
       $('#edit-taxonomy-modal').modal('show');
@@ -143,8 +137,8 @@ export class EditTaxonomyComponent implements OnInit {
       if (!_.isArray(response)) return null;
       this.Candidates = _.map(response, (candidate) => {
          let info: any = {};
-         info.id = candidate.id;
-         info.reference = candidate.title.rendered;
+         info.id = candidate.ID;
+         info.reference = candidate.post_title;
 
          return info;
       });

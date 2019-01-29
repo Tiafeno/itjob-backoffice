@@ -64,7 +64,7 @@ export class TaxonomyComponent implements OnInit {
 
    onNew(): void {
       // Réfuser l'accès au commercial de modifier cette option
-      if (!this.authService.notUserAccess("editor")) return;
+      // if (!this.authService.notUserAccess("editor")) return;
       if (!this.authService.notUserAccess('contributor')) return;
       this.NewComponent.open();
    }

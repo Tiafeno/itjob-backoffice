@@ -125,6 +125,9 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           'excel',
           'print'
         ],
+        columnDefs: [
+          { width: "15%", targets: 7 },
+       ],
         dom: '<"top"i><"info"r>t<"bottom"flp><"clear">',
         processing: true,
         page: 2,
@@ -153,14 +156,24 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           {
-            data: 'branch_activity', render: (data) => {
+            data: 'jobSought', render: (data) => {
               if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
-              return data.name;
+              let job: Array<string> = [];
+              if (_.isArray(data)) {
+                _.forEach(data, (value) => {
+                  job.push(value.name);
+                })
+              }
+              if (_.isObject(data)) {
+                job.push(data.name);
+              }
+
+              return _.isEmpty(job) ? 'Non renseigner' : _.join(job, ', ');
             }
           },
           {
             data: 'date_create', render: (data) => {
-              return moment(data).fromNow();
+              return moment(data).format("LLL");
             }
           },
           {

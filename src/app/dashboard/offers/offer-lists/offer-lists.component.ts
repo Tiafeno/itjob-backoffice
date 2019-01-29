@@ -131,7 +131,7 @@ export class OfferListsComponent implements OnInit {
                }
             },
             { data: 'dateLimit', render: (data) => { return moment(data).fromNow(); } },
-            { data: 'datePublication', render: (data) => { return moment(data, 'DD MMMM, YYYY').fromNow(); } },
+            { data: 'date_create', render: (data) => { return moment(data).fromNow(); } },
             {
                data: 'activated', render: (data, type, row) => {
                   let status = data && row.offer_status === 'publish' ? 'Publier' : (row.offer_status === 'pending' ? "En attente" : "Désactiver");

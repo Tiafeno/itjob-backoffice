@@ -43,6 +43,7 @@ import { MomendatePipe } from '../pipes/momendate.pipe';
 import { DatepickerDirective } from '../directives/datepicker.directive';
 import { CoverLetterComponent } from '../directives/candidat/cover-letter/cover-letter.component';
 import { ImageSizePipe } from '../pipes/image-size.pipe';
+import { CompareValidatorDirective } from '../directives/compare-validator.directive';
 
 @NgModule({
   imports: [
@@ -92,7 +93,8 @@ import { ImageSizePipe } from '../pipes/image-size.pipe';
     MomendatePipe,
     ImageSizePipe,
     CoverLetterComponent,
-    DatepickerDirective
+    DatepickerDirective,
+    CompareValidatorDirective
   ],
   providers: [
     {

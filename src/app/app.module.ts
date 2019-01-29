@@ -33,7 +33,7 @@ import { ImageSizePipe } from './pipes/image-size.pipe';
   declarations: [
     AppComponent,
     IndexComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
