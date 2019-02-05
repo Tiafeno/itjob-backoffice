@@ -3,7 +3,6 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable } from 'rxjs';
 import swal from 'sweetalert2';
 import 'rxjs/add/operator/do';
-import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtInterceptorService implements HttpInterceptor {

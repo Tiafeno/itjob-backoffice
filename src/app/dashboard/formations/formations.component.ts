@@ -8,6 +8,7 @@ import { config } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -17,7 +18,9 @@ declare var $: any;
 })
 export class FormationsComponent implements OnInit {
   public table: any;
+  public loading: boolean = false;
   public WPEndpoint: any;
+  public Feature: any = {};
   constructor(
     private router: Router,
     private Http: HttpClient,
@@ -35,6 +38,21 @@ export class FormationsComponent implements OnInit {
 
   public reload(): void {
     this.table.ajax.reload(null, false);
+  }
+
+  public onSaveFeatured(Form: NgForm): void {
+    if (Form.valid) {
+      this.loading = true;
+      let value: any = Form.value;
+      this.WPEndpoint.formation().id(value.ID).update({
+        featured: value.position,
+        featured_datelimit: value.position ? value.featured_datelimit : ''
+      }).then(resp => {
+        this.loading = false;
+        this.reload();
+        $('#edit-featured-formation-modal').modal('hide');
+      })
+    }
   }
 
   ngOnInit() {
@@ -74,7 +92,7 @@ export class FormationsComponent implements OnInit {
           data: 'featured', render: data => {
             let featured: string = data ? 'À LA UNE' : 'AUCUN';
             let style: string = data ? 'blue' : 'secondary';
-            return `<span class="badge update-position badge-${style}">${featured}</span>`;
+            return `<span style="cursor: pointer" class="badge update-position badge-${style}">${featured}</span>`;
           }
         },
         { data: 'establish_name' },
@@ -130,6 +148,13 @@ export class FormationsComponent implements OnInit {
     });
 
     $('#formation-table tbody')
+      .on('click', '.update-position', e => {
+        e.preventDefault();
+        let __formation: any = getElementData(e);
+        this.Feature = _.clone(__formation);
+        this.Feature.featured = __formation.featured ? 1 : 0;
+        $('#edit-featured-formation-modal').modal('show');
+      })
       .on('click', '.edit-formation', (e) => {
         e.preventDefault();
         //if (!this.authService.notUserAccess("editor")) return;

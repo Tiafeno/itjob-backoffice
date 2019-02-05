@@ -118,6 +118,7 @@
             </div>
             <div class="ibox-body">
               <div class="text-center" *ngIf="loadingSubscription">Changement ...</div>
+              <div class="text-center" *ngIf="Subscriptions.length === 0 && !loadingSubscription">Aucun candidat</div>
               <ul class="media-list media-list-divider mr-2 scroller" data-height="400px">
                 <li class="media align-items-center" *ngFor="let subscription of Subscriptions">
                   <div class="media-body d-flex align-items-center">
