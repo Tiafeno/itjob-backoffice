@@ -57,7 +57,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (error.statusText === 'Unauthorized' || error.statusText === "Forbidden" || error.status === 401 || error.status === 403) {
           clearInterval(this.intervalRef);
           this.Auth.logout();
-          location.reload();
           return;
         }
       });

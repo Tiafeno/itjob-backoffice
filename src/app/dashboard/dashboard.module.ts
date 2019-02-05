@@ -44,6 +44,10 @@ import { DatepickerDirective } from '../directives/datepicker.directive';
 import { CoverLetterComponent } from '../directives/candidat/cover-letter/cover-letter.component';
 import { ImageSizePipe } from '../pipes/image-size.pipe';
 import { CompareValidatorDirective } from '../directives/compare-validator.directive';
+import { RequestFormationsComponent } from './request-formations/request-formations.component';
+import { FormationsComponent } from './formations/formations.component';
+import { FormationEditComponent } from './formations/formation-edit/formation-edit.component';
+import { RequestFormationEditComponent } from './request-formations/request-formation-edit/request-formation-edit.component';
 
 @NgModule({
   imports: [
@@ -94,7 +98,11 @@ import { CompareValidatorDirective } from '../directives/compare-validator.direc
     ImageSizePipe,
     CoverLetterComponent,
     DatepickerDirective,
-    CompareValidatorDirective
+    CompareValidatorDirective,
+    RequestFormationsComponent,
+    FormationsComponent,
+    FormationEditComponent,
+    RequestFormationEditComponent
   ],
   providers: [
     {

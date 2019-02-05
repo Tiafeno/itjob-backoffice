@@ -225,7 +225,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           error: (jqXHR, status, errorThrown) => {
-            swal('Erreur', "Erreur lors du chargement des données depuis le serveur, Erreur statut: " + jqXHR.status, 'error');
+            // swal('Erreur', "Erreur lors du chargement des données depuis le serveur, Erreur statut: " + jqXHR.status, 'error');
           }
         }
 

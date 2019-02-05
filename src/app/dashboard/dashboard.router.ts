@@ -14,6 +14,10 @@ import { AdminGuard } from '../guards/admin.guard';
 import { BlogsComponent } from './blogs/blogs.component';
 import { NewslettersComponent } from './newsletters/newsletters.component';
 import { PublicityComponent } from './publicity/publicity.component';
+import { FormationsComponent } from './formations/formations.component';
+import { FormationEditComponent } from './formations/formation-edit/formation-edit.component';
+import { RequestFormationsComponent } from './request-formations/request-formations.component';
+import { RequestFormationEditComponent } from './request-formations/request-formation-edit/request-formation-edit.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -40,6 +44,22 @@ export const DashboardRouter: Route[] = [
         children: [
           { path: "", redirectTo: 'edit', pathMatch: 'full' },
           { path: 'edit', component: OfferEditComponent }
+        ]
+      },
+      { path: 'formations', component: FormationsComponent },
+      {
+        path: "formation/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: FormationEditComponent }
+        ]
+      },
+      { path: 'request-formations', component: RequestFormationsComponent },
+      {
+        path: "request-formation/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: RequestFormationEditComponent }
         ]
       },
       { path: "company-lists", component: CompanyListsComponent },

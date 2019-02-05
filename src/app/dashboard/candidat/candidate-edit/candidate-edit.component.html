@@ -72,12 +72,12 @@
             </div>
             <div class="row">
               <div class="col-sm-4 form-group mb-4">
-                <label class="font-bold">Nom</label>
+                <label class="font-bold">Prénom</label>
                 <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
                   type="text" placeholder="Nom du candidat" required>
               </div>
               <div class="col-sm-6 form-group mb-4">
-                <label class="font-bold">Prénom</label>
+                <label class="font-bold">Nom</label>
                 <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
                   placeholder="Prénom du candidat">
               </div>
@@ -247,8 +247,7 @@
                         <div class="flex-1">
                           <div class="media-heading">
                             {{experience.exp_company}}
-                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En
-                              attente de validation</span>
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En attente de validation</span>
                           </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
                           <div class="font-weight-bold" *ngIf="experience.exp_dateBegin">{{experience.exp_dateBegin |
@@ -286,7 +285,7 @@
                       <label class="checkbox checkbox-info">
                         <input [checked]="editor.Form.jobNotif.notification" [(ngModel)]="editor.Form.jobNotif.notification"
                           name="notification" type="checkbox">
-                        <span class="input-span"></span>Souhaitez-vous recevoir une notification quand une offre
+                        <span class="input-span"></span>Recevoir une notification quand une offre
                         d’emploi est postée sur Itjobmada</label>
                     </div>
                   </div>
@@ -315,7 +314,7 @@
                         <label class="checkbox checkbox-info">
                           <input [checked]="editor.Form.trainingNotif.notification" [(ngModel)]="editor.Form.trainingNotif.notification"
                             name="notification" type="checkbox">
-                          <span class="input-span"></span>Souhaitez-vous recevoir une notification quand une formation
+                          <span class="input-span"></span>Recevoir une notification quand une formation
                           est postée sur Itjobmada</label>
                       </div>
                     </div>
@@ -336,7 +335,7 @@
                   <label class="checkbox checkbox-info">
                     <input [checked]="editor.Form.Newsletter" [(ngModel)]="editor.Form.Newsletter" name="newsletter"
                       type="checkbox">
-                    <span class="input-span"></span>Voulez-vous recevoir nos nouvelles du mois</label>
+                    <span class="input-span"></span>Recevoir les nouvelles du mois</label>
                 </div>
               </div>
 

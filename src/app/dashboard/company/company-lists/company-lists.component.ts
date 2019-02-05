@@ -92,6 +92,9 @@ export class CompanyListsComponent implements OnInit {
       "sDom": 'rtip',
       processing: true,
       serverSide: true,
+      columnDefs: [
+        { width: "15%", targets: 2 },
+      ],
       columns: [
         { data: 'ID' },
         { data: 'title', render: (data, type, row, meta) => data },
