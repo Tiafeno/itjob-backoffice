@@ -29,6 +29,20 @@ export class AuthService {
             }));
    }
 
+   /**
+    * Cette fonction permet de recupérer le role de l'utilisateur
+    * @return string|null
+    */
+   public getRole(): string|null {
+      let user: any = this.getCurrentUser();
+      if (!_.isUndefined(user) && !_.isEmpty(user)) {
+         let roles: Array<string> = user.data.roles;
+         return roles[0];
+      } else {
+         return null;
+      }
+   }
+
    // Ajouter une function await pour vérifier la validation de l'autorisation
    public isLogged(): boolean {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));

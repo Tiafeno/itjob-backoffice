@@ -74,12 +74,12 @@
               <div class="col-sm-4 form-group mb-4">
                 <label class="font-bold">Prénom</label>
                 <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
-                  type="text" placeholder="Nom du candidat" required>
+                  type="text" placeholder="Prénom du candidat" required>
               </div>
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Nom</label>
                 <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
-                  placeholder="Prénom du candidat">
+                  placeholder="Nom du candidat">
               </div>
             </div>
             <div class="row">
@@ -225,7 +225,8 @@
                           <div class="font-weight-bold">{{training.training_dateBegin | momendate}} -
                             {{training.training_dateEnd | momendate}}</div>
                         </div>
-                        <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
+                        <button (click)="onUpdateTraining(training.ID, true)" [disabled]="loadingSaveTraining" *ngIf="!training.validated" type="button" class="btn btn-sm btn-outline-warning">Valider</button>
+                        <button (click)="onEditTraining(training.ID)" type="button" class="btn ml-2 btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
 
@@ -256,7 +257,8 @@
                             {{experience.old_value.exp_dateBegin}} - {{experience.old_value.exp_dateEnd}}
                           </div>
                         </div>
-                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
+                        <button (click)="onUpdateExperience(experience.ID, true)" *ngIf="!experience.validated" type="button" [disabled]="loadingSaveExperience" class="btn btn-sm btn-outline-warning">Valider</button>
+                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm ml-2 btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
                   </ul>
@@ -283,17 +285,17 @@
                   <div class="col-12">
                     <div class="form-group mb-3">
                       <label class="checkbox checkbox-info">
-                        <input [checked]="editor.Form.jobNotif.notification" [(ngModel)]="editor.Form.jobNotif.notification"
+                        <input [checked]="editor.Form.jobNotif.notification" [disabled]="true" [(ngModel)]="editor.Form.jobNotif.notification"
                           name="notification" type="checkbox">
-                        <span class="input-span"></span>Recevoir une notification quand une offre
+                        <span class="input-span"></span>Reçois une notification quand une offre
                         d’emploi est postée sur Itjobmada</label>
                     </div>
                   </div>
                   <div class="col-6" *ngIf="editor.Form.jobNotif.notification">
                     <div class="form-group mb-3">
-                      <label>Recevoir une notification pour quel métier ?</label>
+                      <label>Reçois une notification pour quel métier ?</label>
                       <div>
-                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" name="activityarea" bindValue="term_id"
+                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" [disabled]="true" name="activityarea" bindValue="term_id"
                           bindLabel="name" [multiple]='false' [items]='branchActivitys'>
                         </ng-select>
                       </div>
@@ -301,7 +303,7 @@
                   </div>
                   <div class="col-12" *ngIf="editor.Form.jobNotif.notification">
                     <div class="form-group ">
-                      <input class="form-control form-control-solid" [(ngModel)]="editor.Form.jobNotif.job_sought" name="jobsought"
+                      <input class="form-control form-control-solid" [disabled]="true" [(ngModel)]="editor.Form.jobNotif.job_sought" name="jobsought"
                         placeholder="Emploi que souhaite avoir une notification" type="text">
                     </div>
                   </div>
@@ -312,17 +314,17 @@
                     <div class="col-12">
                       <div class="form-group mb-3">
                         <label class="checkbox checkbox-info">
-                          <input [checked]="editor.Form.trainingNotif.notification" [(ngModel)]="editor.Form.trainingNotif.notification"
+                          <input [checked]="editor.Form.trainingNotif.notification" [disabled]="true" [(ngModel)]="editor.Form.trainingNotif.notification"
                             name="notification" type="checkbox">
-                          <span class="input-span"></span>Recevoir une notification quand une formation
+                          <span class="input-span"></span>Reçois une notification quand une formation
                           est postée sur Itjobmada</label>
                       </div>
                     </div>
                     <div class="col-6" *ngIf="editor.Form.trainingNotif.notification">
                       <div class="form-group mb-3">
-                        <label>Recevoir une notification pour quelle métier ?</label>
+                        <label>Reçois une notification pour quelle métier ?</label>
                         <div>
-                          <ng-select [(ngModel)]="editor.Form.trainingNotif.branch_activity" name="activityarea"
+                          <ng-select [(ngModel)]="editor.Form.trainingNotif.branch_activity" [disabled]="true" name="activityarea"
                             bindValue="term_id" bindLabel="name" [multiple]='false' [items]='branchActivitys'>
                           </ng-select>
                         </div>
@@ -333,9 +335,9 @@
 
                 <div class="form-group">
                   <label class="checkbox checkbox-info">
-                    <input [checked]="editor.Form.Newsletter" [(ngModel)]="editor.Form.Newsletter" name="newsletter"
+                    <input [checked]="editor.Form.Newsletter" [disabled]="true" [(ngModel)]="editor.Form.Newsletter" name="newsletter"
                       type="checkbox">
-                    <span class="input-span"></span>Recevoir les nouvelles du mois</label>
+                    <span class="input-span"></span>Reçois les nouvelles du mois</label>
                 </div>
               </div>
 

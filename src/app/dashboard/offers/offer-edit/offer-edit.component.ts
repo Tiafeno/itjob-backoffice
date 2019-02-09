@@ -49,7 +49,7 @@ export class OfferEditComponent implements OnInit {
 
    constructor(
       private route: ActivatedRoute,
-      private authService: AuthService,
+      public authService: AuthService,
       private router: Router,
       private offerServices: OfferService,
       private requestServices: RequestService
@@ -65,6 +65,9 @@ export class OfferEditComponent implements OnInit {
                this.Offer = _.cloneDeep(offer);
                this.loadForm(this.Offer);
             });
+         if (this.authService.getRole() === 'editor') {
+            this.router.navigate(['offer-lists']);
+         }
       });
 
       this.router.events.subscribe((route) => {
@@ -166,7 +169,7 @@ export class OfferEditComponent implements OnInit {
          Value.date_limit = moment(Value.date_limit, 'DD/MM/YYYY').format('MM/DD/YYYY')
          this.offerServices
             .saveOffer(Value)
-            .subscribe(response => {
+            .subscribe(() => {
                swal({
                   title: "Modification",
                   text: 'La modification a été effectuée',
@@ -183,7 +186,6 @@ export class OfferEditComponent implements OnInit {
       }
    }
 
-   // Modifier le compte proféssionnel
    editCompany(event: any) {
       let element = event.currentTarget;
       let Company: any = this.Offer.__info;

@@ -29,7 +29,7 @@ export class CompanyEditComponent implements OnInit {
   @ViewChild(CompanyOffersComponent) private ourOffers: CompanyOffersComponent;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private Http: HttpClient
   ) { }
 
@@ -39,6 +39,10 @@ export class CompanyEditComponent implements OnInit {
         var modal = $(this)
         modal.find('.modal-title').text('MODIFICATION')
         modal.find('.modal-body input').val('');
+        // ACCESS FIELDS
+        $("input.no-access").each(function () {
+          $(this).attr('disabled', true);
+        })
       })
       .on('hide.bs.modal', (event) => {
         this.editor = {};

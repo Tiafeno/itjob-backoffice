@@ -28,7 +28,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   public sStatus: string = "";
   public sKey: string = "";
   public sActivityArea: number = 0;
-  public sPosition: any;
+  public sPosition: any = "";
   public sDate: string = "";
   public selected: number = 0;
   public wp: any;
@@ -74,7 +74,12 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   public resetFilterSearch() {
     $('.page-content').find('input').val('');
     $('.page-content').find('select:not("#activity_area_search")').val('');
+    $('.page-content').find('select#activity_area_search').val(0);
     $('.page-content').find('.selectpicker').selectpicker("refresh");
+    this.sKey = '';
+    this.sStatus = '';
+    this.sActivityArea = 0;
+    this.sPosition = "";
     this.table.search("", true, false).draw();
   }
 

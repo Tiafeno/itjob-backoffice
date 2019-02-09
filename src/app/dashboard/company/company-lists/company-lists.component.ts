@@ -49,7 +49,13 @@ export class CompanyListsComponent implements OnInit {
   public resetFilterSearch() {
     $('.page-content').find('input').val('');
     $('.page-content').find('select:not("#activity_area_search")').val('');
+    $('.page-content').find('select#activity_area_search').val(0);
     $('.page-content').find('.selectpicker').selectpicker("refresh");
+    this.sActivityArea = 0;
+    this.sAccount = "";
+    this.sStatus = "";
+    this.sDate = "";
+    this.sKey = "";
     this.TABLE.search("", true, false).draw();
   }
 

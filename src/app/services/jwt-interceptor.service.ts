@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import swal from 'sweetalert2';
@@ -21,9 +21,13 @@ export class JwtInterceptorService implements HttpInterceptor {
       if (err instanceof HttpErrorResponse) { // here you can even check for err.status == 404 | 401 etc
         swal(err.name, err.message, 'error');
         setTimeout(() => {
-          localStorage.removeItem('currentUser');
+          //localStorage.removeItem('currentUser');
           //location.reload();
-        }, 2000);
+          if (err.status == 401 || err.status == 403 || err.status == 511 || err.status == 500) {
+            localStorage.removeItem('currentUser');
+            location.reload();
+          }
+        }, 2500);
         Observable.throw(err); // send data to service which will inform the component of the error and in turn the user
       }
     });

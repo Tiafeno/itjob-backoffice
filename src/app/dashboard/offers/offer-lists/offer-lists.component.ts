@@ -62,7 +62,13 @@ export class OfferListsComponent implements OnInit {
    public resetFilterSearch() {
       $('.page-content').find('input').val('');
       $('.page-content').find('select:not("#activity_area_search")').val('');
+      $('.page-content').find('select#activity_area_search').val(0);
       $('.page-content').find('.selectpicker').selectpicker("refresh");
+      this.sKey = "";
+      this.sActivityArea = 0;
+      this.sStatus = "";
+      this.sRateplan = "";
+      this.sDate = "";
       this.table.search("", true, false).draw();
    }
 

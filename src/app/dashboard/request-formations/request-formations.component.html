@@ -1,3 +1,83 @@
-<p>
-  request-formations works!
-</p>
+<div class="page-content fade-in-up">
+  <div class="ibox">
+    <div class="ibox-body">
+      <h5 class="font-strong mb-4">LES DEMANDE DE FORMATIONS</h5>
+      <form class="form-success mb-4">
+        <div class="row mb-4">
+          <div class="col-md-4 mb-2 mb-sm-0">
+            <select class="form-control " id="type-status" title="Tous les statuts" data-style="btn-solid">
+              <option value="">Tous les statuts</option>
+              <option value="0">En attente</option>
+              <option value="1">Publier</option>
+              <option value="2">Désactiver</option>
+            </select>
+          </div>
+          <div class="col-md-4 form-check mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+              <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="table-responsive row">
+        <table class="table table-bordered table-hover" id="request-formation-table">
+          <thead class="thead-default thead-lg">
+            <tr>
+              <th>#</th>
+              <th>Titre</th>
+              <th>Théme</th>
+              <th>Statut</th>
+              <th>Intéressé</th>
+              <th>Date d'ajout</th>
+              <th class="no-sort">Action</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="interest-candidate-modal">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Les candidates interessés</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-sm-12" *ngIf="interesteds.length > 0">
+            <div class="ibox-body">
+              <ul class="media-list media-list-divider mr-2">
+                <li class="media align-items-center" *ngFor="let candidate of interesteds">
+                  <div class="media-body d-flex align-items-center">
+                    <div class="flex-1">
+                      <div class="media-heading">
+                        {{candidate.reference}}
+                        <div class="text-muted mt-2">
+                          {{candidate.privateInformations.firstname}}
+                          {{candidate.privateInformations.lastname}}
+                        </div>
+                      </div>
+                    </div>
+                    <button [routerLink]="[ '/candidate', candidate.ID, 'edit' ]" data-dismiss="modal" class="btn btn-sm btn-outline-info btn-rounded">Voir le CV</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+          <button class="btn btn-default mr-3" data-dismiss="modal" type="button">
+            <span>Fermer</span>
+          </button>
+      </div>
+    </form>
+  </div>
+</div>

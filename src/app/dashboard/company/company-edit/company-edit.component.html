@@ -19,7 +19,7 @@
             <div class="form-group">
               <label class="font-bold">Nom de l'entreprise</label>
               <input class="form-control from-control-solid" autocomplete="off" name="title" type="text" [(ngModel)]="editor.title"
-                placeholder="Nom de l'entreprise" required>
+                placeholder="Nom de l'entreprise" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" required>
             </div>
           </div>
         </div>
@@ -37,13 +37,13 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">NIF </label>
             <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
-              autocomplete="off">
+              autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
           </div>
 
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Numéro statistique </label>
             <input class="form-control form-control-solid" name="stat" [(ngModel)]="editor.stat" type="text"
-              placeholder="Numéro statistique" autocomplete="off">
+              placeholder="Numéro statistique" autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
           </div>
         </div>
 
@@ -60,7 +60,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Nom & Prénom du résponsable</label>
             <input class="form-control form-control-solid" autocomplete="off" name="name" [(ngModel)]="editor.name"
-              type="text" placeholder="Nom du résponsable" required>
+              type="text" placeholder="Nom du résponsable" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" required>
           </div>
         </div>
 
@@ -69,7 +69,8 @@
             <label class="font-bold">Numéro de téléphone</label>
             <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
               <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
-                <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire">
+                <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" 
+                placeholder="Numére de votre cellulaire" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
                 <span class="input-group-btn ml-2">
                   <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
                     title="Enlever ce numero">
@@ -89,7 +90,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse email</label>
             <input class="form-control form-control-solid" autocomplete="off" name="email" [disabled]="true"
-              [(ngModel)]="editor.email" type="text" placeholder="Addresse email de l'entreprise" required>
+              [(ngModel)]="editor.email" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" type="text" placeholder="Addresse email de l'entreprise" required>
           </div>
         </div>
 
@@ -97,7 +98,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse</label>
             <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.address" type="text"
-              placeholder="Adresse de l'entreprise" autocomplete="off" required>
+              placeholder="Adresse de l'entreprise" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" autocomplete="off" required>
           </div>
 
           <div class="col-sm-6 form-group mb-4">
@@ -123,17 +124,17 @@
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label class="checkbox checkbox-info">
-                    <input [checked]="editor.notification" [(ngModel)]="editor.notification"
+                    <input [checked]="editor.notification" [disabled]="true" [(ngModel)]="editor.newsletter"
                       name="notification" type="checkbox">
-                    <span class="input-span"></span>Recevoir les nouvelles du mois</label>
+                    <span class="input-span"></span>Reçois les nouvelles du mois</label>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label class="checkbox checkbox-info">
-                    <input [checked]="editor.newsletter" [(ngModel)]="editor.newsletter"
+                    <input [checked]="editor.newsletter" [disabled]="true" [(ngModel)]="editor.notification"
                       name="newsletter" type="checkbox">
-                    <span class="input-span"></span>Notification quand un nouveau CV est insérer</label>
+                    <span class="input-span"></span>Notifié quand un nouveau CV est insérer</label>
                 </div>
               </div>
             </div>
