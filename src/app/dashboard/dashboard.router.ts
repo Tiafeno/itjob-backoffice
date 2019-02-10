@@ -10,6 +10,14 @@ import { OfferEditComponent } from "./offers/offer-edit/offer-edit.component";
 import { CompanyListsComponent } from './company/company-lists/company-lists.component';
 import { TaxonomyComponent } from './taxonomy/taxonomy.component';
 import { SettingsComponent } from './settings/settings.component';
+import { AdminGuard } from '../guards/admin.guard';
+import { BlogsComponent } from './blogs/blogs.component';
+import { NewslettersComponent } from './newsletters/newsletters.component';
+import { PublicityComponent } from './publicity/publicity.component';
+import { FormationsComponent } from './formations/formations.component';
+import { FormationEditComponent } from './formations/formation-edit/formation-edit.component';
+import { RequestFormationsComponent } from './request-formations/request-formations.component';
+import { RequestFormationEditComponent } from './request-formations/request-formation-edit/request-formation-edit.component';
 
 export const DashboardRouter: Route[] = [
   {
@@ -38,14 +46,28 @@ export const DashboardRouter: Route[] = [
           { path: 'edit', component: OfferEditComponent }
         ]
       },
-      { path: "company-lists", component: CompanyListsComponent },
-      { path: "settings", component: SettingsComponent },
+      { path: 'formations', component: FormationsComponent },
       {
-        path: 'taxonomy/:term',
-        component: TaxonomyComponent
+        path: "formation/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: FormationEditComponent }
+        ]
       },
-      
+      { path: 'request-formations', component: RequestFormationsComponent },
+      {
+        path: "request-formation/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: RequestFormationEditComponent }
+        ]
+      },
+      { path: "company-lists", component: CompanyListsComponent },
+      { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
+      { path: 'taxonomy/:term', component: TaxonomyComponent },
+      { path: 'blogs', component: BlogsComponent },
+      { path: 'newsletters', component: NewslettersComponent }, 
+      { path: 'ads', component: PublicityComponent }      
     ]
   },
-
 ]

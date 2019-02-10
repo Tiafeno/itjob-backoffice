@@ -15,3 +15,17 @@ ng-select.ng-invalid .ng-select-container {
 .content-wrapper {
   min-height: 100vh !important;
 }
+
+.no-access span, span.no-access {
+  background-color: #34495f !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+input.no-access, input.no-access:focus {
+  background-color: #495057 !important;
+  pointer-events:none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}

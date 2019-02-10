@@ -29,9 +29,13 @@
                   <label>Date limite</label>
                   <div class="input-group date">
                     <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                    <input class="form-control" name="datelimit" type="text" [value]="dateLimit" placeholder="Date limite"
+                    <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [(ngModel)]="dateLimit" [minView]="0" name="datelimit" type="text" [value]="dateLimit" placeholder="Date limite"
                       autocomplete="off" required>
-  
+                  </div>
+                  <div class="mt-2 font-12">
+                      <small class="float-right badge badge-info ml-1 ml-2"><i class="ti-alarm-clock"></i> 
+                    {{ dateLimit | momendate:'LLLL' }}
+                    </small>
                   </div>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-<div class="modal fade" id="edit-company-modal">
+<div class="modal fade" id="edit-company-modal" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <form class="modal-content" #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
       <div class="modal-header p-4">
@@ -19,8 +19,7 @@
             <div class="form-group">
               <label class="font-bold">Nom de l'entreprise</label>
               <input class="form-control from-control-solid" autocomplete="off" name="title" type="text" [(ngModel)]="editor.title"
-                placeholder="Nom de l'entreprise" required>
-              <span class="help-block mt-2">This is some placeholder block-level help text for the above input.</span>
+                placeholder="Nom de l'entreprise" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" required>
             </div>
           </div>
         </div>
@@ -28,22 +27,9 @@
         <div class="row">
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Secteur d'activité</label>
-            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name" bindValue="term_id"
-              [searchFn]="customSearchFn" [items]="AreaActivity" required>
+            <ng-select name="area_activity" [(ngModel)]="editor.branch_activity" [loading]="loadingArea" bindLabel="name"
+              bindValue="term_id" [searchFn]="customSearchFn" [items]="AreaActivity" required>
             </ng-select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6 form-group mb-4">
-            <label class="font-bold">Type de compte</label>
-            <div>
-              <select class="form-control" name="account" [(ngModel)]="editor.account" title="Type de compte" required>
-                <option value="0">Compte standard</option>
-                <option value="1">Compte premium</option>
-                <option value="2">En attente de validation</option>
-              </select>
-            </div>
           </div>
         </div>
 
@@ -51,13 +37,13 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">NIF </label>
             <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
-              autocomplete="off" >
+              autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
           </div>
 
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Numéro statistique </label>
             <input class="form-control form-control-solid" name="stat" [(ngModel)]="editor.stat" type="text"
-              placeholder="Numéro statistique" autocomplete="off" >
+              placeholder="Numéro statistique" autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
           </div>
         </div>
 
@@ -74,7 +60,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Nom & Prénom du résponsable</label>
             <input class="form-control form-control-solid" autocomplete="off" name="name" [(ngModel)]="editor.name"
-              type="text" placeholder="Nom du résponsable" required>
+              type="text" placeholder="Nom du résponsable" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" required>
           </div>
         </div>
 
@@ -83,9 +69,11 @@
             <label class="font-bold">Numéro de téléphone</label>
             <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
               <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
-                <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire">
+                <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" 
+                placeholder="Numére de votre cellulaire" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
                 <span class="input-group-btn ml-2">
-                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)" title="Enlever ce numero">
+                  <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
+                    title="Enlever ce numero">
                     <i class="la la-close"></i>
                   </button>
                 </span>
@@ -102,7 +90,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse email</label>
             <input class="form-control form-control-solid" autocomplete="off" name="email" [disabled]="true"
-              [(ngModel)]="editor.email" type="text" placeholder="Addresse email de l'entreprise" required>
+              [(ngModel)]="editor.email" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" type="text" placeholder="Addresse email de l'entreprise" required>
           </div>
         </div>
 
@@ -110,7 +98,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse</label>
             <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.address" type="text"
-              placeholder="Adresse de l'entreprise" autocomplete="off" required>
+              placeholder="Adresse de l'entreprise" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" autocomplete="off" required>
           </div>
 
           <div class="col-sm-6 form-group mb-4">
@@ -120,12 +108,44 @@
             </ng-select>
           </div>
         </div>
+
         <div class="row">
           <div class="col-sm-8 form-group mb-4">
-              <label class="font-bold">Ville</label>
-              <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
-                [items]="Towns" [loading]="loadingTown" required>
-              </ng-select>
+            <label class="font-bold">Ville</label>
+            <ng-select name="town" [(ngModel)]="editor.country" bindLabel="name" bindValue="term_id" [searchFn]="customSearchFn"
+              [items]="Towns" [loading]="loadingTown" required>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.notification" [disabled]="true" [(ngModel)]="editor.newsletter"
+                      name="notification" type="checkbox">
+                    <span class="input-span"></span>Reçois les nouvelles du mois</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.newsletter" [disabled]="true" [(ngModel)]="editor.notification"
+                      name="newsletter" type="checkbox">
+                    <span class="input-span"></span>Notifié quand un nouveau CV est insérer</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 mb-4">
+            <div class="form-group">
+              <button class="btn btn-info" (click)="viewCompanyOffers( editForm )" [disabled]="loading" type="button">Voir les offres de l'entreprise</button>
+            </div>
           </div>
         </div>
 
@@ -135,8 +155,12 @@
           <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
             <span>Enregistrer</span>
           </button>
+          <button class="btn btn-secondary mr-3" data-dismiss="modal" type="button" [disabled]="loading">
+            <span>Fermer</span>
+          </button>
         </div>
       </div>
     </form>
   </div>
 </div>
+<app-company-offers [id]="companyId"></app-company-offers>

@@ -9,8 +9,8 @@
         <form class="form-success mb-4">
           <div class="row mb-4">
             <div class="col-md-4 mb-2 mb-sm-0">
-              <select class="selectpicker form-control " id="type-status" title="Tous les status" data-style="btn-solid">
-                <option value="">Tous les status</option>
+              <select class="form-control " id="type-status" title="Tous les statut" data-style="btn-solid">
+                <option value="">Tous les statut</option>
                 <option value="pending">En attente</option>
                 <option value="1">Publier</option>
                 <option value="0">Désactiver</option>
@@ -22,7 +22,7 @@
                 <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
               </div>
             </div>
-            <app-activity-area class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+            <app-activity-area [title]="'secteurs d\'activités'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
           </div>
 
           <div class="row">
@@ -33,7 +33,7 @@
               </div>
             </div>
             <div class="col-md-4 mb-2 mb-sm-0">
-              <select class="selectpicker form-control " id="position" title="Tous les positions" data-style="btn-solid">
+              <select class="form-control " id="position" title="Tous les positions" data-style="btn-solid">
                 <option value="">Tous les positions</option>
                 <option value="1">A la une</option>
                 <option value="0">Standard</option>
@@ -54,7 +54,7 @@
               <button class="btn btn-sm btn-transparent btn-primary btn-fix ml-2"  (click)="archivedCandidate.openArchivedLists()">
                   <span class="btn-icon"><i class="la la-archive"></i>Les CV incomplets</span>
               </button>
-          </div>
+            </div>
           </div>
         </div>
 
@@ -63,13 +63,13 @@
             <thead class="thead-default thead-lg">
               <tr>
                 <th>#</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Status</th>
                 <th>Réference</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Statut</th>
                 <th>Position</th>
-                <th>Secteur d'activité</th>
-                <th>Date d'inscription</th>
+                <th>Emploi rechercher</th>
+                <th>Date publication</th>
                 <th class="no-sort">Action</th>
               </tr>
             </thead>

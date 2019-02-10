@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  SITE_URL: 'http://localhost/itjobmada'
+  SITE_URL: 'itjob.local.mg'
 };
 
 export const dateTimePickerFr = {
@@ -22,8 +22,18 @@ export const dateTimePickerFr = {
   format: "dd/mm/yyyy"
 };
 
+export const tinyMceSettings = {
+  skin_url: '/assets/tinymce/skins/lightgray',
+  inline: false,
+  statusbar: false,
+  browser_spellcheck: true,
+  height: 320,
+  plugins: '',
+};
+
 export const config = {
-  jwtAuthUrl: 'http://localhost/itjobmada/wp-json/jwt-auth/v1/token',
-  wpApi: 'http://localhost/itjobmada/wp-json/wp/v2',
-  itApi: 'http://localhost/itjobmada/wp-json/it-api'
+  jwtAuthUrl: 'http://itjob.local.mg/wp-json/jwt-auth/v1/token',
+  apiEndpoint: 'http://itjob.local.mg/wp-json',
+  wpApi: 'http://itjob.local.mg/wp-json/wp/v2',
+  itApi: 'http://itjob.local.mg/wp-json/it-api'
 };

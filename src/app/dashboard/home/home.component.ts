@@ -4,6 +4,8 @@ import { Helpers } from '../../helpers';
 
 import * as _ from 'lodash';
 import Chart from 'chart.js';
+import { tinyMceSettings } from '../../../environments/environment';
+import { ErrorService } from '../../services/error.service';
 declare var $: any;
 @Component({
   selector: 'app-home',
@@ -13,30 +15,39 @@ declare var $: any;
 export class HomeComponent implements OnInit, AfterViewInit {
   public Dashboard: any = {};
   public loading: boolean = false;
-
-  constructor(private requestServices: RequestService) { }
+  public tinySettings: any = {};
+  constructor(
+    private requestServices: RequestService,
+    private errnoService: ErrorService
+    ) {
+    this.tinySettings = tinyMceSettings;
+  }
 
   ngOnInit() {
     Helpers.setLoading(true);
     this.loading = true;
     this.requestServices.collectDashboard()
-      .subscribe(response => {
-        this.Dashboard = _.cloneDeep(response);
-        let candidate = this.Dashboard.candidate;
-        let company = this.Dashboard.company
-        let offer = this.Dashboard.offer;
-        this.Dashboard.candidate.percent = (parseInt(candidate.countActive) * 100) / parseInt(candidate.count);
-        this.Dashboard.company.percent = (parseInt(company.countActive) * 100) / parseInt(company.count);
-        this.Dashboard.offer.percent = (parseInt(offer.countActive) * 100) / parseInt(offer.count);
-        this.loading = false;
-        Helpers.setLoading(false);
-        this.loadScript();
-      });
+      .subscribe(
+        response => {
+          this.Dashboard = _.cloneDeep(response);
+          let candidate = this.Dashboard.candidate;
+          let company = this.Dashboard.company
+          let offer = this.Dashboard.offer;
+          this.Dashboard.candidate.percent = (parseInt(candidate.countActive) * 100) / parseInt(candidate.count);
+          this.Dashboard.company.percent = (parseInt(company.countActive) * 100) / parseInt(company.count);
+          this.Dashboard.offer.percent = (parseInt(offer.countActive) * 100) / parseInt(offer.count);
+          this.loading = false;
+          Helpers.setLoading(false);
+          this.loadScript();
+        },
+        error => {
+          this.errnoService.handler(error);
+          this.loading = false;
+          Helpers.setLoading(false);
+        });
   }
 
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() { }
 
   loadScript() {
     setTimeout(() => {
@@ -55,29 +66,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
           datasets: [
             {
-              label: "Sessions",
-              data: [20, 18, 40, 50, 35, 24, 40],
-              borderColor: 'rgba(117,54,230,0.9)',
-              backgroundColor: 'rgba(117,54,230,0.9)',
-              pointBackgroundColor: 'rgba(117,54,230,0.9)',
-              pointBorderColor: 'rgba(117,54,230,0.9)',
-              borderWidth: 1,
-              pointBorderWidth: 1,
-              pointRadius: 0,
-              pointHitRadius: 30,
-            }, {
-              label: "Data 2",
-              data: [28, 48, 40, 35, 70, 33, 32],
-              backgroundColor: 'rgba(255,64,129, 0.7)',
-              borderColor: 'rgba(255,64,129, 0.7)',
-              pointBackgroundColor: 'rgba(255,64,129, 0.7)',
-              pointBorderColor: 'rgba(255,64,129, 0.7)',
-              borderWidth: 1,
-              pointBorderWidth: 1,
-              pointRadius: 0,
-              pointHitRadius: 30,
-            }, {
-              label: "Page Views",
+              label: "Nombre de vues",
               data: [64, 54, 60, 65, 52, 85, 48],
               borderColor: 'rgba(104,218,221,1)',
               backgroundColor: 'rgba(104,218,221,1)',

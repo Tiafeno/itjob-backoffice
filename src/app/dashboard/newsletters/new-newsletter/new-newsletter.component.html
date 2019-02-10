@@ -1,0 +1,62 @@
+<div class="modal fade" id="new-newsletter-modal" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <form class="modal-content" #newNewsletterForm="ngForm" (ngSubmit)="onSubmitForm( newNewsletterForm )">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Ajouter une lettre d'information</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row" *ngIf="message">
+          <div class="col-12">
+            <div class="alert alert-warning">{{message}}</div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-6 mb-4">
+            <div class="form-group mb-3">
+              <label>Envoyer pour :</label>
+              <div>
+                <ng-select [(ngModel)]="Form.send" name="send" bindValue="value"
+                  bindLabel="label" [multiple]='false' [items]='sendFor'>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 mb-4">
+            <div class="form-group">
+              <label class="font-bold">Sujet</label>
+              <input class="form-control from-control-solid" autocomplete="off" name="subject" id='subject' type="text"
+                [(ngModel)]="Form.subject" placeholder="Saisissez un sujet pour cette lettre" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 form-group mb-4">
+            <label class="font-bold">Contenue</label>
+            <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Form.content" name="content"
+              [init]="tinyMCESettings"></editor>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
+            <span>Envoyer</span>
+          </button>
+          <button class="btn btn-default mr-3" type="button" data-dismiss="modal" [disabled]="loading">
+            <span>Fermer</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

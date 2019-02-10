@@ -2,8 +2,9 @@ import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular
 import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
 declare var $: any;
-import { config, dateTimePickerFr } from '../../../../environments/environment';
+import { config } from '../../../../environments/environment';
 import * as moment from 'moment';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
    selector: 'app-featured-switcher',
@@ -21,11 +22,12 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    @Output() refresh = new EventEmitter();
 
    constructor(
+      private auth: AuthService,
       private Http: HttpClient
    ) { }
 
    public onOpen(candidate: any): void {
-      this.position = candidate.featured;
+      this.position = candidate.featured ? 1 : 0;
       this.currentPosition = candidate.featured;
       if (this.currentPosition && !_.isNull(candidate.featuredDateLimit)) {
          this.dateLimit = moment(candidate.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
@@ -36,12 +38,16 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    }
 
    public onUpdate(): boolean {
+      if (!this.auth.notUserAccess("contributor")) return;
+      if (!this.auth.notUserAccess("editor")) return;
+
       if (this.position === this.currentPosition && this.position === 0) {
          this.warning = true;
          return false;
       }
       this.loading = true;
-      let changePosition = this.Http.get(`${config.itApi}/candidate/${this.postId}?ref=featured&val=${this.position}&datelimit=${this.dateLimit}`, { responseType: 'json' });
+      let dateUnix = moment(this.dateLimit).utcOffset(3).unix();
+      let changePosition = this.Http.get(`${config.itApi}/candidate/${this.postId}?ref=featured&val=${this.position}&datelimit=${dateUnix}`, { responseType: 'json' });
       changePosition.subscribe(response => {
          let resp: any = response;
          this.loading = false;
@@ -53,17 +59,6 @@ export class FeaturedSwitcherComponent implements OnInit, AfterViewInit {
    }
 
    ngOnInit(): void {
-      $.fn.datetimepicker.dates['fr'] = dateTimePickerFr;
-      let dateLimitElement = $('.input-group.date');
-      dateLimitElement
-         .datetimepicker({
-            isRTL: true,
-            format: 'yyyy-mm-dd h:ii',
-            language: 'fr'
-         })
-         .on('changeDate', (ev) => {
-            this.dateLimit = ev.date.toISOString();
-         });
       $('#edit-featured-modal')
          .on('hidden.bs.modal', e => {
             this.warning = false;

@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
 export class RequestService {
   dataCity;
   dataArea;
+  dataRegion;
   observableCity;
   observableArea;
+  observableRegion;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -40,6 +42,7 @@ export class RequestService {
     return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json'});
   }
 
+
   getTown(): Observable<any> {
     if (this.dataCity) {
       return Observable.of(this.dataCity);
@@ -60,6 +63,29 @@ export class RequestService {
       })
       .share();
       return this.observableCity;
+    }
+  }
+
+  getRegion(): Observable<any> {
+    if (this.dataRegion) {
+      return Observable.of(this.dataRegion);
+    } else if (this.observableRegion) {
+      return this.observableRegion;
+    } else {
+      this.observableRegion = this.http.get(`${config.itApi}/taxonomies/region`, {
+        observe: 'response'
+      })
+      .map(response =>  {
+        this.observableRegion = null;
+        if (response.status === 400) {
+          return 'Request failed.';
+        } else if (response.status === 200) {
+          this.dataRegion = response.body;
+          return this.dataRegion;
+        }
+      })
+      .share();
+      return this.observableRegion;
     }
   }
 

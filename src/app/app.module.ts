@@ -23,6 +23,11 @@ import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CompanyService } from './services/company.service';
+import { AdminGuard } from './guards/admin.guard';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { BlogService } from './services/blog.service';
+import { ErrorService } from './services/error.service';
+import { ImageSizePipe } from './pipes/image-size.pipe';
 
 @NgModule({
   declarations: [
@@ -38,6 +43,7 @@ import { CompanyService } from './services/company.service';
     DashboardModule,
     LayoutModule,
     FormsModule,
+    EditorModule,
     RouterModule.forRoot(routes)
   ],
   providers: [
@@ -45,10 +51,13 @@ import { CompanyService } from './services/company.service';
     CandidateService,
     CompanyService,
     OfferService,
+    BlogService,
     RequestService,
     AuthService,
     AuthGuard,
     LoginGuard,
+    AdminGuard,
+    ErrorService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
     {
       provide: NG_SELECT_DEFAULT_CONFIG,

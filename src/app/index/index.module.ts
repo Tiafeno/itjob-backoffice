@@ -5,6 +5,7 @@ import { ForgotComponent } from './forgot/forgot.component';
 import { LoginComponent } from './login/login.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { ErrorService } from '../services/error.service';
 
 
 @NgModule({
@@ -15,6 +16,9 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule
+  ],
+  providers: [
+    ErrorService
   ],
   declarations: [LoginComponent, ForgotComponent]
 })

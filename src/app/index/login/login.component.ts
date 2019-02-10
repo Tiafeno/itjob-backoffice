@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ErrorService } from '../../services/error.service';
 
 declare var $: any;
 
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
    public loading: boolean = false;
    constructor(
       private authService: AuthService,
+      private errorService: ErrorService,
       private router: Router
    ) {
       this.form = new FormGroup({
@@ -51,7 +53,8 @@ export class LoginComponent implements OnInit {
                }
             },
             error => {
-               this.errorHandler();
+               this.errorService.handler(error);
+               this.loading = false;
             });
    }
 

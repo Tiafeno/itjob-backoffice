@@ -1,6 +1,15 @@
 export const environment = {
   production: true,
-  SITE_URL: 'http://itjob.falicrea.com'
+  SITE_URL: 'https://www.itjobmada.com'
+};
+
+export const tinyMceSettings = {
+  skin_url: '/assets/tinymce/skins/lightgray',
+  inline: false,
+  statusbar: false,
+  browser_spellcheck: true,
+  height: 320,
+  plugins: '',
 };
 
 export const dateTimePickerFr = {
@@ -18,7 +27,8 @@ export const dateTimePickerFr = {
 };
 
 export const config = {
-  jwtAuthUrl: 'http://itjob.falicrea.com/wp-json/jwt-auth/v1/token',
-  wpApi: 'http://itjob.falicrea.com/wp-json/wp/v2',
-  itApi: 'http://itjob.falicrea.com/wp-json/it-api'
+  jwtAuthUrl: 'https://www.itjobmada.com/wp-json/jwt-auth/v1/token',
+  apiEndpoint: 'https://www.itjobmada.com/wp-json',
+  wpApi: 'https://www.itjobmada.com/wp-json/wp/v2',
+  itApi: 'https://www.itjobmada.com/wp-json/it-api'
 };

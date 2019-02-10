@@ -9,6 +9,7 @@
       </div>
       <div class="modal-body p-4">
         <div class="row">
+
           <div class="col-sm-12">
             <div class="form-group mb-4">
               <label>Nom</label>
@@ -17,13 +18,81 @@
             </div>
           </div>
           <div class="col-sm-12">
-            <div class="form-group">
-              <label>Status</label>
-              <select class="selectpicker form-control" name="activated" [(ngModel)]="term.activated" data-style="btn-solid"
+            <div class="form-group mb-4">
+              <label>Statut</label>
+              <select class="form-control" name="activated" [(ngModel)]="term.activated" data-style="btn-solid"
                 required>
                 <option value="1">Publier</option>
                 <option value="0">Mettre en attente</option>
               </select>
+            </div>
+          </div>
+          <div class="col-sm-12" *ngIf="taxonomy === 'job_sought'">
+            <div class="form-group">
+              <label class="checkbox checkbox-warning">
+                <input type="checkbox" name="notified" [value]="false" [(ngModel)]="term.notified">
+                <span class="input-span"></span>Envoyer une notification et un email à l'utilisateur</label>
+            </div>
+          </div>
+
+          <div class="col-sm-12" *ngIf="Candidates.length > 0">
+            <div class="">Le candidat</div>
+            <div class="ibox-body">
+              <ul class="media-list media-list-divider mr-2">
+                <li class="media align-items-center" *ngFor="let candidate of Candidates">
+                  <div class="media-body d-flex align-items-center">
+                    <div class="flex-1">
+                      <div class="media-heading">
+                        {{candidate.reference}}
+                        <small class="text-muted"></small>
+                      </div>
+                    </div>
+                    <button [routerLink]="[ '/candidate', candidate.id, 'edit' ]" data-dismiss="modal" class="btn btn-sm btn-outline-info btn-rounded">Voir le CV</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12 text-muted" *ngIf="loadingCandidate">Changement en cours ...</div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <div style="display: none">
+            <input type="number" name="term_id" [(ngModel)]="term.term_id">
+            <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
+          </div>
+          <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
+            <span>Enregistrer</span>
+          </button>
+          <button class="btn btn-secondary mr-3" type="button" (click)="onReplace()" [disabled]="loading">
+            <span>Remplacer</span>
+          </button>
+        </div>
+        <a class="text-danger" title="Supprimer le term" *ngIf="!loading" (click)="onRemove( editForm )"><i class="la la-trash font-20"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="replace-taxonomy-modal">
+  <div class="modal-dialog" role="document">
+    <form #replaceForm="ngForm" (ngSubmit)="onSubmitReplace( replaceForm )" class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Remplacer</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group mb-4">
+              <label>Replacer <b>{{term.name}}</b> par:</label>
+              <ng-select name="by" [(ngModel)]="by" [loading]="loadingReplace" placeholder="Tapez et séléctionner une autre term"
+                bindLabel="name" bindValue="term_id" [hideSelected]="true" [multiple]="false" [typeahead]="byInput"
+                [items]="Terms" required>
+              </ng-select>
             </div>
           </div>
         </div>
@@ -31,14 +100,13 @@
       <div class="modal-footer justify-content-between bg-primary-50">
         <div>
           <div style="display: none">
-              <input type="number" name="term_id" [(ngModel)]="term.term_id">
-              <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
+            <input type="number" name="needle" [(ngModel)]="term.term_id">
+            <input type="text" name="taxonomy" [(ngModel)]="taxonomy">
           </div>
           <button class="btn btn-primary mr-3" type="submit" [disabled]="loading">
-            <span>Enregistrer</span>
+            <span>Remplacer le term</span>
           </button>
         </div>
-        <a class="text-danger" (click)="onRemove()"><i class="la la-trash font-20"></i></a>
       </div>
     </form>
   </div>

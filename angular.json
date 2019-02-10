@@ -94,6 +94,7 @@
               "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
               "src/assets/vendors/bootstrap-maxlength/src/bootstrap-maxlength.js",
+              "src/assets/vendors/jquery-ui/jquery-ui.min.js",
               "src/assets/vendors/jquery-knob/dist/jquery.knob.min.js",
               "node_modules/ion-rangeslider/js/ion.rangeSlider.min.js",
               "node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",
@@ -102,6 +103,15 @@
               "node_modules/clockpicker/dist/bootstrap-clockpicker.min.js",
               "node_modules/jquery-minicolors/jquery.minicolors.min.js",
               "node_modules/clipboard/dist/clipboard.min.js",
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/tinymce/plugins/lists/plugin.min.js",
+              "node_modules/tinymce/plugins/image/plugin.min.js",
+              "node_modules/tinymce/themes/modern/theme.js",
+              "node_modules/tinymce/plugins/fullscreen/plugin.js",
+              "src/assets/tinymce/langs/fr_FR.js",
+              "node_modules/rasterizehtml/dist/rasterizeHTML.allinone.js",
+              "node_modules/jspdf/dist/jspdf.debug.js",
+              "node_modules/html2canvas/dist/html2canvas.min.js",
               "src/assets/js/app.js"
             ]
           },
@@ -116,12 +126,10 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }]
             }
           }
         },

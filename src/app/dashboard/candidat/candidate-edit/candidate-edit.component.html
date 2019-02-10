@@ -16,7 +16,6 @@
       </h5>
       <div class="row">
         <div class="col-lg-8">
-
           <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
             <div class="row mb-4">
               <div class="form-group col-sm-6">
@@ -40,15 +39,30 @@
               </div>
               <div class="col-sm-6 form-group">
                 <div class="card">
-                  <div class="card-body text-center">
-                    <div class="d-flex align-items-center">
-                      <img [src]="avatar.preview" alt="image" width="90">
-                      <div class="text-left ml-4">
-                        <div class="h1" appUploadfile><i class="la la-camera text-primary"></i>
-                          <div style="display: none">
-                              <input type="file" name="avatar" (change)="onFileChange($event)"/>
+                  <div class="card-body">
+                    <div>
+                      <div class="">
+                        <a [href]="avatar.preview" data-lightbox="avatar" data-title="Photo du candidat">
+                          <img [src]="avatar.preview" alt="image" width="90">
+                        </a>
+                        <div class="mt-2">
+                          <div class="col-12">
+                            <div class="row d-flex align-items-center">
+                              <div class="mr-2" *ngIf="avatar.value">
+                                <button type="button" (click)="onRemoveFile()" class="btn-icon-only btn btn-sm btn-danger">
+                                  <i class="la la-trash"></i>
+                                </button>
+                              </div>
+                              <div>
+                                <button type="button" style="cursor: pointer" appUploadfile class="btn-icon-only btn btn-sm btn-secondary">
+                                  <i class="la la-camera"></i>
+                                  <div style="display: none">
+                                    <input type="file" name="avatar" (change)="onFileChange($event)" />
+                                  </div>
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                          
                         </div>
                       </div>
                     </div>
@@ -56,20 +70,18 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
+              <div class="col-sm-4 form-group mb-4">
+                <label class="font-bold">Prénom</label>
+                <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
+                  type="text" placeholder="Prénom du candidat" required>
+              </div>
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Nom</label>
-                <input class="form-control form-control-solid" name="firstname" [(ngModel)]="editor.Form.Firstname"
-                  type="text" placeholder="Nom du candidat" required>
-              </div>
-              <div class="col-sm-6 form-group mb-4">
-                <label class="font-bold">Prénom</label>
                 <input class="form-control form-control-solid" name="lastname" [(ngModel)]="editor.Form.Lastname" type="text"
-                  placeholder="Prénom du candidat">
+                  placeholder="Nom du candidat">
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 mb-4">
                 <label class="font-bold">Adresse email</label>
@@ -77,65 +89,58 @@
                   type="text" placeholder="Adresse Email" required>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-4 form-group mb-4">
                 <label class="font-bold">Adresse</label>
                 <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.Form.Address.address"
                   type="text" placeholder="Adresse du candidat" required>
               </div>
-
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Région</label>
                 <ng-select name="region" [(ngModel)]="editor.Form.Region" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [items]="Regions" required>
+                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [items]="Regions" required>
                 </ng-select>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-8 form-group mb-4">
                 <label class="font-bold">Ville ou code postal</label>
                 <ng-select name="town" [items]="Towns" [loading]="townLoading" bindLabel="name" bindValue="term_id"
-                  [searchFn]="customSearchFn" [(ngModel)]="editor.Form.Town" aria-required="true" required>
+                  [searchFn]="customSearchFn" [hideSelected]="true" [multiple]="false" [(ngModel)]="editor.Form.Town"
+                  aria-required="true" required>
                 </ng-select>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Numéro de téléphone</label>
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
-                    <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text" placeholder="Numére de votre cellulaire"
-                      required>
+                    <input class="form-control mb-2" name="{{i}}" [id]="cellphone.id" [(ngModel)]="cellphone.value"
+                      type="text" placeholder="Numére de votre cellulaire" required>
                     <span class="input-group-btn ml-2">
                       <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
                         title="Enlever ce numero">
                         <i class="la la-close"></i>
                       </button>
                     </span>
-
                   </div>
-
                 </div>
                 <div>
                   <button type="button" (click)="onAddedCellphone()" class="btn btn-sm btn-success">Ajouter un numéro</button>
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Date de naissance</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" name="birthday" [(ngModel)]="editor.Form.Birthday" type="text" value=""
-                    placeholder="Date de naissance" required>
+                  <input class="form-control" format="dd/mm/yyyy" appDatepicker [value]="editor.Form.Birthday" name="birthday" readonly="readonly"
+                    [(ngModel)]="editor.Form.Birthday" type="text" value="" placeholder="Date de naissance" required>
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Status </label>
@@ -149,7 +154,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-6 mb-4">
                 <div class="row">
@@ -162,8 +166,8 @@
                   <div class="col-4" *ngFor="let driveLicence of editor.Form.DriveLicences; let i = index">
                     <div class="form-group">
                       <label class="checkbox checkbox-grey checkbox-ebony">
-                        <input type="checkbox" name="{{driveLicence.name}}" [(ngModel)]="driveLicence.checked"
-                          [checked]="driveLicence.checked">
+                        <input type="checkbox" name="{{driveLicence.name}}" (change)="onChangeDriveLicence(drivelicencesCtrl, driveLicence.name)"
+                          [(ngModel)]="driveLicence.checked" [checked]="driveLicence.checked">
                         <span class="input-span"></span>{{driveLicence.value}}</label>
                     </div>
                   </div>
@@ -178,10 +182,10 @@
                   <label class="font-bold">Emploi recherché</label>
                   <div>
                     <ng-select [(ngModel)]="editor.Form.Jobs" [multiple]="true" name="jobs" bindLabel="name" bindValue="term_id"
-                      [items]="Jobs" required>
+                      [items]="Jobs" [hideSelected]="true">
                     </ng-select>
 
-                    <p class="text-muted" *ngIf="editor.Form._oldJob">{{editor.Form._oldJob}}</p>
+                    <p class="text-muted" *ngIf="editor.Form._Jobs">{{editor.Form._Jobs}}</p>
                   </div>
                 </div>
               </div>
@@ -193,7 +197,7 @@
                 <div class="form-group">
                   <label class="font-bold">Les langues</label>
                   <ng-select [(ngModel)]="editor.Form.Language" name="languages" bindLabel="name" bindValue="term_id"
-                    [multiple]='true' [items]="Languages" required>
+                    [multiple]='true' [hideSelected]="true" [items]="Languages" required>
                   </ng-select>
                 </div>
               </div>
@@ -203,7 +207,10 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body dd pl-0">
-                  <h5 class="font-bold text-uppercase">Formations / Diplômes</h5>
+                  <h5 class="font-bold text-uppercase">Formations / Diplômes
+                    <button type="button" (click)="onNewTraining()" class="btn btn-sm btn-info ml-2"> Ajouter une
+                      formation</button>
+                  </h5>
                   <ul class="media-list media-list-divider dd-list mr-2">
 
                     <li class="media align-items-center dd-item" [attr.data-index]="i" *ngFor="let training of editor.trainings; let i = index">
@@ -215,8 +222,11 @@
                               de validation</span>
                           </div>
                           <small class="text-muted">{{training.training_diploma}}</small>
+                          <div class="font-weight-bold">{{training.training_dateBegin | momendate}} -
+                            {{training.training_dateEnd | momendate}}</div>
                         </div>
-                        <button (click)="onEditTraining(training.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
+                        <button (click)="onUpdateTraining(training.ID, true)" [disabled]="loadingSaveTraining" *ngIf="!training.validated" type="button" class="btn btn-sm btn-outline-warning">Valider</button>
+                        <button (click)="onEditTraining(training.ID)" type="button" class="btn ml-2 btn-sm btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
 
@@ -228,19 +238,27 @@
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="ibox-body pl-0">
-                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles</h5>
+                  <h5 class="font-bold text-uppercase mb-4">Expériences professionnelles
+                    <button type="button" (click)="onNewExperience()" class="btn btn-sm btn-info ml-2"> Ajouter une
+                      expérience</button>
+                  </h5>
                   <ul class="media-list media-list-divider mr-2">
                     <li class="media align-items-center" *ngFor="let experience of editor.experiences">
                       <div class="media-body d-flex align-items-center">
                         <div class="flex-1">
                           <div class="media-heading">
                             {{experience.exp_company}}
-                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En
-                              attente de validation</span>
+                            <span class="badge badge-pill ng-binding badge-pink" *ngIf="!experience.validated">En attente de validation</span>
                           </div>
                           <small class="text-muted">{{experience.exp_positionHeld}}</small>
+                          <div class="font-weight-bold" *ngIf="experience.exp_dateBegin">{{experience.exp_dateBegin |
+                            momendate}} - {{experience.exp_dateEnd | momendate}}</div>
+                          <div class="font-weight-bold" *ngIf="!experience.exp_dateBegin && experience.old_value">
+                            {{experience.old_value.exp_dateBegin}} - {{experience.old_value.exp_dateEnd}}
+                          </div>
                         </div>
-                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm btn-outline-secondary">Modifier</button>
+                        <button (click)="onUpdateExperience(experience.ID, true)" *ngIf="!experience.validated" type="button" [disabled]="loadingSaveExperience" class="btn btn-sm btn-outline-warning">Valider</button>
+                        <button (click)="onEditExperience(experience.ID)" type="button" class="btn btn-sm ml-2 btn-outline-secondary">Modifier</button>
                       </div>
                     </li>
                   </ul>
@@ -260,6 +278,71 @@
                 </div>
               </div>
             </div>
+            <!-- Les notifications -->
+            <div class="row">
+              <div class="col-12 mb-4">
+                <div class="row mb-4" ngModelGroup="jobNotification" #jobNotificationCtrl="ngModelGroup">
+                  <div class="col-12">
+                    <div class="form-group mb-3">
+                      <label class="checkbox checkbox-info">
+                        <input [checked]="editor.Form.jobNotif.notification" [disabled]="true" [(ngModel)]="editor.Form.jobNotif.notification"
+                          name="notification" type="checkbox">
+                        <span class="input-span"></span>Reçois une notification quand une offre
+                        d’emploi est postée sur Itjobmada</label>
+                    </div>
+                  </div>
+                  <div class="col-6" *ngIf="editor.Form.jobNotif.notification">
+                    <div class="form-group mb-3">
+                      <label>Reçois une notification pour quel métier ?</label>
+                      <div>
+                        <ng-select [(ngModel)]="editor.Form.jobNotif.branch_activity" [disabled]="true" name="activityarea" bindValue="term_id"
+                          bindLabel="name" [multiple]='false' [items]='branchActivitys'>
+                        </ng-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12" *ngIf="editor.Form.jobNotif.notification">
+                    <div class="form-group ">
+                      <input class="form-control form-control-solid" [disabled]="true" [(ngModel)]="editor.Form.jobNotif.job_sought" name="jobsought"
+                        placeholder="Emploi que souhaite avoir une notification" type="text">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row mb-4" ngModelGroup="trainNotification" #trainNotificationCtrl="ngModelGroup">
+                    <div class="col-12">
+                      <div class="form-group mb-3">
+                        <label class="checkbox checkbox-info">
+                          <input [checked]="editor.Form.trainingNotif.notification" [disabled]="true" [(ngModel)]="editor.Form.trainingNotif.notification"
+                            name="notification" type="checkbox">
+                          <span class="input-span"></span>Reçois une notification quand une formation
+                          est postée sur Itjobmada</label>
+                      </div>
+                    </div>
+                    <div class="col-6" *ngIf="editor.Form.trainingNotif.notification">
+                      <div class="form-group mb-3">
+                        <label>Reçois une notification pour quelle métier ?</label>
+                        <div>
+                          <ng-select [(ngModel)]="editor.Form.trainingNotif.branch_activity" [disabled]="true" name="activityarea"
+                            bindValue="term_id" bindLabel="name" [multiple]='false' [items]='branchActivitys'>
+                          </ng-select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox checkbox-info">
+                    <input [checked]="editor.Form.Newsletter" [disabled]="true" [(ngModel)]="editor.Form.Newsletter" name="newsletter"
+                      type="checkbox">
+                    <span class="input-span"></span>Reçois les nouvelles du mois</label>
+                </div>
+              </div>
+
+            </div>
+            <!-- .fin notification -->
 
             <div class="row">
               <div class="col-md-6 mb-4">
@@ -271,32 +354,11 @@
               <div class="col-md-12">
                 <div class="form-group mb-4">
                   <label class="font-bold">Projet personnel</label>
-                  <textarea class="form-control form-control-solid" rows="4" name="projet" [(ngModel)]="editor.Form.Project"
-                    placeholder="Ajouter une projet personnel"></textarea>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Form.Project"
+                    name="projet" [init]="tinyMCESettings"></editor>
                 </div>
               </div>
             </div>
-
-            <!-- <div class="row">
-              <div class="col-12 d-flex mb-2">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une offre d’emploi
-                  est postée sur Itjobmada</span>
-              </div>
-
-              <div class="col-12 d-flex">
-                <label class="ui-switch switch-icon switch-solid-info switch-small">
-                  <input type="checkbox" checked="">
-                  <span></span>
-
-                </label>
-                <span class="mt-auto mb-auto ml-3">Souhaitez-vous recevoir une notification quand une formation est
-                  postée sur Itjobmada</span>
-              </div>
-            </div> -->
 
             <div class="text-right mt-4">
               <input type="hidden" name="ID" [(ngModel)]="editor.Form.ID">
@@ -304,6 +366,7 @@
             </div>
           </form>
 
+          <!-- Modal training -->
           <div class="modal fade" id="edit-training-modal">
             <div class="modal-dialog" role="document">
               <form class="modal-content" *ngIf="editor.Training">
@@ -375,7 +438,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="modal-footer justify-content-between bg-primary-50">
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeTraining && modeTraining === 'edit'">
                   <div>
                     <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
                       <span *ngIf="editor.Training.validated">Enregistrer</span>
@@ -385,10 +448,19 @@
                   <a class="text-danger" (click)="onDeleteTraining(editor.Training.ID)" title="Effacer cette formation"><i
                       class="la la-trash font-20"></i></a>
                 </div>
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeTraining && modeTraining === 'new'">
+                  <div>
+                    <button class="btn btn-primary btn-rounded mr-3" [disabled]="loadingSaveTraining" (click)="onUpdateTraining(editor.Training.ID)">
+                      Ajouter une formation
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
+          <!-- .end modal -->
 
+          <!-- Modal experience -->
           <div class="modal fade" id="edit-experience-modal">
             <div class="modal-dialog" role="document">
               <form class="modal-content" *ngIf="editor.Experience">
@@ -401,17 +473,21 @@
                 <div class="modal-body p-4">
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_company"
-                      name="university" placeholder="Université/Ecole *">
+                      name="university" placeholder="Nom de l'entreprise">
                   </div>
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_positionHeld"
-                      name="diploma" placeholder="Diplôme">
+                      name="diploma" placeholder="Poste occupé">
                   </div>
-                  <div class="form-group mb-4" *ngIf="editor.Experience.exp_branch_activity">
-                    <select class="form-control" name="branch_activity" [(ngModel)]="editor.Experience.exp_branch_activity"
+                  <div class="form-group mb-4">
+                    <ng-select name="branch_activity" placeholder="Les sécteurs d'activités" [(ngModel)]="editor.Experience.exp_branch_activity"
+                      bindLabel="name" bindValue="term_id" [hideSelected]="true" [multiple]="false" [items]="branchActivitys"
                       required>
-                      <option [value]="abranch.term_id" *ngFor="let abranch of branchActivitys">{{abranch.name}}</option>
-                    </select>
+                    </ng-select>
+
+                    <div *ngIf="(editor.Experience.old_value && editor.Experience.old_value.exp_branch_activity) && !editor.Experience.exp_branch_activity">
+                      <span class="badge badge-default d-block text-left mt-2">{{editor.Experience.old_value.exp_branch_activity}}</span>
+                    </div>
                   </div>
                   <div class="form-group mb-4">
                     <input class="form-control form-control-solid" autocomplete="off" type="text" [(ngModel)]="editor.Experience.exp_country"
@@ -445,7 +521,7 @@
                       </div>
                       <div class="col-6">
                         <div class="col-sm-12">
-                          <p class="text-uppercase">à <span style="color: red">*</span></p>
+                          <p class="text-uppercase">à </p>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
@@ -467,14 +543,13 @@
                   </div>
                   <div class="form-group mb-4">
                     <label>Mission</label>
-                    <textarea class="form-control form-control-solid" [(ngModel)]="editor.Experience.exp_mission" name="mission"
-                      id="summernote-experience" data-plugin="summernote" data-air-mode="true" placeholder="Mission">
-                    </textarea>
+                    <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" [(ngModel)]="editor.Experience.exp_mission"
+                      name="mission" [init]="tinyMCESettings"></editor>
                   </div>
                 </div>
-                <div class="modal-footer justify-content-between bg-primary-50">
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeExperience && modeExperience === 'edit'">
                   <div>
-                    <button class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                    <button type="button" class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
                       <span *ngIf="editor.Experience.validated">Enregistrer</span>
                       <span *ngIf="!editor.Experience.validated">Valider & Enregistrer</span>
                     </button>
@@ -482,10 +557,38 @@
                   <a class="text-danger" (click)="onDeleteExperience(editor.Experience.ID)" title="Effacer cette experience"><i
                       class="la la-trash font-20"></i></a>
                 </div>
+
+                <div class="modal-footer justify-content-between bg-primary-50" *ngIf="modeExperience && modeExperience === 'new'">
+                  <div>
+                    <button type="button" class="btn btn-primary mr-3" [disabled]='loadingSaveExperience' (click)="onUpdateExperience(editor.Experience.ID)">
+                      Ajouter une expérience
+                    </button>
+                  </div>
+                </div>
+
               </form>
             </div>
           </div>
+          <!-- .end modal -->
 
+        </div>
+        <div class="col-lg-4">
+          <div *ngIf="Candidate">
+
+            <div class="ibox">
+              <div class="ibox-head">
+                <div class="ibox-title">Pour télécharger le CV </div>
+              </div>
+              <div class="ibox-body pt-3">
+                <button type="button" [disabled]="loadingPdf"  (click)="onDownloadCV()" class="btn btn-danger btn-labeled btn-labeled-left btn-icon">
+                    <span class="btn-label"><i class="la la-download"></i></span>Gestionnaire de téléchargement</button>
+                    <small class="text-muted d-block mt-2">Autoriser ou Activer les pop-ups (fenêtres contextuelles) dans votre navigateur pour ce site</small>
+              </div>
+            </div>
+
+            <app-cover-letter [candidateId]="Candidate.ID"></app-cover-letter>
+
+          </div>
         </div>
       </div>
     </div>

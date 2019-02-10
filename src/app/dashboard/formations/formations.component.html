@@ -1,0 +1,126 @@
+<div class="page-content fade-in-up">
+  <div class="ibox">
+    <div class="ibox-body">
+      <h5 class="font-strong mb-4">LES FORMATIONS</h5>
+      <form class="form-success mb-4">
+        <div class="row mb-4">
+          <div class="col-md-4 mb-2 mb-sm-0">
+            <select class="form-control " id="type-status" title="Tous les statuts" data-style="btn-solid">
+              <option value="">Tous les statuts</option>
+              <option value="pending">En attente</option>
+              <option value="1">Publier</option>
+              <option value="0">Désactiver</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select class="form-control " id="type-position" title="Tous les positions" data-style="btn-solid">
+              <option value="">Tous les positions</option>
+              <option value="1">A la une</option>
+              <option value="0">Standard</option>
+            </select>
+          </div>
+          <app-activity-area [title]="'secteurs d\'activités'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+        </div>
+        <div class="row">
+          <div class="col-md-4 form-check mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+              <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
+            </div>
+          </div>
+          <div class="col-md-4 form-group mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
+              <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <button type="button" (click)="onResetSearch()" class="btn btn-sm btn-info">Reinitialiser les filtres</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="table-responsive row">
+        <table class="table table-bordered table-hover" id="formation-table">
+          <thead class="thead-default thead-lg">
+            <tr>
+              <th>#</th>
+              <th>Réference</th>
+              <th>Statut</th>
+              <th>Formation</th>
+              <th>Position</th>
+              <th>Nom de l'établissement</th>
+              <th>Date limite</th>
+              <th>Date publication</th>
+              <th>Région</th>
+              <th class="no-sort">Action</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-featured-formation-modal">
+  <div class="modal-dialog" role="document">
+    <form #featuredForm="ngForm" class="modal-content" (ngSubmit)="onSaveFeatured( featuredForm )">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Position de la formation</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="col-sm-12 mb-2">
+              <h4>{{ Feature.title }}</h4>
+            </div>
+
+            <div class="col-sm-12 mb-4">
+              <div class="form-group">
+                <label>Position</label>
+                <select class="form-control" name="position" [value]="Feature.featured" [(ngModel)]="Feature.featured"
+                  data-style="btn-solid">
+                  <option value="0">Aucun</option>
+                  <option value="1">A la une</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-12 mb-4" [ngClass]="{'d-none': Feature.featured == 0}">
+              <div class="form-group">
+                <label>Date limite</label>
+                <div class="input-group date">
+                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [minView]="0" readonly="readonly"
+                    name="featured_datelimit" type="text" [value]="Feature.featured_datelimit" [(ngModel)]="Feature.featured_datelimit"
+                    placeholder="Date limite" autocomplete="off" required>
+                </div>
+                <div class="mt-2 font-12">
+                  <small class="float-right badge badge-info ml-1 ml-2"><i class="ti-alarm-clock"></i>
+                    {{ Feature.featured_datelimit | momendate:'LLLL' }}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" [(ngModel)]="Feature.ID" name="ID">
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div></div>
+        <div>
+          <button class="btn btn-primary mr-2" type="submit" [disabled]="loading">
+            <span>Enregistrer</span>
+          </button>
+          <button class="btn btn-default" data-dismiss="modal" type="button" [disabled]="loading">
+            <span>Annuler</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

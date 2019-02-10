@@ -1,0 +1,45 @@
+<div class="page-content fade-in-up">
+  <app-edit-blog [editor]="selectedBlog"></app-edit-blog>
+  <app-new-blog (publish)="onPublish($event)" (reload)="reload()"></app-new-blog>
+  <div class="ibox">
+    <div class="ibox-body">
+      <h5 class="font-strong mb-4">LES BLOGS</h5>
+
+      <form class="form-success mb-4">
+        <div class="container">
+          <div class="row justify-content-between">
+            <div class="col-sm-4 form-check mb-2 mb-sm-0">
+              <div class="input-group-icon input-group-icon-left mr-3">
+                <span class="input-icon input-icon-right font-16"><i class="ti-search"></i></span>
+                <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <button class="btn btn-sm btn-primary btn-fix btn-animated from-left" (click)="onNew()">
+                <span class="visible-content">Article</span>
+                <span class="hidden-content">
+                  <span class="btn-icon">Ajouter <i class="ti-arrow-circle-right pr-0 pl-2"></i></span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="table-responsive row">
+        <table class="table table-bordered table-hover" id="blog-table">
+          <thead class="thead-default thead-lg">
+            <tr>
+              <th>#</th>
+              <th>Titre</th>
+              <th>Statut</th>
+              <th>Date d'ajout</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
