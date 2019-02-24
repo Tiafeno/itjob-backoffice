@@ -56,6 +56,9 @@ export class StatusChangerComponent implements OnInit, AfterViewInit {
           $('#edit-status-changer-modal').modal('hide');
           this.refresh.emit();
         }
+      }, error => {
+        this.loading = false;
+        console.log(error);
       })
     }
   }

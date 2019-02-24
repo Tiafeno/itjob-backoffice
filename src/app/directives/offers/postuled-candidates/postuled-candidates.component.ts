@@ -1,15 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { OfferService } from '../../../services/offer.service';
 
 import * as _ from 'lodash';
 import swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth.service';
+declare var $:any;
 @Component({
 	selector: 'app-postuled-candidates',
 	templateUrl: './postuled-candidates.component.html',
 	styleUrls: ['./postuled-candidates.component.css']
 })
-export class PostuledCandidatesComponent implements OnInit {
+export class PostuledCandidatesComponent implements OnInit, AfterViewInit {
 	@Input('offerid') offerId: number;
 	public loading: boolean = false;
 	public Requests: Array<any> = [];
@@ -25,6 +26,17 @@ export class PostuledCandidatesComponent implements OnInit {
 				this.Requests = response && _.isArray(response) ? _.cloneDeep(response) : [];
 				this.loading = false;
 			});
+	}
+
+	ngAfterViewInit() {
+		$('.scroller').each(function () {
+			$(this).slimScroll({
+			  height: $(this).attr('data-height') || '100%',
+			  color: $(this).attr('data-color') || '#71808f',
+			  railOpacity: '0.9',
+			  size: '4px',
+			});
+		  });
 	}
 
 	public onValidate(idRequest: number, event: any) {
