@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import WPAPI from 'wpapi';
+import * as WPAPI from 'wpapi';
 import swal from 'sweetalert2';
 import { Helpers } from '../../helpers';
 import { config } from '../../../environments/environment';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
+import {FormationNewComponent} from "./formation-new/formation-new.component";
 declare var $: any;
 
 @Component({
@@ -21,6 +22,8 @@ export class FormationsComponent implements OnInit {
   public loading: boolean = false;
   public WPEndpoint: any;
   public Feature: any = {};
+
+  @ViewChild(FormationNewComponent) public NewFormation: FormationNewComponent;
   constructor(
     private router: Router,
     private Http: HttpClient,
@@ -32,7 +35,7 @@ export class FormationsComponent implements OnInit {
     let currentUser = this.authService.getCurrentUser();
     this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
     var namespace = 'wp/v2'; // use the WP API namespace
-    var route = '/formation/(?P<id>)'; // route string - allows optional ID parameter
+    var route = '/formation/(?P<id>\\d+)'; // route string - allows optional ID parameter
     this.WPEndpoint.formation = this.WPEndpoint.registerRoute(namespace, route);
   }
 
@@ -40,6 +43,9 @@ export class FormationsComponent implements OnInit {
     this.table.ajax.reload(null, false);
   }
 
+  public newFormation(): void {
+    this.NewFormation.openModal();
+  }
   public onSaveFeatured(Form: NgForm): void {
     if (Form.valid) {
       this.loading = true;
@@ -236,8 +242,7 @@ export class FormationsComponent implements OnInit {
         })
       });
 
-    $('#daterange')
-      .daterangepicker({
+    $('#daterange').daterangepicker({
         locale: {
           format: 'DD/MM/YYYY',
           "applyLabel": "Confirmer",

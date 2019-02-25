@@ -51,6 +51,9 @@ import { RequestFormationEditComponent } from './request-formations/request-form
 import { InterestCandidatePipe } from '../pipes/interest-candidate.pipe';
 import { SmallAdComponent } from './small-ad/small-ad.component';
 import { WorkTemporaryComponent } from './work-temporary/work-temporary.component';
+import { FormationNewComponent } from './formations/formation-new/formation-new.component';
+import { WorkEditComponent } from './work-temporary/work-edit/work-edit.component';
+import { SmallAdEditComponent } from './small-ad/small-ad-edit/small-ad-edit.component';
 
 @NgModule({
   imports: [
@@ -108,7 +111,10 @@ import { WorkTemporaryComponent } from './work-temporary/work-temporary.componen
     FormationEditComponent,
     RequestFormationEditComponent,
     SmallAdComponent,
-    WorkTemporaryComponent
+    WorkTemporaryComponent,
+    FormationNewComponent,
+    WorkEditComponent,
+    SmallAdEditComponent
   ],
   providers: [
     {

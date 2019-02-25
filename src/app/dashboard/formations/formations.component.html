@@ -1,4 +1,5 @@
 <div class="page-content fade-in-up">
+  <app-formation-new (refresh)="reload()"></app-formation-new>
   <div class="ibox">
     <div class="ibox-body">
       <h5 class="font-strong mb-4">LES FORMATIONS</h5>
@@ -39,7 +40,11 @@
           </div>
         </div>
       </form>
-
+      <div class="flexbox">
+        <div class="flexbox">
+          <button (click)="newFormation()" class="btn btn-outline-warning">Ajouter une formation</button>
+        </div>
+      </div>
       <div class="table-responsive row">
         <table class="table table-bordered table-hover" id="formation-table">
           <thead class="thead-default thead-lg">

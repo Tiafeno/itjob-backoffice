@@ -1,3 +1,69 @@
-<p>
-  request-formation-edit works!
-</p>
+<div class="page-content fade-in-up">
+  <div class="ibox">
+    <div class="ibox-body" >
+      <div class="row">
+        <div class="col-4 mb-4">
+          <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/request-formations']">Retour</a>
+        </div>
+      </div>
+      <h5 class="font-strong mb-3">
+        {{Editor.title}}
+        <div *ngIf="Editor.status === 'pending'"><span class="badge badge-pill badge-warning"> En attente de
+            validation</span></div>
+        <div *ngIf="Editor.status === 'publish' && !Editor.activation"><span class="badge badge-pill badge-pink">Formation
+            désactiver</span></div>
+      </h5>
+      <div class="row">
+        <div class="col-lg-7">
+          <form #editForm="ngForm" (ngSubmit)="onSubmitForm( editForm )">
+            <div class="row">
+              <div class="form-group mb-4 col-sm-8">
+                <label class="font-bold">Titre du formation </label>
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.subject" required type="text" name="subject"
+                       placeholder="Titre de formation">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label class="font-bold">Théme</label>
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.topic" required
+                       type="text" name="topic" placeholder="Théme de formation">
+              </div>
+            </div>
+            <div class="row  mb-4">
+              <div class="col-sm-6 from-group">
+                <label class="font-bold">Dates de création</label>
+                <div class="input-group date">
+                  <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" name="date_create" [disabled]="true" [(ngModel)]="Editor.date_create"
+                         type="text" placeholder="Dates de création">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group mb-4">
+                  <label class="font-bold">Description</label>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Editor.description"
+                          name="description" [init]="tinyMCESettings">
+                  </editor>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <input type="hidden" name="ID" [(ngModel)]="Editor.ID">
+              <button class="btn btn-primary btn-air mr-2" [disabled]="loadingForm" type="submit">
+                Enregistrer
+              </button>
+              <a class="btn btn-secondary" *ngIf="!loadingForm" [routerLink]="['/request-formations']">Annuler</a>
+            </div>
+          </form>
+        </div>
+        <div class="col-lg-5">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END PAGE CONTENT-->

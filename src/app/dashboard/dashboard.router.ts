@@ -18,6 +18,10 @@ import { FormationsComponent } from './formations/formations.component';
 import { FormationEditComponent } from './formations/formation-edit/formation-edit.component';
 import { RequestFormationsComponent } from './request-formations/request-formations.component';
 import { RequestFormationEditComponent } from './request-formations/request-formation-edit/request-formation-edit.component';
+import {SmallAdComponent} from "./small-ad/small-ad.component";
+import {WorkTemporaryComponent} from "./work-temporary/work-temporary.component";
+import {WorkEditComponent} from "./work-temporary/work-edit/work-edit.component";
+import {SmallAdEditComponent} from "./small-ad/small-ad-edit/small-ad-edit.component";
 
 export const DashboardRouter: Route[] = [
   {
@@ -54,6 +58,28 @@ export const DashboardRouter: Route[] = [
           { path: 'edit', component: FormationEditComponent }
         ]
       },
+      {
+        path: "small-ad",
+        component: SmallAdComponent
+      },
+      {
+        path: "small-ad/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: SmallAdEditComponent }
+        ]
+      },
+      {
+        path: "work-temporary",
+        component: WorkTemporaryComponent
+      },
+      {
+        path: "work/:id",
+        children: [
+          { path: "", redirectTo: 'edit', pathMatch: 'full' },
+          { path: 'edit', component: WorkEditComponent }
+        ]
+      },
       { path: 'request-formations', component: RequestFormationsComponent },
       {
         path: "request-formation/:id",
@@ -66,8 +92,8 @@ export const DashboardRouter: Route[] = [
       { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
       { path: 'taxonomy/:term', component: TaxonomyComponent },
       { path: 'blogs', component: BlogsComponent },
-      { path: 'newsletters', component: NewslettersComponent }, 
-      { path: 'ads', component: PublicityComponent }      
+      { path: 'newsletters', component: NewslettersComponent },
+      { path: 'ads', component: PublicityComponent }
     ]
   },
 ]

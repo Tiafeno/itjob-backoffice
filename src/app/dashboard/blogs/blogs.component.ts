@@ -72,7 +72,7 @@ export class BlogsComponent implements OnInit {
                               this.reload();
                               Helpers.setLoading(false);
                            })
-                           
+
                         })
                   } else {
                      swal('Succès', "Votre article à bien été publier", 'info');

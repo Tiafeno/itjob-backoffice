@@ -46,7 +46,7 @@ export class OfferListsComponent implements OnInit {
       let currentUser = this.authService.getCurrentUser();
       this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
       var namespace = 'wp/v2'; // use the WP API namespace
-      var route = '/offers/(?P<id>)'; // route string - allows optional ID parameter
+      var route = '/offers/(?P<id>\\d+)'; // route string - allows optional ID parameter
       this.WPEndpoint.offers = this.WPEndpoint.registerRoute(namespace, route);
    }
 

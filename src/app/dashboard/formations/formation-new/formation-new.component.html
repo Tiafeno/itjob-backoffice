@@ -1,0 +1,89 @@
+<div class="modal fade" id="new-formation-modal">
+  <div class="modal-dialog modal-lg" role="document">
+    <form #formation="ngForm" class="modal-content" (ngSubmit)="onSaveFormation( formation )">
+      <div class="modal-header p-4">
+        <h5 class="modal-title uppercase">Ajouter une formation</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label class="font-bold">Titre de formation</label>
+              <input type="text"class="form-control" name="title" [(ngModel)]="Formation.title" required="required">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="font-bold">Diplôme ou Attestation ou Certificat</label>
+              <input type="text"class="form-control" name="diploma" [(ngModel)]="Formation.diploma" required="required">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label class="font-bold">Nom de l'établissement</label>
+              <input type="text"class="form-control" name="establish" [(ngModel)]="Formation.establish" required="required">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label class="font-bold">Adresse de l'établissement </label>
+              <input type="text"class="form-control" name="address" [(ngModel)]="Formation.address" >
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="font-bold">Prix de formation</label>
+              <input type="number"class="form-control" name="price" placeholder="Prix en Ariary" [(ngModel)]="Formation.price" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <label class="font-bold">Date limite d'inscription</label>
+            <div class="input-group date">
+              <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
+              <input class="form-control" name="datelimit" format="dd/mm/yyyy" appDatepicker  readonly="readonly"
+                     [(ngModel)]="Formation.datelimit" [value]="Formation.datelimit" type="text" placeholder="Date limite d'inscription">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="font-bold">Durée de la formation</label>
+              <input type="text"class="form-control" name="duration" placeholder="e.g 3 Jours" [(ngModel)]="Formation.duration" >
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group mb-4">
+              <label class="font-bold">Description</label>
+              <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Formation.description"
+                      name="description" [init]="tinyMCESettings">
+              </editor>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div></div>
+        <div>
+          <button class="btn btn-primary mr-2" type="submit" [disabled]="loading">
+            <span>Publier</span>
+          </button>
+          <button class="btn btn-default" data-dismiss="modal" type="button" [disabled]="loading">
+            <span>Annuler</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
