@@ -19,15 +19,15 @@ export class JwtInterceptorService implements HttpInterceptor {
     }
     return next.handle(request).do(event => { }, err => {
       if (err instanceof HttpErrorResponse) { // here you can even check for err.status == 404 | 401 etc
-        swal(err.name, err.message, 'error');
-        setTimeout(() => {
-          //localStorage.removeItem('currentUser');
-          //location.reload();
-          if (err.status == 401 || err.status == 403 || err.status == 511 || err.status == 500) {
+        if (err.status == 401 || err.status == 403 || err.status == 511 || err.status == 500) {
+          setTimeout(() => {
+            //localStorage.removeItem('currentUser');
+            //location.reload();
             localStorage.removeItem('currentUser');
             location.reload();
-          }
-        }, 2500);
+          }, 2500);
+          swal(err.name, err.message, 'error');
+        }
         Observable.throw(err); // send data to service which will inform the component of the error and in turn the user
       }
     });

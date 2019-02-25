@@ -48,6 +48,9 @@ import { RequestFormationsComponent } from './request-formations/request-formati
 import { FormationsComponent } from './formations/formations.component';
 import { FormationEditComponent } from './formations/formation-edit/formation-edit.component';
 import { RequestFormationEditComponent } from './request-formations/request-formation-edit/request-formation-edit.component';
+import { InterestCandidatePipe } from '../pipes/interest-candidate.pipe';
+import { SmallAdComponent } from './small-ad/small-ad.component';
+import { WorkTemporaryComponent } from './work-temporary/work-temporary.component';
 
 @NgModule({
   imports: [
@@ -96,13 +99,16 @@ import { RequestFormationEditComponent } from './request-formations/request-form
     CompanyOffersComponent,
     MomendatePipe,
     ImageSizePipe,
+    InterestCandidatePipe,
     CoverLetterComponent,
     DatepickerDirective,
     CompareValidatorDirective,
     RequestFormationsComponent,
     FormationsComponent,
     FormationEditComponent,
-    RequestFormationEditComponent
+    RequestFormationEditComponent,
+    SmallAdComponent,
+    WorkTemporaryComponent
   ],
   providers: [
     {
