@@ -42,6 +42,9 @@ export class RequestService {
     return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json'});
   }
 
+  getCategorie(): Observable<any> {
+    return this.http.get(`${config.wpApi}/categorie`, { responseType: 'json'});
+  }
 
   getTown(): Observable<any> {
     if (this.dataCity) {

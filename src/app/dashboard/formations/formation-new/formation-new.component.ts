@@ -5,6 +5,10 @@ import {AuthService} from "../../../services/auth.service";
 import {NgForm} from "@angular/forms";
 import * as moment from "moment";
 import swal from "sweetalert2";
+import {RequestService} from "../../../services/request.service";
+import {Observable} from "rxjs";
+import {Helpers} from "../../../helpers";
+import * as _ from "lodash";
 declare var $:any;
 @Component({
   selector: 'app-formation-new',
@@ -14,6 +18,10 @@ declare var $:any;
 })
 export class FormationNewComponent implements OnInit {
   public loading: boolean = false;
+  public loadingRegion: boolean = false;
+  public loadingArea: boolean = false;
+  public Regions: Array<any> = [];
+  public activityAreas: Array<any> = [];
   public Formation: any = {};
   public WPEndpoint: any;
   public tinyMCESettings: any = {
@@ -36,6 +44,7 @@ export class FormationNewComponent implements OnInit {
   @Output() public refresh = new EventEmitter();
   constructor(
     private auth: AuthService,
+    private request: RequestService
   ) {
     this.WPEndpoint = new WPAPI({
       endpoint: config.apiEndpoint,
@@ -52,8 +61,31 @@ export class FormationNewComponent implements OnInit {
   }
 
   public openModal(): void {
-    $('#new-formation-modal').modal('show');
+    Helpers.setLoading(true);
+    let areas = this.request.getArea();
+    let regions = this.request.getRegion();
+    Observable.forkJoin([areas, regions]).subscribe(resp => {
+      this.Regions = _.cloneDeep(resp[1]);
+      this.activityAreas = _.cloneDeep(resp[0]);
+      Helpers.setLoading(false);
+      $('#new-formation-modal').modal('show');
+    });
+
   }
+  customSearchFn(term: string, item: any) {
+    var inTerm = [];
+    term = term.toLocaleLowerCase();
+    var paramTerms = $.trim(term).split(' ');
+    $.each(paramTerms, (index, value) => {
+      if (item.name.toLocaleLowerCase().indexOf($.trim(value).toLowerCase()) > -1) {
+        inTerm.push(true);
+      } else {
+        inTerm.push(false);
+      }
+    });
+    return _.every(inTerm, (boolean) => boolean === true);
+  }
+
 
   public onSaveFormation(Form: NgForm): void {
     if (Form.valid) {
@@ -69,6 +101,9 @@ export class FormationNewComponent implements OnInit {
         featured: 0,
         status: "publish"
       }).then(formation => {
+        let _region = _.clone(this.Formation.region) ;
+        let _area =  _.clone(this.Formation.activity_area);
+
         this.WPEndpoint.formation().id( formation.id ).update({
           reference: `FOM${formation.id}`,
           diploma: this.Formation.diploma,
@@ -77,6 +112,7 @@ export class FormationNewComponent implements OnInit {
           date_limit: moment(dateLimit, "DD/MM/YYYY").format("YYYY-MM-DD"),
           duration: this.Formation.duration,
           establish_name: this.Formation.establish,
+          tax_values: { region: _region, area: _area }
         }).then(( response ) => {
           $('#new-formation-modal').modal('hide');
           this.loading = false;

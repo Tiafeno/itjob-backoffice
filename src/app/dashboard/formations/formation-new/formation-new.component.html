@@ -34,8 +34,25 @@
           <div class="col-lg-6">
             <div class="form-group">
               <label class="font-bold">Adresse de l'établissement </label>
-              <input type="text"class="form-control" name="address" [(ngModel)]="Formation.address" >
+              <input type="text" autocomplete="off" class="form-control" name="address" [(ngModel)]="Formation.address" >
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Région</label>
+            <ng-select name="region" [(ngModel)]="Formation.region" [multiple]="false" bindLabel="name" [loading]="loadingRegion"
+                       bindValue="term_id" [searchFn]="customSearchFn" [items]="Regions" required>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 form-group mb-4">
+            <label class="font-bold">Secteur d'activité</label>
+            <ng-select name="activity_area" [items]="activityAreas" [multiple]="false" [loading]="loadingArea" bindLabel="name"
+                       bindValue="term_id" [(ngModel)]="Formation.activity_area" [searchFn]="customSearchFn" required>
+            </ng-select>
           </div>
         </div>
         <div class="row">
@@ -48,9 +65,9 @@
           <div class="col-sm-4">
             <label class="font-bold">Date limite d'inscription</label>
             <div class="input-group date">
-              <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-              <input class="form-control" name="datelimit" format="dd/mm/yyyy" appDatepicker  readonly="readonly"
+              <input class="form-control" name="datelimit" format="dd/mm/yyyy" [position]="'top-left'" appDatepicker  readonly="readonly"
                      [(ngModel)]="Formation.datelimit" [value]="Formation.datelimit" type="text" placeholder="Date limite d'inscription">
+              <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
             </div>
           </div>
           <div class="col-sm-4">
