@@ -12,7 +12,7 @@
           <div class="col-12">
             <div class="form-group">
               <label class="font-bold">Titre de formation</label>
-              <input type="text"class="form-control" name="title" [(ngModel)]="Formation.title" required="required">
+              <input type="text" class="form-control" autocomplete="off" name="title" [(ngModel)]="Formation.title" required="required">
             </div>
           </div>
         </div>
@@ -20,7 +20,7 @@
           <div class="col-6">
             <div class="form-group">
               <label class="font-bold">Diplôme ou Attestation ou Certificat</label>
-              <input type="text"class="form-control" name="diploma" [(ngModel)]="Formation.diploma" required="required">
+              <input type="text" class="form-control" name="diploma" [(ngModel)]="Formation.diploma" required="required">
             </div>
           </div>
         </div>
@@ -28,7 +28,7 @@
           <div class="col-lg-6">
             <div class="form-group">
               <label class="font-bold">Nom de l'établissement</label>
-              <input type="text"class="form-control" name="establish" [(ngModel)]="Formation.establish" required="required">
+              <input type="text" class="form-control" name="establish" [(ngModel)]="Formation.establish" required="required">
             </div>
           </div>
           <div class="col-lg-6">
@@ -59,7 +59,7 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label class="font-bold">Prix de formation</label>
-              <input type="number"class="form-control" name="price" placeholder="Prix en Ariary" [(ngModel)]="Formation.price" required>
+              <input type="number" class="form-control" name="price" placeholder="Prix en Ariary" [(ngModel)]="Formation.price" required>
             </div>
           </div>
           <div class="col-sm-4">
@@ -73,7 +73,7 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label class="font-bold">Durée de la formation</label>
-              <input type="text"class="form-control" name="duration" placeholder="e.g 3 Jours" [(ngModel)]="Formation.duration" >
+              <input type="text" class="form-control" name="duration" placeholder="e.g 3 Jours" [(ngModel)]="Formation.duration" >
             </div>
 
           </div>

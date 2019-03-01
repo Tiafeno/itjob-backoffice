@@ -26,7 +26,8 @@ declare var html2canvas: any;
    encapsulation: ViewEncapsulation.None
 })
 export class CandidateEditComponent implements OnInit, AfterViewInit {
-   public id: number;
+   public id: number = 0;
+   public userId: number = 0;
    public WPEndpoint: any;
    public loadingPdf: boolean = false;
    public loadingForm: boolean = false;
@@ -95,6 +96,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
             .subscribe(
                candidate => {
                   this.Candidate = _.clone(candidate);
+                  this.userId = this.Candidate.privateInformations.author.ID;
                   this.candidatService.collectDataEditor()
                      .subscribe(responseList => {
                         this.Regions = _.cloneDeep(responseList[0]);
@@ -115,8 +117,6 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
                   var namespace = 'wp/v2'; // use the WP API namespace
                   var route = '/candidate/(?P<id>\\d+)'; // route string - allows optional ID parameter
-
-                  // wpapi = an instance of `node-wpapi`
                   this.WPEndpoint.candidate = this.WPEndpoint.registerRoute(namespace, route);
 
                   let currentUser = this.authService.getCurrentUser();

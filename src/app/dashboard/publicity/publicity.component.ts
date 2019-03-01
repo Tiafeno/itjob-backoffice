@@ -102,15 +102,15 @@ export class PublicityComponent implements OnInit, AfterViewInit {
 
   loadCalendar(): void {
     var CalendarApp = function () {
-      this.$body = $("body")
-      this.$calendar = $('#calendar'),
-        this.$event = ('#external-events div.ex-event'),
-        this.$categoryForm = $('#add-new-event form'),
-        this.$extEvents = $('#calendar-events'),
-        this.$modal = $('#new-event-modal'),
-        this.$eventModal = $('#event-modal'),
-        this.$saveCategoryBtn = $('.save-category'),
-        this.$calendarObj = null
+      this.$body = $("body");
+      this.$calendar = $('#calendar');
+      this.$event = ('#external-events div.ex-event');
+      this.$categoryForm = $('#add-new-event form');
+      this.$extEvents = $('#calendar-events');
+      this.$modal = $('#new-event-modal');
+      this.$eventModal = $('#event-modal');
+      this.$saveCategoryBtn = $('.save-category');
+      this.$calendarObj = null;
     };
 
     // handler for clicking on an empty calendar field
@@ -239,7 +239,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
       }
 
       console.info('Drop event ...');
-    }
+    };
 
     // initialize the external events
     CalendarApp.prototype.enableDrag = function () {
@@ -258,7 +258,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
           revertDuration: 0  //  original position after the drag
         });
       });
-    }
+    };
 
     /* Initializing */
     CalendarApp.prototype.init = function () {
@@ -326,11 +326,11 @@ export class PublicityComponent implements OnInit, AfterViewInit {
           event.allDay = event.allDay == true ? true : false;
         },
       });
-    }
+    };
 
     CalendarApp.prototype.viewDisplay = function (view, element) {
       console.log(element);
-    }
+    };
 
 
     // initializing CalendarApp
@@ -367,7 +367,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
     });
 
 
-    // Handler to add new event 
+    // Handler to add new event
     var companyId: any = 0;
     $('#newEventForm').submit((event) => {
       event.preventDefault();

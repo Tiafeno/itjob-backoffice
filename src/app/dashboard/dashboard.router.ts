@@ -22,6 +22,7 @@ import {SmallAdComponent} from "./small-ad/small-ad.component";
 import {WorkTemporaryComponent} from "./work-temporary/work-temporary.component";
 import {WorkEditComponent} from "./work-temporary/work-edit/work-edit.component";
 import {SmallAdEditComponent} from "./small-ad/small-ad-edit/small-ad-edit.component";
+import {AdsComponent} from "./ads/ads.component";
 
 export const DashboardRouter: Route[] = [
   {
@@ -93,7 +94,7 @@ export const DashboardRouter: Route[] = [
       { path: 'taxonomy/:term', component: TaxonomyComponent },
       { path: 'blogs', component: BlogsComponent },
       { path: 'newsletters', component: NewslettersComponent },
-      { path: 'ads', component: PublicityComponent }
+      { path: 'ads', component: AdsComponent }
     ]
   },
 ]

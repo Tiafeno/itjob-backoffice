@@ -54,6 +54,8 @@ import { WorkTemporaryComponent } from './work-temporary/work-temporary.componen
 import { FormationNewComponent } from './formations/formation-new/formation-new.component';
 import { WorkEditComponent } from './work-temporary/work-edit/work-edit.component';
 import { SmallAdEditComponent } from './small-ad/small-ad-edit/small-ad-edit.component';
+import { AdsComponent } from './ads/ads.component';
+import {WalletComponent} from "../directives/wallet/wallet.component";
 
 @NgModule({
   imports: [
@@ -114,7 +116,9 @@ import { SmallAdEditComponent } from './small-ad/small-ad-edit/small-ad-edit.com
     WorkTemporaryComponent,
     FormationNewComponent,
     WorkEditComponent,
-    SmallAdEditComponent
+    SmallAdEditComponent,
+    AdsComponent,
+    WalletComponent
   ],
   providers: [
     {

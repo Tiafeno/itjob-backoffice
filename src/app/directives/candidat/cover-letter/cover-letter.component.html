@@ -3,7 +3,7 @@
     <div class="ibox-title">Lettres de motivations</div>
   </div>
   <div class="ibox-body">
-    <ul class="media-list media-list-divider scroller" data-height="470px">
+    <ul class="media-list media-list-divider scroller" data-height="350px">
       <li class="media py-3" *ngFor="let coverletter of coverLetters">
         <div class="media-img">
           <span class="btn-icon-only btn-circle bg-primary-50 text-primary"><i class="ti-file"></i></span>
@@ -18,8 +18,9 @@
           </div>
         </div>
       </li>
+      <li class="media py-3" *ngIf="coverLetters.length <= 0 && !loading">Aucun</li>
     </ul>
-    <div *ngIf="coverLetters.length <= 0 && !loading">Aucun</div>
+
     <div *ngIf="loading"> Chargement en cours ...</div>
   </div>
 </div>
