@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share'
 import { Router } from '@angular/router';
+import * as _ from 'lodash';
+declare var utf8:any;
 
 @Injectable()
 export class RequestService {
@@ -43,7 +45,7 @@ export class RequestService {
   }
 
   getCategorie(): Observable<any> {
-    return this.http.get(`${config.wpApi}/categorie`, { responseType: 'json'});
+    return this.http.get(`${config.wpApi}/categorie?per_page=100`, { responseType: 'json'});
   }
 
   getTown(): Observable<any> {

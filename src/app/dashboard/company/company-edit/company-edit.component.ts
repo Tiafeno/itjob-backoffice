@@ -86,7 +86,7 @@ export class CompanyEditComponent implements OnInit {
           setTimeout(() => {
             this.ourOffers.viewOffers(this.companyId);
           }, 600);
-          
+
           // For more information about handling dismissals please visit
           // https://sweetalert2.github.io/#handling-dismissals
         } else if (result.dismiss === swal.DismissReason.cancel) {
@@ -129,7 +129,7 @@ export class CompanyEditComponent implements OnInit {
       this.getTaxonomie('branch_activity').subscribe(response => { this.AreaActivity = _.cloneDeep(response); this.loadingArea = false; });
       this.loadingTown = true;
       this.getTaxonomie('city').subscribe(response => { this.Towns = _.cloneDeep(response); this.loadingTown = false; });
-
+      console.log(this.editor);
       $('#edit-company-modal').modal('show');
     }
   }

@@ -109,7 +109,7 @@
               </div>
             </div>
             <hr>
-            <div class="row">
+            <div class="row" *ngIf="Ad.gallery.length > 0">
               <div class="col-6 font-bold font-15">La galeries</div>
               <div class="col-12 mt-2">
                 <img [src]="picture.sizes.thumbnail" class="rounded float-left mr-2" *ngFor="let picture of Ad.gallery" [alt]="picture.alt">
@@ -152,11 +152,6 @@
               <div class="col-6 text-muted">Email:</div>
               <div class="col-6" style="word-break: break-all">
                 {{ User.email }}
-              </div>
-            </div>
-            <div class="row mb-2" *ngIf="User.view_link">
-              <div class="col-6 text-muted">
-                <a [routerLink]="User.view_link" class="btn btn-sm btn-outline-blue">Voir l'annonceur</a>
               </div>
             </div>
           </div>

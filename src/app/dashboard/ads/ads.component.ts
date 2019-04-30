@@ -102,6 +102,51 @@ export class AdsComponent implements OnInit, AfterViewInit {
         name: 'Search Side Right (position-11)',
         sizes: _.clone(sidebar)
       },
+      {
+        position: 'position-12',
+        name: 'Archive Travail Temporaire Top (position-12)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-13',
+        name: 'Archive Travail Temporaire Side Right (position-13)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-14',
+        name: 'Single Travail Temporaire Side Right (position-14)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-15',
+        name: 'Archive Formation Top (position-15)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-16',
+        name: 'Archive Formation Side Right (position-16)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-17',
+        name: 'Single Formation Side Right (position-17)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-18',
+        name: 'Archive Annonce Top (position-18)',
+        sizes: _.clone(top)
+      },
+      {
+        position: 'position-19',
+        name: 'Archive Annonce Side Right (position-19)',
+        sizes: _.clone(sidebar)
+      },
+      {
+        position: 'position-20',
+        name: 'Single Annonce Side Right (position-20)',
+        sizes: _.clone(sidebar)
+      },
     ];
   }
 
@@ -152,10 +197,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     moment.locale('fr');
-    this.Ads.position = '';
-    this.Ads.size = '';
-    this.Ads.end = moment().format("YYYY-MM-DD HH:mm:ss");
-    this.Ads.start = moment().format("YYYY-MM-DD HH:mm:ss");
+    this.initAdForm();
 
     const getData = (ev: any): any => {
       let el = $(ev.currentTarget).parents('tr');
@@ -237,6 +279,9 @@ export class AdsComponent implements OnInit, AfterViewInit {
       this.selected = false;
     });
 
+    $('#new-ad-modal').on('show.bs.modal', () => {
+      this.initAdForm();
+    });
     $('#ads-table tbody').on('click', '.delete-ads', e => {
       e.preventDefault();
       const __ads = getData(e);
@@ -277,6 +322,14 @@ export class AdsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public initAdForm(): void {
+    this.Ads.position = '';
+    this.Ads.size = '';
+    this.Ads.link = '';
+    this.Ads.company = 0;
+    this.Ads.end = moment().format("YYYY-MM-DD HH:mm:ss");
+    this.Ads.start = moment().format("YYYY-MM-DD HH:mm:ss");
+  }
 
   public onNewAds(Form: NgForm): void {
     if (!Form.valid) {

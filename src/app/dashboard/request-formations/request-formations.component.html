@@ -51,7 +51,7 @@
       </div>
       <div class="modal-body p-4">
         <div class="row">
-          <div class="col-sm-12" *ngIf="interesteds.length > 0">
+          <div class="col-sm-12">
             <div class="ibox-body">
               <ul class="media-list media-list-divider mr-2">
                 <li class="media align-items-center" *ngFor="let candidate of interesteds">
@@ -68,6 +68,7 @@
                     <button [routerLink]="[ '/candidate', candidate.ID, 'edit' ]" data-dismiss="modal" class="btn btn-sm btn-outline-info btn-rounded">Voir le CV</button>
                   </div>
                 </li>
+                <li *ngIf="interesteds.length <= 0">Aucun candidat</li>
               </ul>
             </div>
           </div>

@@ -1,0 +1,12 @@
+.state-payment {
+  cursor: pointer;
+}
+
+.state-payment:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+.update-position:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}

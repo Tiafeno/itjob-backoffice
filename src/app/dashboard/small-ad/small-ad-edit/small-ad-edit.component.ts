@@ -52,6 +52,7 @@ export class SmallAdEditComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) {
+    this.Ad.gallery = []; // Fix length
     this.WPEndpoint = new WPAPI({
       endpoint: config.apiEndpoint,
     });
@@ -87,6 +88,7 @@ export class SmallAdEditComponent implements OnInit {
         let Annonce: any = _.clone(annonce);
         Helpers.setLoading(false);
         this.Ad = _.clone(Annonce);
+        this.Ad.gallery = !_.isArray(this.Ad.gallery) ? [] : this.Ad.gallery;
         this.Ad.type = _.isObject(Annonce.type) ? parseInt(Annonce.type.value) : null;
         this.Ad.town = _.isArray(Annonce.city) ? Annonce.city[0] : null;
         this.Ad.region = _.isArray(Annonce.region) ? Annonce.region[0] : null;
@@ -96,7 +98,6 @@ export class SmallAdEditComponent implements OnInit {
           this.User.name = _.clone(Annonce.annonce_author.data.display_name);
           this.User.email = _.clone(Annonce.annonce_author.data.user_email);
           this.User.role = "Administrateur";
-          this.User.view_link = null;
         } else {
           let pI: any = {};
           let email: string = '';
@@ -106,9 +107,7 @@ export class SmallAdEditComponent implements OnInit {
           this.User.role = 'candidate' === post_type ? "Particulier" : 'Entreprise';
           this.User.name = 'candidate' === post_type ? `${pI.firstname} ${pI.lastname}` : Annonce.client.title;
           this.User.email = 'candidate' === post_type ? pI.author.data.user_email : Annonce.client.email;
-          this.User.view_link = 'candidate' === post_type ? ['/candidate', Annonce.client.ID, 'edit'] : ['/company-lists'];
         }
-        console.log(Annonce);
       });
     });
 

@@ -1,0 +1,57 @@
+<div class="ibox">
+  <div class="ibox-head">
+    <div class="ibox-title">Portefeuille</div>
+  </div>
+  <div class="ibox-body">
+    <div class="row mb-2 font-14">
+      <div class="col-6">
+        <div class="font-bold">Credits</div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-warning" [disabled]="loading" data-toggle="modal"
+                  data-target="#edit-wallet-modal"> Ajouter des credits </button>
+        </div>
+      </div>
+      <div class="col-6 text-left">
+        <span *ngIf="loading">Chargement ...</span>
+        <span style="font-size: 45px;" class="font-bold" *ngIf="!loading">{{ credit }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal training -->
+<div class="modal fade" id="edit-wallet-modal">
+  <div class="modal-dialog" role="document">
+    <form #walletForm="ngForm" (ngSubmit)="onUpdateWallet( walletForm )" class="modal-content">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">MODIFICATION PORTEFEUILLE</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row mb-2 font-14">
+          <div class="col-6">
+            <div class="font-bold uppercase">Credit actuel</div>
+          </div>
+          <div class="col-6 text-left">
+            <span class="font-bold">{{ credit }}</span>
+          </div>
+        </div>
+        <div class="form-group mb-4">
+          <input class="form-control form-control-solid" autocomplete="off" required="required" type="number" [(ngModel)]="formWallet.credit"
+                 name="credit" placeholder="Ajouter des credits pour ce compte">
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div>
+          <button class="btn btn-primary btn-rounded mr-3" [disabled]="loading" type="submit">
+            Mettre à jours
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- .end modal -->

@@ -21,8 +21,7 @@ export class RequestFormationsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private Http: HttpClient,
-    private authService: AuthService
+    private Http: HttpClient
   ) { }
 
   public reload(): void {

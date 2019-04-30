@@ -5,6 +5,8 @@ import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert2';
+import {Helpers} from "../../helpers";
+import {HttpClient} from "@angular/common/http";
 declare var $: any;
 
 @Component({
@@ -17,9 +19,15 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   public users: any[];
   public loading: boolean = false;
   public Form: any = {};
+  public Options: any = {};
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private Http: HttpClient
   ) {
+    this.Options.featured = {};
+    this.Options.featured.formation_tariff = [];
+
+
     this.wp = new WPAPI({ endpoint: config.apiEndpoint });
     let currentUser = this.authService.getCurrentUser();
     this.wp.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
@@ -66,12 +74,14 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loading = true;
+    Helpers.setLoading(true);
     this.wp.users().roles('administrator,editor,contributor').context('edit').then(resp => {
       if (_.isArray(resp)) {
-
         this.users = _.clone(resp);
-        this.loading = false;
+        this.Http.get(`${config.api}/options`, {responseType: 'json'}).subscribe(options => {
+          Helpers.setLoading(false);
+          this.Options = _.clone(options);
+        });
       }
     });
   }

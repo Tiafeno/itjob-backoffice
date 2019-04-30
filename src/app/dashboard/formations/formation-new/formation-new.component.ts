@@ -112,6 +112,8 @@ export class FormationNewComponent implements OnInit {
           date_limit: moment(dateLimit, "DD/MM/YYYY").format("YYYY-MM-DD"),
           duration: this.Formation.duration,
           establish_name: this.Formation.establish,
+          paid: 1,
+          tariff: 'premium',
           tax_values: { region: _region, area: _area }
         }).then(( response ) => {
           $('#new-formation-modal').modal('hide');

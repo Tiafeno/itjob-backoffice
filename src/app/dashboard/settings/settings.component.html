@@ -17,6 +17,25 @@
       </div>
     </div>
   </div>
+
+  <div class="col-lg-5">
+    <div class="ibox">
+      <div class="ibox-body">
+        <h5 class="font-strong">LES PRIX</h5>
+        <small class="text-muted">Les prix des articles</small>
+        <ul class="media-list media-list-divider mr-2">
+          <li class="media align-items-center" *ngFor="let tariff of Options.featured.formation_tariff">
+            <div class="media-body d-flex align-items-center">
+              <div class="flex-1">
+                <div class="media-heading">{{ tariff.position }}</div>
+                <small class="text-muted">{{ tariff.price }}</small>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal fade" id="edit-user-modal" data-keyboard="false" data-backdrop="static">

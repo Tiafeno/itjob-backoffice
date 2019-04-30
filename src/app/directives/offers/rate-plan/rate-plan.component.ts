@@ -46,7 +46,7 @@ export class RatePlanComponent implements OnInit, AfterViewInit {
     if (!this.auth.notUserAccess("contributor")) return;
     if (!this.auth.notUserAccess("editor")) return;
 
-    let typeOfValues = ['standard', 'sereine', 'premium'];
+    let typeOfValues = ['standard', 'serein', 'premium'];
     if (this.type === this.currentType) {
       this.warning = true;
       return false;

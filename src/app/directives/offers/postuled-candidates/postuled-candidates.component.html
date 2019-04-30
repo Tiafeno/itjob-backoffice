@@ -1,9 +1,9 @@
-<div class="ibox">
+<div>
   <div class="ibox-head">
     <div class="ibox-title">Les candidats ayant été sélectionnés</div>
   </div>
   <div class="ibox-body">
-    <ul  class="media-list media-list-divider mr-2 scroller" data-height="400px">
+    <ul  class="media-list media-list-divider mr-2 scroller" data-height="400px" *ngIf="Requests.length > 0">
       <li class="media align-items-center" *ngFor="let request of Requests | interestCandidate:'interested'">
         <div class="media-body d-flex align-items-center">
           <div class="flex-1">
@@ -22,7 +22,7 @@
               <small class="text-muted">{{request.candidate.privateInformations.firstname}}
                 {{request.candidate.privateInformations.lastname}}</small>
             </div>
-            
+
 
             <div class="mt-2 mb-2 flex-1" *ngIf="request.lm_link">
               <a href="{{request.lm_link.scheme}}://{{request.lm_link.host}}{{request.lm_link.path}}" target="_blank" class="badge badge-info" [title]="request.lm_name">
@@ -52,7 +52,7 @@
     <div class="ibox-title">Les candidats ayant postulés</div>
   </div>
   <div class="ibox-body">
-    <ul  class="media-list media-list-divider mr-2 scroller" data-height="400px">
+    <ul  class="media-list media-list-divider mr-2 scroller" data-height="400px" *ngIf="Requests.length > 0">
       <li class="media align-items-center" *ngFor="let request of Requests | interestCandidate:'apply'">
         <div class="media-body d-flex align-items-center">
           <div class="flex-1">
@@ -72,7 +72,7 @@
               <small class="text-muted">{{request.candidate.privateInformations.firstname}}
                 {{request.candidate.privateInformations.lastname}}</small>
             </div>
-            
+
 
             <div class="mt-2 mb-2 flex-1" *ngIf="request.lm_link">
               <a href="{{request.lm_link.scheme}}://{{request.lm_link.host}}{{request.lm_link.path}}" target="_blank" class="badge badge-info" [title]="request.lm_name">
