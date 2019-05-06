@@ -1,0 +1,204 @@
+<style type="text/css">
+</style>
+<div class="page-content fade-in-up">
+  <div class="flexbox-b mb-5">
+    <span class="mr-4 static-badge badge-pink"><i class="la la-calendar-check-o font-36"></i></span>
+    <div>
+      <h5 class="font-strong">Publicités</h5>
+      <div class="text-light">Gestion des publicités</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Calendrier</div>
+          <button class="btn btn-primary btn-sm btn-rounded btn-air my-3" data-toggle="modal" data-target="#new-ad-modal">
+            <span class="btn-icon"><i class="la la-plus"></i>Ajouter</span>
+          </button>
+        </div>
+        <div class="ibox-body">
+          <div class="table-responsive row">
+            <table class="table table-bordered table-hover" id="ads-table">
+              <thead class="thead-default thead-lg">
+              <tr>
+                <th>#</th>
+                <th>Titre</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Position</th>
+                <th>Date d'ajout</th>
+                <th class="no-sort">Action</th>
+              </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="ibox">
+        <div class="ibox-body">
+          <form #editAds="ngForm" class="modal-content form-horizontal" id="editAds" (ngSubmit)="onEditAds( editAds )">
+            <div class="modal-header p-4">
+              <h5 class="modal-title">Modifier publicité</h5>
+            </div>
+            <div *ngIf="selected" class="modal-body p-4">
+              <div class="form-group mb-4">
+                <input class="form-control" autocomplete="off" [(ngModel)]="Editor.title" type="text" name="title" placeholder="Titre ou Référence"
+                       required>
+              </div>
+              <div class="form-group mb-4">
+                <label class="font-bold">Image pour la publicité</label>
+                <div>
+                  <img [src]="Editor.picture" width="125">
+                </div>
+              </div>
+              <div class="form-group mb-4">
+                <input class="form-control " [(ngModel)]="Editor.link" type="text" name="link" placeholder="e.g http://falicrea.com">
+                <p class="text-muted font-13">Ajouter un lien quand on clique sur la banniere publicité</p>
+              </div>
+              <div class="form-group mb-4">
+                <input class="form-control " [(ngModel)]="Editor.bill" type="text" name="bill" placeholder="Numéro de facture"
+                       required>
+              </div>
+              <div class="form-group mb-4">
+                <select [(ngModel)]="Editor.position" class="form-control" name="position"
+                        aria-placeholder="Position de la publicité" required>
+                  <option value="">-- Choisissez une position --</option>
+                  <option [value]="scheme.position" *ngFor="let scheme of schemes; let ps = index">{{scheme.name}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select class="form-control" [(ngModel)]="Editor.img_size" [disabled]="!Editor.position" name="image_size" >
+                  <option value="">-- Choisissez la Taille --</option>
+                  <option [value]="size.size" *ngFor="let size of schemes | imageSize:Editor.position">{{size.label}}</option>
+                </select>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <div class="bloodhound">
+                      <input class="form-control new-event-company" autocomplete="off" [disabled]="true" [(ngModel)]="Editor.company" type="text" name="company"
+                             placeholder="Entreprise" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 form-group mb-4">
+                  <label class="col-form-label text-muted">Début:</label>
+                  <div class="input-group-icon input-group-icon-right">
+                    <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
+                    <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [value]="Editor.start"
+                           [position]="'top-left'" [minView]="0" [(ngModel)]="Editor.start" type="text"
+                           autocomplete="off" name="start" value="">
+                  </div>
+                </div>
+                <div class="col-12 form-group mb-4">
+                  <label class="col-form-label text-muted">Fin:</label>
+                  <div class="input-group-icon input-group-icon-right">
+                    <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
+                    <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'"  [value]="Editor.end"
+                           [position]="'top-left'" [minView]="0" [(ngModel)]="Editor.end" [(ngModel)]="Editor.end" type="text"
+                           autocomplete="off" name="end" value="">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="selected" class="modal-footer justify-content-start bg-primary-50">
+              <input type="hidden" name="id_attachment" [(ngModel)]="Editor.id_attachment">
+              <input type="hidden" name="id_ads" [(ngModel)]="Editor.id_ads">
+              <button class="btn btn-primary btn-rounded" [disabled]="loading" type="submit">Mettre à jour</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- New Event Dialog-->
+  <div class="modal fade" id="new-ad-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <form #newAds="ngForm" class="modal-content form-horizontal" id="newAds" (ngSubmit)="onNewAds( newAds )">
+        <div class="modal-header p-4">
+          <h5 class="modal-title">Ajouter publicité</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="form-group mb-4">
+            <input class="form-control" autocomplete="off" [(ngModel)]="Ads.title" type="text" name="title" placeholder="Titre ou Référence"
+                   required>
+          </div>
+          <div class="form-group mb-4">
+            <input id="new-event-file" type="file" [(ngModel)]="Ads.banner" id="new-event-file" name="banner" placeholder="Image pour la publicité" required>
+          </div>
+          <div class="form-group mb-4">
+            <input class="form-control " [(ngModel)]="Ads.link" type="text" name="link" placeholder="e.g http://www.exemple.com">
+            <p class="text-muted font-13">Ajouter un lien quand on clique sur la banniere publicité</p>
+          </div>
+          <div class="form-group mb-4">
+            <input class="form-control " [(ngModel)]="Ads.bill" type="text" name="bill" placeholder="Numéro de facture"
+                   required>
+          </div>
+          <div class="form-group mb-4">
+            <select [(ngModel)]="Ads.position" class="form-control" name="position"
+                    aria-placeholder="Position de la publicité" required>
+              <option value="">-- Choisissez une position --</option>
+              <option [value]="scheme.position" *ngFor="let scheme of schemes; let ps = index">{{scheme.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" [(ngModel)]="Ads.size" [disabled]="!Ads.position" name="image_size" id="new-event-image_size" required="required">
+              <option value="">-- Choisissez la Taille --</option>
+              <option [value]="size.size" *ngFor="let size of schemes | imageSize:Ads.position">{{size.label}}</option>
+            </select>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <div id="bloodhound">
+                  <input class="form-control" autocomplete="off" id="new-event-company" [(ngModel)]="Ads.companyId" type="text" name="company"
+                         placeholder="Entreprise">
+                  <p class="text-muted font-13">Tapez le nom de l'entreprise et selectionner (Facultatif)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 form-group mb-4">
+              <label class="col-form-label text-muted">Début:</label>
+              <div class="input-group-icon input-group-icon-right">
+                <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
+                <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [position]="'top-left'" [minView]="0"
+                       [(ngModel)]="Ads.start" [value]="Ads.start" type="text"
+                       autocomplete="off" name="start" value="" required="required">
+              </div>
+            </div>
+            <div class="col-6 form-group mb-4">
+              <label class="col-form-label text-muted">Fin:</label>
+              <div class="input-group-icon input-group-icon-right">
+                <span class="input-icon input-icon-right"><i class="fa fa-calendar-check-o"></i></span>
+                <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [position]="'top-left'"
+                       [minView]="0" [(ngModel)]="Ads.end" [value]="Ads.end" type="text"
+                       autocomplete="off" name="end" value="" required="required">
+              </div>
+            </div>
+          </div>
+          <div class="form-group mb-4 pt-3" style="display: none">
+            <label class="ui-switch switch-icon mr-3 mb-0">
+              <input id="new-event-allDay" type="checkbox" checked>
+              <span></span>
+            </label>All Day</div>
+        </div>
+        <div class="modal-footer justify-content-start bg-primary-50">
+          <button class="btn btn-primary btn-rounded" [disabled]="loading" id="addEventButton" type="submit">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End New Event Dialog-->
+</div>

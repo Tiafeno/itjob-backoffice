@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
+import swal from "sweetalert";
 declare var $:any;
 @Component({
   selector: 'app-new-taxonomy',
@@ -31,8 +32,7 @@ export class NewTaxonomyComponent implements OnInit {
   public onAddTerm(Form: NgForm): void {
     if (Form.valid) {
       this.loading = true;
-      let Values = Form.value;
-      let formData = new FormData()
+      let formData = new FormData();
       formData.append('title', this.title);
       this.Http.post(`${config.itApi}/taxonomy/${this.taxonomy}`, formData)
         .subscribe(
@@ -41,10 +41,9 @@ export class NewTaxonomyComponent implements OnInit {
             if (response.success) {
               $('#added-taxonomy-modal').modal('hide');
               this.refresh.emit();
-              swal('Succès', response.message, 'success');
-            } else {
-              swal('Information', response.message, 'info');
-            }
+              // noinspection JSIgnoredPromiseFromCall
+              swal("Succès", response.message, 'success');
+            } else swal('Information', response.message, 'info');
             this.loading = false;
           },
           error => {

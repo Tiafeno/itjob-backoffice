@@ -96,7 +96,7 @@ export class TaxonomyComponent implements OnInit {
          })
          .on('init.dt', () => {
             Helpers.setLoading(false);
-         })
+         });
       this.table = taxonomyLists
          .DataTable({
             pageLength: 20,

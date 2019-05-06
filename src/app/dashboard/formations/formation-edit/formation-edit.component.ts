@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import WPAPI from 'wpapi';
+import * as WPAPI from 'wpapi';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
 import { RequestService } from '../../../services/request.service';
@@ -60,7 +60,7 @@ export class FormationEditComponent implements OnInit {
     let currentUser = this.authService.getCurrentUser();
     this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
     var namespace = 'wp/v2'; // use the WP API namespace
-    var formationRoute = '/formation/(?P<id>)'; // route string - allows optional ID parameter
+    var formationRoute = '/formation/(?P<id>\\+)'; // route string - allows optional ID parameter
 
     this.WPEndpoint.formation = this.WPEndpoint.registerRoute(namespace, formationRoute);
 
@@ -93,7 +93,6 @@ export class FormationEditComponent implements OnInit {
       if (route instanceof NavigationEnd) {
         Helpers.setLoading(false);
       }
-
     });
   }
 

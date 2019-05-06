@@ -1,0 +1,162 @@
+<div class="row">
+  <div class="col-sm-8">
+    <div class="ibox">
+      <div class="ibox-body">
+        <div class="mb-4">
+          <a [routerLink]="['/small-ad']" class="btn btn-primary">Retour</a>
+        </div>
+        <form #Ads="ngForm" class="modal-content" (ngSubmit)="onSaveAd( Ads )">
+          <div class="modal-header p-4">
+            <h5 class="modal-title uppercase">Modifier une petite annonce</h5>
+          </div>
+          <div class="modal-body p-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="font-bold">Titre de l'annonce</label>
+                  <input type="text" class="form-control" name="title" [(ngModel)]="Ad.title.rendered" required="required">
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Categorie</label>
+                  <ng-select name="categorie" [items]="Categories" [multiple]="false"  bindLabel="name"
+                             bindValue="id" [(ngModel)]="Ad.categorie" [loading]="loadingCTG" required>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Type d'annonce</label>
+                  <ng-select name="type" [items]="Type" [multiple]="false"  bindLabel="name"
+                             bindValue="id" [(ngModel)]="Ad.type" required>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 form-group mb-4">
+                <label class="font-bold">Région</label>
+                <ng-select name="region" [(ngModel)]="Ad.region" [multiple]="false" bindLabel="name" [loading]="loadingRegion"
+                           bindValue="term_id"  [items]="Regions" required>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="font-bold">Ville</label>
+                  <ng-select name="town" [items]="Town" [multiple]="false"  bindLabel="name"
+                             bindValue="term_id" [(ngModel)]="Ad.town" required>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Adresse<span style="color: red">*</span></label>
+                  <input type="text" autocomplete="off" class="form-control" name="address" [(ngModel)]="Ad.address" required="required">
+
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Budget <span style="color: red">*</span></label>
+                  <input type="number" class="form-control" name="price" [(ngModel)]="Ad.price"
+                         placeholder="Budget en ariary (MGA)">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group mb-4">
+                  <label class="font-bold">Description</label>
+                  <editor apiKey="2grxn9iofnxolcaedqa399sh4ft6c1mg3e1kumgnyq6o0ap1" required [(ngModel)]="Ad.content.rendered"
+                          name="description" [init]="tinyMCESettings">
+                  </editor>
+                </div>
+              </div>
+
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Email joigniable pour cette annonce <span style="color: red">*</span></label>
+                  <input type="email" class="form-control" name="email" [(ngModel)]="Ad.email"
+                         placeholder="Adresse Email" required="required">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="font-bold">Numéro de téléphone <span style="color: red">*</span></label>
+                  <input type="text" class="form-control"  name="phone" [(ngModel)]="Ad.cellphone"
+                         placeholder="Numéro de téléphone" required="required">
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row" *ngIf="Ad.gallery.length > 0">
+              <div class="col-6 font-bold font-15">La galeries</div>
+              <div class="col-12 mt-2">
+                <img [src]="picture.sizes.thumbnail" class="rounded float-left mr-2" *ngFor="let picture of Ad.gallery" [alt]="picture.alt">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between bg-primary-50">
+            <div></div>
+            <div>
+              <button class="btn btn-primary mr-2" type="submit" [disabled]="loading">
+                <span>Enregistrer</span>
+              </button>
+
+              <a class="btn btn-default"  [routerLink]="['/small-ad']">
+                <span>Retour</span>
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="ibox">
+      <div class="ibox-body">
+        <div class="modal-content">
+          <div class="modal-header p-4">
+            <h5 class="modal-title uppercase">L'annonceur</h5>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-2">
+              <div class="col-6 text-muted">Nom & Prenom:</div>
+              <div class="col-6">{{ User.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6 text-muted">Type de compte:</div>
+              <div class="col-6 font-bold"><span class="badge badge-info">{{ User.role }}</span></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6 text-muted">Email:</div>
+              <div class="col-6" style="word-break: break-all">
+                {{ User.email }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

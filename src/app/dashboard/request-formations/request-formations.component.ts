@@ -21,8 +21,7 @@ export class RequestFormationsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private Http: HttpClient,
-    private authService: AuthService
+    private Http: HttpClient
   ) { }
 
   public reload(): void {
@@ -64,7 +63,7 @@ export class RequestFormationsComponent implements OnInit {
         {
           data: 'concerned', render: data => {
             let cpt: number = _.isArray(data) ? data.length : 0;
-            return `<span style="cursor: pointer" class="badge view-interested badge-pill badge-info">${cpt}</span>`;
+            return `<span style="cursor: pointer" class="badge view-interested badge-pill badge-info">Les candidats (${cpt})</span>`;
           }
         },
         { data: 'date_create', render: (data) => { return moment(data).fromNow(); } },

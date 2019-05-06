@@ -6,7 +6,7 @@ import { ViewNewsletterComponent } from '../newsletter/view-newsletter/view-news
 import { NewNewsletterComponent } from './new-newsletter/new-newsletter.component';
 import { HttpClient } from '@angular/common/http';
 import * as WPAPI from 'wpapi';
-import swal from 'sweetalert';
+import swal from 'sweetalert2';
 import { Helpers } from '../../helpers';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';

@@ -35,5 +35,6 @@ export const config = {
   jwtAuthUrl: 'http://itjob.local.mg/wp-json/jwt-auth/v1/token',
   apiEndpoint: 'http://itjob.local.mg/wp-json',
   wpApi: 'http://itjob.local.mg/wp-json/wp/v2',
-  itApi: 'http://itjob.local.mg/wp-json/it-api'
+  itApi: 'http://itjob.local.mg/wp-json/it-api',
+  api: 'http://itjob.local.mg/wp-json/api'
 };

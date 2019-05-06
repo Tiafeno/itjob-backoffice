@@ -20,7 +20,7 @@
             <div class="row">
               <div class="form-group mb-4 col-sm-8">
                 <label class="font-bold">Titre du formation </label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.title" required type="text" name="title"
+                <input class="form-control form-control-solid" autocomplete="off" [(ngModel)]="Editor.title" required type="text" name="title"
                   placeholder="Titre de l'offre">
               </div>
             </div>
@@ -39,6 +39,13 @@
               </div>
             </div>
             <div class="row">
+              <div class="form-group mb-4 col-sm-6">
+                <label class="font-bold">Prix de formation </label>
+                <input class="form-control form-control-solid" [(ngModel)]="Editor.price" required type="text" name="price"
+                       placeholder="Prix de formation en Ariary">
+              </div>
+            </div>
+            <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Nom de l'établissement</label>
                 <input class="form-control form-control-solid" [(ngModel)]="Editor.establish_name" required type="text"
@@ -53,7 +60,7 @@
             <div class="row">
               <div class="col-sm-6 form-group mb-4">
                 <label class="font-bold">Adresse de l'établissement</label>
-                <input class="form-control form-control-solid" [(ngModel)]="Editor.address" required type="text" name="address"
+                <input class="form-control form-control-solid" autocomplete="off" [(ngModel)]="Editor.address" required type="text" name="address"
                   placeholder="Adresse de létablissement">
               </div>
             </div>
@@ -124,20 +131,20 @@
                   <div class="media-body d-flex align-items-center">
                     <div class="flex-1">
                       <div class="media-heading">
-                        <a [routerLink]="[ '/candidate', subscription.candidate.ID ]" target="_blank">{{ subscription.candidate.title }}</a> 
+                        <a [routerLink]="[ '/candidate', subscription.candidate.ID ]" target="_blank">{{ subscription.candidate.title }}</a>
                         <span class="badge badge-pill badge-default" *ngIf="subscription.paid === 0"> En attente</span>
                         <span class="badge badge-pill badge-pink" *ngIf="subscription.paid === 2">Refuser</span>
                         <span class="badge badge-pill badge-success" *ngIf="subscription.paid === 1">Accepter</span>
                       </div>
                       <small class="text-muted">{{subscription.candidate.privateInformations.firstname}} {{subscription.candidate.privateInformations.lastname}}</small>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary btn-rounded" 
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-rounded"
                     (click)="acceptedUser(subscription.candidate, 1, $event)" *ngIf="subscription.paid === 0" [disabled]="loadingSubscription">Accepter</button>
                     <button type="button" class="btn btn-sm btn-outline-warning btn-rounded ml-2"
                     (click)="acceptedUser(subscription.candidate, 2, $event)" *ngIf="subscription.paid === 0" [disabled]="loadingSubscription">Refuser</button>
                   </div>
                 </li>
-                
+
               </ul>
             </div>
           </div>

@@ -56,7 +56,7 @@
   </div>
 </div>
 <!-- END SESSION TIMEOUT MODAL -->
-    
+
 <!-- QUICK SIDEBAR-->
 <div class="quick-sidebar">
   <ul class="nav nav-tabs tabs-line">
@@ -78,20 +78,50 @@
     </div>
     <div class="tab-pane active" id="tab-3">
       <div class="log-tabs">
-        <a class="active" href="javascript:;" data-type="all" data-toggle="tooltip" data-original-title="All logs"><i class="ti-view-grid"></i></a>
-        <a href="javascript:;" data-type="server" data-toggle="tooltip" data-original-title="Server logs"><i class="ti-harddrives"></i></a>
-        <a href="javascript:;" data-type="app" data-toggle="tooltip" data-original-title="App logs"><i class="ti-pulse"></i></a>
+        <a [ngClass]="{'active': selected === 'all'}" href="javascript:;" (click)="selectedTab($event)" data-type="all" data-toggle="tooltip" data-original-title="All logs"><i class="ti-view-grid"></i></a>
+        <a [ngClass]="{'active': selected === 'softwares'}" href="javascript:;" (click)="selectedTab($event)" data-type="softwares" data-toggle="tooltip" data-original-title="Logiciels"><i class="ti-microsoft"></i></a>
+        <a [ngClass]="{'active': selected === 'candidate'}" href="javascript:;" (click)="selectedTab($event)" data-type="candidate" data-toggle="tooltip" data-original-title="Les candidates"><i class="ti-id-badge"></i></a>
+        <a [ngClass]="{'active': selected === 'offers'}" href="javascript:;" (click)="selectedTab($event)" data-type="offers" data-toggle="tooltip" data-original-title="Les offres"><i class="ti-notepad"></i></a>
       </div>
       <div class="logs">
         <div class="scroller">
           <ul class="logs-list">
-            <li class="log-item" data-type="app" *ngFor="let notification of Notifications">
+            <li class="log-item" data-type="all" *ngFor="let notice of Notifications.all">
               <i class="la la-circle log-icon text-success"></i>
-              <div><a [href]="notification.guid" [innerHTML]="notification.title"></a>
-                <small class="float-right text-muted">{{notification.date_create|date:"medium"}}</small>
+              <div><a [href]="notice.guid" [innerHTML]="notice.title"></a>
+                <small class="float-right text-muted">{{notice.date_create|date:"medium"}}</small>
               </div>
             </li>
-            <li *ngIf="Notifications.length <= 0">Aucune notification</li>
+
+            <li class="log-item" data-type="softwares" *ngFor="let notice of Notifications.softwares">
+              <i class="la la-circle log-icon text-success"></i>
+              <div><a [href]="notice.guid" [innerHTML]="notice.title"></a>
+                <small class="float-right text-muted">{{notice.date_create|date:"medium"}}</small>
+              </div>
+            </li>
+
+            <li class="log-item" data-type="candidate" *ngFor="let notice of Notifications.candidate">
+              <i class="la la-circle log-icon text-success"></i>
+              <div><a [href]="notice.guid" [innerHTML]="notice.title"></a>
+                <small class="float-right text-muted">{{notice.date_create|date:"medium"}}</small>
+              </div>
+            </li>
+
+            <li class="log-item" data-type="offers" *ngFor="let notice of Notifications.offers">
+              <i class="la la-circle log-icon text-success"></i>
+              <div><a [href]="notice.guid" [innerHTML]="notice.title"></a>
+                <small class="float-right text-muted">{{notice.date_create|date:"medium"}}</small>
+              </div>
+            </li>
+
+            <li class="log-item" data-type="company" *ngFor="let notice of Notifications.company">
+              <i class="la la-circle log-icon text-success"></i>
+              <div><a [href]="notice.guid" [innerHTML]="notice.title"></a>
+                <small class="float-right text-muted">{{notice.date_create|date:"medium"}}</small>
+              </div>
+            </li>
+
+
           </ul>
         </div>
       </div>

@@ -26,7 +26,8 @@ declare var html2canvas: any;
    encapsulation: ViewEncapsulation.None
 })
 export class CandidateEditComponent implements OnInit, AfterViewInit {
-   public id: number;
+   public id: number = 0;
+   public userId: number = 0;
    public WPEndpoint: any;
    public loadingPdf: boolean = false;
    public loadingForm: boolean = false;
@@ -95,6 +96,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
             .subscribe(
                candidate => {
                   this.Candidate = _.clone(candidate);
+                  this.userId = this.Candidate.privateInformations.author.ID;
                   this.candidatService.collectDataEditor()
                      .subscribe(responseList => {
                         this.Regions = _.cloneDeep(responseList[0]);
@@ -114,9 +116,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
                   });
 
                   var namespace = 'wp/v2'; // use the WP API namespace
-                  var route = '/candidate/(?P<id>)'; // route string - allows optional ID parameter
-
-                  // wpapi = an instance of `node-wpapi`
+                  var route = '/candidate/(?P<id>\\d+)'; // route string - allows optional ID parameter
                   this.WPEndpoint.candidate = this.WPEndpoint.registerRoute(namespace, route);
 
                   let currentUser = this.authService.getCurrentUser();
@@ -271,12 +271,12 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       }, error => {
          swal('Erreur', "Une erreur s'est produite pendant la chargement de la formation dans l'éditeur");
       })
-     
+
    }
 
    /**
     * Mettre à jours la formation dans la base de donnée avec les autres formations existantes
-    * @param trainingId 
+    * @param trainingId
     */
    onUpdateTraining(trainingId: number, validator?: boolean): void {
       if (!_.isUndefined(validator) && validator) {
@@ -365,11 +365,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
    /**
     * Effacer une formation et mettre à jours la base de donné
-    * @param trainingId 
+    * @param trainingId
     */
    onDeleteTraining(trainingId: any) {
       if (!this.authService.notUserAccess("contributor")) return;
-      
+
       let id: number = parseInt(trainingId);
       let Training: any = _.reject(this.editor.trainings, ['ID', id]);
       this.loadingSaveTraining = true;
@@ -383,7 +383,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
    /**
     * Afficher une formulaire de modification de l'expérience
-    * @param eId 
+    * @param eId
     */
    onEditExperience(eId: number) {
       this.modeExperience = 'edit';
@@ -395,11 +395,11 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
          }
       );
-      
+
    }
 
    /**
-    * Event click function 
+    * Event click function
     * Ajouter des donnée vide dans le formulaire
     */
    onNewExperience(): void {
@@ -463,7 +463,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
    /**
     * Mettre à jour l'experience et les autres expériences dans la base de donnée
-    * @param experienceId 
+    * @param experienceId
     */
    onUpdateExperience(experienceId: any, validator?: boolean) {
       if (!_.isUndefined(validator) && validator) {
@@ -473,7 +473,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
       } else {
          this.updateExperience(experienceId);
       }
-      
+
    }
 
    private updateExperience(eId: number) {
@@ -491,7 +491,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
          expBegin = moment(dateBegin, 'MMMM YYYY');
          expEnd = _.isEmpty(dateEnd) ? '' :  moment(dateEnd, 'MMMM YYYY');
-            
+
          if (!expBegin.isValid()) {
             this.loadingSaveExperience = false;
             return;
@@ -540,7 +540,7 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
    /**
     * Effacer une expérience et mettre à jours la base de donné
-    * @param experienceId 
+    * @param experienceId
     */
    onDeleteExperience(experienceId: any) {
       if (!this.authService.notUserAccess("contributor")) return;
@@ -813,8 +813,8 @@ export class CandidateEditComponent implements OnInit, AfterViewInit {
 
    /**
     * Filtrage pour des recherches dans une element "select"
-    * @param term 
-    * @param item 
+    * @param term
+    * @param item
     */
    customSearchFn(term: string, item: any) {
       var inTerm = [];

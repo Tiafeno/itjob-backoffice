@@ -12,7 +12,7 @@
             <div class="col-12">
               <div class="alert alert-warning alert-dismissable fade show alert-outline has-icon" *ngIf="warning">
                 <i class="la la-info-circle alert-icon"></i>
-                <strong>Avertissement</strong><br>Veuillez modifier la position du candidat avant d'enregistrer.
+                <strong>Avertissement</strong><br>Veuillez modifier la position de l'offre avant d'enregistrer.
               </div>
               <div class="col-sm-12 mb-4">
                 <div class="form-group">
@@ -20,10 +20,11 @@
                   <select class="form-control" name="position" [value]="position" [(ngModel)]="position" data-style="btn-solid">
                     <option value="0">Aucun</option>
                     <option value="1">A la une</option>
+                    <option value="2">Dans la liste</option>
                   </select>
                 </div>
               </div>
-  
+
               <div class="col-sm-12 mb-4" [ngClass]="{'d-none': position == 0}">
                 <div class="form-group">
                   <label>Date limite</label>
@@ -33,16 +34,16 @@
                       autocomplete="off" required>
                   </div>
                   <div class="mt-2 font-12">
-                      <small class="float-right badge badge-info ml-1 ml-2"><i class="ti-alarm-clock"></i> 
-                    {{ dateLimit | momendate:'LLLL' }}
+                    <small *ngIf="dateLimit" class="float-right badge badge-info ml-1 ml-2"><i class="ti-alarm-clock"></i>
+                      {{ dateLimit | momendate:'LLLL' }}
                     </small>
                   </div>
                 </div>
               </div>
-  
+
             </div>
           </div>
-  
+
         </div>
         <div class="modal-footer justify-content-between bg-primary-50">
           <div>
@@ -54,4 +55,3 @@
       </form>
     </div>
   </div>
-  

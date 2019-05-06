@@ -1,26 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import WPAPI from 'wpapi';
+import * as WPAPI from 'wpapi';
 import swal from 'sweetalert2';
-import { Helpers } from '../../helpers';
-import { config } from '../../../environments/environment';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { HttpClient } from '@angular/common/http';
-import { NgForm } from '@angular/forms';
+import {Helpers} from '../../helpers';
+import {config} from '../../../environments/environment';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
+import {HttpClient} from '@angular/common/http';
+import {NgForm} from '@angular/forms';
+import {FormationNewComponent} from "./formation-new/formation-new.component";
+
 declare var $: any;
 
 @Component({
   selector: 'app-formations',
   templateUrl: './formations.component.html',
-  styleUrls: ['./formations.component.css']
+  styleUrls: ['./formations.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class FormationsComponent implements OnInit {
   public table: any;
   public loading: boolean = false;
   public WPEndpoint: any;
+
   public Feature: any = {};
+  public Payment: any = {};
+  public Offers : any = {};
+
+  @ViewChild(FormationNewComponent) public NewFormation: FormationNewComponent;
+
   constructor(
     private router: Router,
     private Http: HttpClient,
@@ -30,28 +39,46 @@ export class FormationsComponent implements OnInit {
       endpoint: config.apiEndpoint,
     });
     let currentUser = this.authService.getCurrentUser();
-    this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
+    this.WPEndpoint.setHeaders({Authorization: `Bearer ${currentUser.token}`});
     var namespace = 'wp/v2'; // use the WP API namespace
-    var route = '/formation/(?P<id>)'; // route string - allows optional ID parameter
+    var route = '/formation/(?P<id>\\d+)'; // route string - allows optional ID parameter
     this.WPEndpoint.formation = this.WPEndpoint.registerRoute(namespace, route);
   }
 
   public reload(): void {
     this.table.ajax.reload(null, false);
   }
-
+  public newFormation(): void {
+    this.NewFormation.openModal();
+  }
   public onSaveFeatured(Form: NgForm): void {
     if (Form.valid) {
       this.loading = true;
       let value: any = Form.value;
       this.WPEndpoint.formation().id(value.ID).update({
-        featured: value.position,
+        featured: parseInt(value.position) ? 1 : 0,
+        featured_position: parseInt(value.position),
         featured_datelimit: value.position ? value.featured_datelimit : ''
       }).then(resp => {
         this.loading = false;
         this.reload();
         $('#edit-featured-formation-modal').modal('hide');
-      })
+      });
+    }
+  }
+  public onUpdatePayment(Form: NgForm): void {
+    Helpers.setLoading(true);
+    this.loading = true;
+    if (Form.valid) {
+      this.WPEndpoint.formation().id(Form.value.ID).update({
+        paid: parseInt(Form.value.paid),
+        tariff: parseInt(Form.value.paid) ? Form.value.tariff : null
+      }).then(resp => {
+        Helpers.setLoading(false);
+        this.loading = false;
+        this.reload();
+        $('#update-formation-payment-modal').modal('hide');
+      });
     }
   }
 
@@ -78,8 +105,8 @@ export class FormationsComponent implements OnInit {
       processing: true,
       serverSide: true,
       columns: [
-        { data: 'ID' },
-        { data: 'reference' },
+        {data: 'ID'},
+        {data: 'reference'},
         {
           data: 'activation', render: (data, type, row) => {
             let status: string = data && row.status === 'publish' ? 'Publier' : (row.status === 'pending' ? "En attente" : "Désactiver");
@@ -87,17 +114,34 @@ export class FormationsComponent implements OnInit {
             return `<span class="badge badge-${style}">${status}</span>`;
           }
         },
-        { data: 'title', render: (data, type, row, meta) => data },
         {
-          data: 'featured', render: data => {
-            let featured: string = data ? 'À LA UNE' : 'AUCUN';
+          data: 'paid', render: (data, type, row, meta) => {
+            let result: string = data ? "TERMINÉE" : 'EN ATTENTE';
+            let __class: string = data ? "" : "state-payment";
+            let style: string = data ? 'blue' : 'warning';
+            return `<span class="badge badge-${style} ${__class}">${result}</span>`;
+
+          }
+        },
+        {data: 'title', render: (data, type, row, meta) => data},
+        {
+          data: 'featured', render: (data, t, r) => {
+            let featured: string = data ? (parseInt(r.featured_position) === 1 ? 'À LA UNE' : 'LA LISTE') : 'AUCUN';
             let style: string = data ? 'blue' : 'secondary';
             return `<span style="cursor: pointer" class="badge update-position badge-${style}">${featured}</span>`;
           }
         },
-        { data: 'establish_name' },
-        { data: 'date_limit', render: (data) => { return moment(data).fromNow(); } },
-        { data: 'date_create', render: (data) => { return moment(data).fromNow(); } },
+        {data: 'establish_name'},
+        {
+          data: 'date_limit', render: (data) => {
+            return moment(data).fromNow();
+          }
+        },
+        {
+          data: 'date_create', render: (data) => {
+            return moment(data).fromNow();
+          }
+        },
         {
           data: 'region', render: (data) => {
             if (_.isNull(data) || _.isEmpty(data)) return 'Non renseigner';
@@ -148,14 +192,37 @@ export class FormationsComponent implements OnInit {
     });
 
     $('#formation-table tbody')
+      .on('click', '.state-payment', e => {
+        e.preventDefault();
+        // Réfuser l'accès au commercial d'utiliser cette fonctionnalité
+        if (!this.authService.notUserAccess("contributor")) return;
+        if (!this.authService.notUserAccess("editor")) return;
+
+        Helpers.setLoading(true);
+        let __formation = getElementData(e);
+        this.Payment.paid = __formation.paid;
+        this.Payment.formation_id = __formation.ID;
+        this.Payment.tariff = _.isEmpty(__formation.tariff) || _.isNull(__formation.tariff) ? '' : __formation.tariff;
+        this.Http.get(`${config.api}/options`, {responseType: 'json'}).subscribe(options => {
+          let products: any = _.cloneDeep(options);
+          this.Offers = _.clone(products.pub.formation);
+          Helpers.setLoading(false);
+          $('#update-formation-payment-modal').modal('show');
+        });
+
+      })
       .on('click', '.update-position', e => {
         e.preventDefault();
+        // Réfuser l'accès au commercial d'utiliser cette fonctionnalité
+        if (!this.authService.notUserAccess("contributor")) return;
+        if (!this.authService.notUserAccess("editor")) return;
+
         let __formation: any = getElementData(e);
         this.Feature = _.clone(__formation);
         this.Feature.featured = __formation.featured ? 1 : 0;
         $('#edit-featured-formation-modal').modal('show');
       })
-      .on('click', '.edit-formation', (e) => {
+      .on('click', '.edit-formation', e => {
         e.preventDefault();
         //if (!this.authService.notUserAccess("editor")) return;
         let data = $(e.currentTarget).data();
@@ -178,7 +245,7 @@ export class FormationsComponent implements OnInit {
         }).then((result) => {
           if (result.value) {
             Helpers.setLoading(true);
-            this.WPEndpoint.formation().id(__formation.ID).delete({ force: true })
+            this.WPEndpoint.formation().id(__formation.ID).delete({force: true})
               .then(
                 resp => {
                   swal('Succès', "La formation a bien été effacer avec succès", 'success');
@@ -194,7 +261,7 @@ export class FormationsComponent implements OnInit {
           } else if (result.dismiss === swal.DismissReason.cancel) {
 
           }
-        })
+        });
       })
       .on('click', '.status-formation', e => {
         e.preventDefault();
@@ -219,7 +286,7 @@ export class FormationsComponent implements OnInit {
           if (result.value) {
             Helpers.setLoading(true);
             let activated: number = status ? 1 : 0;
-            this.Http.get(`${config.itApi}/formation/${__formation.ID}?ref=activated&status=${activated}`, { responseType: 'json' })
+            this.Http.get(`${config.itApi}/formation/${__formation.ID}?ref=activated&status=${activated}`, {responseType: 'json'})
               .subscribe(resp => {
                 Helpers.setLoading(false);
                 let response: any = resp;
@@ -227,50 +294,49 @@ export class FormationsComponent implements OnInit {
                   swal('Succès', "Action effectuer avec succès", 'info');
                   this.reload();
                 }
-              })
+              });
             // For more information about handling dismissals please visit
             // https://sweetalert2.github.io/#handling-dismissals
           } else if (result.dismiss === swal.DismissReason.cancel) {
 
           }
-        })
+        });
       });
 
-    $('#daterange')
-      .daterangepicker({
-        locale: {
-          format: 'DD/MM/YYYY',
-          "applyLabel": "Confirmer",
-          "cancelLabel": "Annuler",
-          "fromLabel": "De",
-          "toLabel": "A",
-          "customRangeLabel": "Aléatoire",
-          "daysOfWeek": [
-            "Dim",
-            "Lun",
-            "Mar",
-            "Mer",
-            "Jeu",
-            "Ven",
-            "San"
-          ],
-          "monthNames": [
-            "Janvier",
-            "Février",
-            "Mars",
-            "Avril",
-            "Mai",
-            "Juin",
-            "Juillet",
-            "Août",
-            "Septembre",
-            "Octobre",
-            "Novembre",
-            "Décembre"
-          ],
-          "firstDay": 1
-        }
-      })
+    $('#daterange').daterangepicker({
+      locale: {
+        format: 'DD/MM/YYYY',
+        "applyLabel": "Confirmer",
+        "cancelLabel": "Annuler",
+        "fromLabel": "De",
+        "toLabel": "A",
+        "customRangeLabel": "Aléatoire",
+        "daysOfWeek": [
+          "Dim",
+          "Lun",
+          "Mar",
+          "Mer",
+          "Jeu",
+          "Ven",
+          "San"
+        ],
+        "monthNames": [
+          "Janvier",
+          "Février",
+          "Mars",
+          "Avril",
+          "Mai",
+          "Juin",
+          "Juillet",
+          "Août",
+          "Septembre",
+          "Octobre",
+          "Novembre",
+          "Décembre"
+        ],
+        "firstDay": 1
+      }
+    });
   }
 
   onChoosed(ev: any): void {

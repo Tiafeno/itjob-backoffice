@@ -1,4 +1,5 @@
 <div class="page-content fade-in-up">
+  <app-formation-new (refresh)="reload()"></app-formation-new>
   <div class="ibox">
     <div class="ibox-body">
       <h5 class="font-strong mb-4">LES FORMATIONS</h5>
@@ -19,7 +20,12 @@
               <option value="0">Standard</option>
             </select>
           </div>
-          <app-activity-area [title]="'secteurs d\'activités'" class="col-md-4 mb-2 mb-sm-0" (choosed)="onChoosed($event)"></app-activity-area>
+          <div class="col-md-4 form-group mb-2 mb-sm-0">
+            <div class="input-group-icon input-group-icon-left mr-3">
+              <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
+              <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-4 form-check mb-2 mb-sm-0">
@@ -28,18 +34,16 @@
               <input class="form-control form-control-solid" id="key-search" type="text" placeholder="Rechercher ...">
             </div>
           </div>
-          <div class="col-md-4 form-group mb-2 mb-sm-0">
-            <div class="input-group-icon input-group-icon-left mr-3">
-              <span class="input-icon input-icon-right font-16"><i class="fa fa-calendar"></i></span>
-              <input class="form-control" id="daterange" autocomplete="off" type="text" value="">
-            </div>
-          </div>
           <div class="col-md-4">
-            <button type="button" (click)="onResetSearch()" class="btn btn-sm btn-info">Reinitialiser les filtres</button>
+            <button type="button" (click)="onResetSearch()" class="btn btn-sm btn-primary">Reinitialiser</button>
           </div>
         </div>
       </form>
-
+      <div class="flexbox mb-4">
+        <div class="flexbox">
+          <button (click)="newFormation()" class="btn btn-outline-warning">Ajouter une formation</button>
+        </div>
+      </div>
       <div class="table-responsive row">
         <table class="table table-bordered table-hover" id="formation-table">
           <thead class="thead-default thead-lg">
@@ -47,6 +51,7 @@
               <th>#</th>
               <th>Réference</th>
               <th>Statut</th>
+              <th>Etat de paiement</th>
               <th>Formation</th>
               <th>Position</th>
               <th>Nom de l'établissement</th>
@@ -74,10 +79,6 @@
       <div class="modal-body p-4">
         <div class="row">
           <div class="col-12">
-            <div class="col-sm-12 mb-2">
-              <h4>{{ Feature.title }}</h4>
-            </div>
-
             <div class="col-sm-12 mb-4">
               <div class="form-group">
                 <label>Position</label>
@@ -85,6 +86,7 @@
                   data-style="btn-solid">
                   <option value="0">Aucun</option>
                   <option value="1">A la une</option>
+                  <option value="2">La liste</option>
                 </select>
               </div>
             </div>
@@ -94,11 +96,11 @@
                 <label>Date limite</label>
                 <div class="input-group date">
                   <span class="input-group-addon bg-white"><i class="fa fa-calendar"></i></span>
-                  <input class="form-control" appDatepicker [format]="'yyyy-mm-dd hh:ii:ss'" [minView]="0" readonly="readonly"
+                  <input class="form-control" appDatepicker [position]="'botton-left'" [format]="'yyyy-mm-dd hh:ii:ss'" [minView]="0" readonly="readonly"
                     name="featured_datelimit" type="text" [value]="Feature.featured_datelimit" [(ngModel)]="Feature.featured_datelimit"
                     placeholder="Date limite" autocomplete="off" required>
                 </div>
-                <div class="mt-2 font-12">
+                <div class="mt-2 font-12" *ngIf="Feature.featured_datelimit">
                   <small class="float-right badge badge-info ml-1 ml-2"><i class="ti-alarm-clock"></i>
                     {{ Feature.featured_datelimit | momendate:'LLLL' }}
                   </small>
@@ -115,6 +117,62 @@
         <div>
           <button class="btn btn-primary mr-2" type="submit" [disabled]="loading">
             <span>Enregistrer</span>
+          </button>
+          <button class="btn btn-default" data-dismiss="modal" type="button" [disabled]="loading">
+            <span>Annuler</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="update-formation-payment-modal">
+  <div class="modal-dialog" role="document">
+    <form #paymentForm="ngForm" class="modal-content" (ngSubmit)="onUpdatePayment( paymentForm )">
+      <div class="modal-header p-4">
+        <h5 class="modal-title">Modification</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="col-sm-12 mb-4">
+              <div class="form-group">
+                <label>Etat de paiement:</label>
+                <select class="form-control" name="paid" [value]="Payment.paid" [(ngModel)]="Payment.paid"
+                        data-style="btn-solid">
+                  <option value="0">EN ATTENTE</option>
+                  <option value="1">TERMINEE</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-12 mb-4" *ngIf="Payment.paid == 1">
+              <div class="form-group">
+                <label>Offre:</label>
+                <select class="form-control" name="tariff" [value]="Payment.tariff" [(ngModel)]="Payment.tariff"
+                        data-style="btn-solid" required="required">
+                  <option value="">Selectionner une offre</option>
+                  <option [value]="offer._id" *ngFor="let offer of Offers">OFFRE ({{offer._p}} MGA HT)</option>
+                </select>
+              </div>
+            </div>
+
+            <input type="hidden" [(ngModel)]="Payment.formation_id" name="ID">
+          </div>
+          <div class="col-12">
+            <p class="text-muted ml-2 font-11">Cette option termine automatiquement une commande après qu'elle a été payée et traitée. Sélectionnez cette
+              fonctionnalité si vous souhaitez terminer ou mettre en attente manuellement toutes le commande.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between bg-primary-50">
+        <div></div>
+        <div>
+          <button class="btn btn-primary mr-2" type="submit" [disabled]="loading">
+            <span>Mettre à jour</span>
           </button>
           <button class="btn btn-default" data-dismiss="modal" type="button" [disabled]="loading">
             <span>Annuler</span>

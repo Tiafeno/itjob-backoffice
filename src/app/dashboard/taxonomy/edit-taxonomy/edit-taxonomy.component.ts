@@ -42,7 +42,7 @@ export class EditTaxonomyComponent implements OnInit {
          endpoint: config.apiEndpoint,
       });
       var namespace = 'wp/v2'; // use the WP API namespace
-      var routeCandidate = '/candidate/(?P<id>)'; // route string - allows optional ID parameter
+      var routeCandidate = '/candidate/(?P<id>\\d+)'; // route string - allows optional ID parameter
       this.WPEndpoint.candidate = this.WPEndpoint.registerRoute(namespace, routeCandidate, {
          params: ['software', 'job_sought', 'language']
       });
@@ -52,7 +52,6 @@ export class EditTaxonomyComponent implements OnInit {
       // });
       // yields "myplugin/v1/books?genre[]=19&genre[]=2000"
       // site.books().genre([19, 2000]).toString()
-
       let currentUser = this.authService.getCurrentUser();
       this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` })
    }
@@ -63,7 +62,7 @@ export class EditTaxonomyComponent implements OnInit {
          if (_.isArray(this.term.candidates))
             this.populate(this.term.candidates);
       }
-      
+
       $('#edit-taxonomy-modal').modal('show');
       $('#replace-taxonomy-modal')
          .on('hide.bs.modal', (event) => {
@@ -79,7 +78,7 @@ export class EditTaxonomyComponent implements OnInit {
       if (Form.valid) {
          this.loading = true;
          let Values = Form.value;
-         let formData = new FormData()
+         let formData = new FormData();
          formData.append('term', JSON.stringify(Values));
          this.Http.post(`${config.itApi}/taxonomy/${Values.term_id}/update`, formData)
             .subscribe(
@@ -114,7 +113,7 @@ export class EditTaxonomyComponent implements OnInit {
       if (Rf.valid) {
          this.loading = true;
          let values = Rf.value;
-         let Fm = new FormData()
+         let Fm = new FormData();
          Fm.append('params', JSON.stringify({ by: values.by, taxonomy: values.taxonomy }));
          this.Http.post(`${config.itApi}/taxonomy/${values.needle}/replace`, Fm)
             .subscribe(resp => {
@@ -164,7 +163,7 @@ export class EditTaxonomyComponent implements OnInit {
    public onRemove(Fm: NgForm): void | boolean {
       if (!Fm.valid) return false;
       let modelValue = Fm.value;
-      let formData = new FormData()
+      let formData = new FormData();
       this.loading = true;
       formData.append('term', JSON.stringify({ taxonomy: modelValue.taxonomy }));
       formData.append('notified', _.isUndefined(modelValue.notified) ? false : modelValue.notified);

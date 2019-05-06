@@ -7,6 +7,7 @@ import * as toastr from 'toastr';
 import { AuthService } from './services/auth.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/fromEvent';
+declare var $:any;
 
 @Component({
   selector: 'body',
@@ -17,7 +18,8 @@ import 'rxjs/add/observable/fromEvent';
 
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'ITJobMada';
-  public Notifications: any = [];
+  public Notifications: any = {};
+  public selected: string = 'all';
   public intervalRef: any;
   private online: Observable<string>;
   private offline: Observable<string>;
@@ -29,6 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) {
     this.online = Observable.fromEvent(window, 'online');
     this.offline = Observable.fromEvent(window, 'offline');
+
    }
 
   ngOnInit() {
@@ -48,12 +51,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.Auth.isLogged()) {
           this.intervalRef = setInterval( async () => {
             await this.loadNotification();
-          }, 15000);
+          }, 600000);
           // On online ...
           this.online.subscribe(e => {
             this.intervalRef = setInterval( async () => {
               await this.loadNotification();
-            }, 15000);
+            }, 600000);
             toastr.clear();
             toastr.success('Vous êtes déjà de retour.', 'Connexion');
           });
@@ -68,11 +71,38 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public selectedTab(ev): void {
+    let element = ev.currentTarget;
+    this.selected = $(element).data('type');
+  }
+
   loadNotification(): void {
     this.requestService.collectNotice().subscribe(
       response => {
         if (response.success) {
-          this.Notifications = _.cloneDeep(response.body);
+          this.Notifications.all = _.cloneDeep(response.body);
+          let notices: any = _.clone(response.body);
+          const schemeNoticeCandidate = [1, 4, 7];
+          const schemeNoticeCompany = [2, 9, 10];
+          const schemeNoticeSoftware = [20];
+          const schemeNoticeOffer = [3];
+          this.Notifications.softwares = _.filter(notices, note => {
+            let data: any = note;
+            return _.indexOf(schemeNoticeSoftware, parseInt(data.type)) >= 0;
+          });
+          this.Notifications.candidate = _.filter(notices, note => {
+            let data: any = note;
+            return _.indexOf(schemeNoticeCandidate, parseInt(data.type)) >= 0;
+          });
+          this.Notifications.offers = _.filter(notices, note => {
+            let data: any = note;
+            return _.indexOf(schemeNoticeOffer, parseInt(data.type)) >= 0;
+          });
+          this.Notifications.company = _.filter(notices, note => {
+            let data: any = note;
+            return _.indexOf(schemeNoticeCompany, parseInt(data.type)) >= 0;
+          });
+
         }
       });
   }
