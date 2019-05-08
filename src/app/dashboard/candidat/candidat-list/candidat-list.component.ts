@@ -86,7 +86,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     moment.locale('fr');
     $.fn.dataTable.ext.errMode = 'none';
-    const candidateLists = $('#orders-table');
+    const candidateLists = $('#candidate-table');
     const getElementData = (ev: any): any => {
       let el = $(ev.currentTarget).parents('tr');
       let DATA = this.table.row(el).data();
@@ -132,14 +132,18 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         ],
         columnDefs: [
           { width: "15%", targets: 7 },
-       ],
+        ],
         dom: '<"top"i><"info"r>t<"bottom"flp><"clear">',
         processing: true,
         page: 2,
         serverSide: true,
         columns: [
           { data: 'ID' },
-          { data: 'reference' },
+          {
+            data: 'reference', render: (data) => {
+              return `<span class="reference badge badge-secondary" style="cursor: pointer">${data}</span>`
+            }
+          },
           {
             data: 'privateInformations.firstname'
           },
@@ -213,6 +217,13 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             this.sPosition = e.currentTarget.value;
             this.createSearch();
           });
+
+          $('#candidate-table tbody').on('click', '.reference', e => {
+            e.preventDefault();
+            let __candidate = getElementData(e);
+            let origin: string = document.location.origin;
+            window.open(`${origin}/candidate/${__candidate.ID}/edit`, '_blank');
+          })
         },
         ajax: {
           url: `${config.itApi}/candidate/`,
@@ -245,7 +256,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
         this.selected = 0;
       });
 
-    $('#orders-table tbody')
+    $('#candidate-table tbody')
       // Modifier le candidat
       .on('click', '.edit-candidate', e => {
         e.preventDefault();
@@ -289,7 +300,7 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
           if (result.value) {
             Helpers.setLoading(true);
             let author: any = __candidate.privateInformations.author;
-            this.wp.users().id(author.ID).delete({force: true, reassign: 0}).then(
+            this.wp.users().id(author.ID).delete({ force: true, reassign: 0 }).then(
               resp => {
                 swal('succès', "CV supprimer avec succès", 'success');
                 this.reloadDatatable();

@@ -4,7 +4,7 @@
       <div class="row mb-4">
         <div class="col-4">
           <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/candidat-lists']">Retour</a>
-          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Visualiser
+          <a class="btn btn-secondary btn-sm mr-2" target="_blank" *ngIf="editor.Form.State !== 'pending'" [href]="Candidate.candidate_url">Visualiser
           </a>
         </div>
       </div>
