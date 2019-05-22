@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import * as moment from "moment";
 import * as WPAPI from 'wpapi';

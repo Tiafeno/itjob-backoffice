@@ -56,6 +56,7 @@ import { WorkEditComponent } from './work-temporary/work-edit/work-edit.componen
 import { SmallAdEditComponent } from './small-ad/small-ad-edit/small-ad-edit.component';
 import { AdsComponent } from './ads/ads.component';
 import {WalletComponent} from "../directives/wallet/wallet.component";
+import { PaiementHistoryComponent } from './paiement-history/paiement-history.component';
 
 @NgModule({
   imports: [
@@ -118,7 +119,8 @@ import {WalletComponent} from "../directives/wallet/wallet.component";
     WorkEditComponent,
     SmallAdEditComponent,
     AdsComponent,
-    WalletComponent
+    WalletComponent,
+    PaiementHistoryComponent
   ],
   providers: [
     {

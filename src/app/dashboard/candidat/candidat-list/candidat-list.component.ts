@@ -158,8 +158,8 @@ export class CandidatListComponent implements OnInit, AfterViewInit {
             }
           },
           {
-            data: 'featured', render: (data) => {
-              let value: string = data ? 'à la une' : 'AUCUN';
+            data: 'featured', render: (data, type, row) => {
+              let value: string = data ? (row.featuredPosition === 1 ? 'à la une' : 'dans la liste') : 'AUCUN';
               let style: string = data ? 'primary' : 'secondary';
               return `<span class="badge update-featured badge-${style} text-uppercase">${value}</span>`;
             }
