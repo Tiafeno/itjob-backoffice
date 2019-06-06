@@ -44,6 +44,9 @@ export class PaiementHistoryComponent implements OnInit {
         {data: 'line_items', render: (data) => {
           return data[0].name;
         }},
+        {data: 'line_items', render: (data) => {
+          return data[0].sku;
+        }},
         {data: 'payment_method_title', render: (data) => {
           return data;
         }},
