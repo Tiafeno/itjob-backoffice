@@ -284,8 +284,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
             beforeSend: function (xhr) {
               let currentUser = JSON.parse(localStorage.getItem('currentUser'));
               if (currentUser && currentUser.token) {
-                xhr.setRequestHeader("Authorization",
-                  `Bearer ${currentUser.token}`);
+                xhr.setRequestHeader("Authorization", `Bearer ${currentUser.token}`);
               }
             },
             success: function (response) {
