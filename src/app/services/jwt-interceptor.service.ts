@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import swal from 'sweetalert2';
 import 'rxjs/add/operator/do';
 
 @Injectable()
@@ -24,9 +23,7 @@ export class JwtInterceptorService implements HttpInterceptor {
             //localStorage.removeItem('currentUser');
             //location.reload();
             localStorage.removeItem('currentUser');
-            location.reload();
           }, 2500);
-          swal(err.name, err.message, 'error');
         }
         Observable.throw(err); // send data to service which will inform the component of the error and in turn the user
       }

@@ -14,14 +14,14 @@ declare var $: any;
 export class LoginComponent implements OnInit {
    public error: boolean = false;
    public submitted: boolean = false;
-   public form: FormGroup;
+   public Form: FormGroup;
    public loading: boolean = false;
    constructor(
       private authService: AuthService,
       private errorService: ErrorService,
       private router: Router
    ) {
-      this.form = new FormGroup({
+      this.Form = new FormGroup({
          email: new FormControl('', Validators.required),
          pwd: new FormControl('', Validators.required),
       });
@@ -32,17 +32,17 @@ export class LoginComponent implements OnInit {
       $('body').addClass('empty-layout');
    }
 
-   get f() { return this.form.controls; }
+   get f() { return this.Form.controls; }
 
    onSubmit() {
       this.error = false;
       this.submitted = true;
       // stop here if form is invalid
-      if (this.form.invalid) {
+      if (this.Form.invalid) {
          return;
       }
       this.loading = true;
-      this.authService.login(this.form.value.email, this.form.value.pwd)
+      this.authService.login(this.Form.value.email, this.Form.value.pwd)
          .pipe(first())
          .subscribe(
             data => {

@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { Helpers } from '../../../helpers';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as WPAPI from 'wpapi';
-import { HttpClient } from '@angular/common/http';
 import { config } from '../../../../environments/environment';
 import { RequestService } from '../../../services/request.service';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
 declare var $: any;
 
 @Component({
@@ -19,11 +19,11 @@ declare var $: any;
 })
 export class FormationEditComponent implements OnInit {
   public ID: number;
+  public subEmailForm: FormGroup;
   public loadingSave: boolean = false;
   public loadingForm: boolean = false;
   public loadingArea: boolean = false;
   public loadingRegion: boolean = false;
-  public loadingSubscription: boolean = false;
   public Formation: any;
   public Subscriptions: Array<any> = [];
   public Editor: any = {};
@@ -43,7 +43,6 @@ export class FormationEditComponent implements OnInit {
     resize: true,
     browser_spellcheck: true,
     min_height: 230,
-    selector: 'textarea',
     toolbar: 'undo redo | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat ',
     plugins: ['lists'],
   };
@@ -52,7 +51,8 @@ export class FormationEditComponent implements OnInit {
     private router: Router,
     private Http: HttpClient,
     private requestServices: RequestService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
   ) {
     this.WPEndpoint = new WPAPI({
       endpoint: config.apiEndpoint,
@@ -60,15 +60,13 @@ export class FormationEditComponent implements OnInit {
     let currentUser = this.authService.getCurrentUser();
     this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
     var namespace = 'wp/v2'; // use the WP API namespace
-    var formationRoute = '/formation/(?P<id>\\+)'; // route string - allows optional ID parameter
+    var formationRoute = '/formation/(?P<id>\\d+)'; // route string - allows optional ID parameter
 
     this.WPEndpoint.formation = this.WPEndpoint.registerRoute(namespace, formationRoute);
-
-    // site.books = site.registerRoute('myplugin/v1', 'books/(?P<id>)', {
-    //    params: ['genre']
-    // });
-    // yields "myplugin/v1/books?genre[]=19&genre[]=2000"
-    // site.books().genre([19, 2000]).toString()
+    this.subEmailForm = new FormGroup({
+      subject: new FormControl('', Validators.required),
+      message: new FormControl('', Validators.required)
+    });
   }
 
   ngOnInit() {
@@ -94,6 +92,11 @@ export class FormationEditComponent implements OnInit {
         Helpers.setLoading(false);
       }
     });
+
+    $('#subscription-email-modal').on('hide.bs.modal', e => {
+      this.subEmailForm.reset();
+      this.cd.detectChanges();
+    });
   }
 
   loadScript(): void {
@@ -108,13 +111,17 @@ export class FormationEditComponent implements OnInit {
     });
   }
 
+  /**
+   * Récuperer les candidats inscrits pour cette formation
+   */
   getSubscription(): void {
-    this.loadingSubscription = true;
+    Helpers.setLoading(true);
     this.Http.get<any>(`${config.itApi}/formation/${this.ID}?ref=subscription`, { responseType: 'json' })
       .subscribe(response => {
         let data: any = response;
         this.Subscriptions = _.cloneDeep(data);
-        this.loadingSubscription = false;
+        this.cd.markForCheck();
+        Helpers.setLoading(false);
       })
   }
 
@@ -134,6 +141,10 @@ export class FormationEditComponent implements OnInit {
     })
   }
 
+  /**
+   * Charger le formulaire de donnée
+   * @param formation 
+   */
   loadForm(formation: any): void {
     this.areaLoadingFn();
     this.regionLoadingFn();
@@ -169,6 +180,11 @@ export class FormationEditComponent implements OnInit {
     return _.every(inTerm, (boolean) => boolean === true);
   }
 
+  /**
+   * Mettre à jour la formation
+   * 
+   * @param Form NgForm
+   */
   onSubmitForm(Form: NgForm): void {
     if (Form.valid) {
       this.loadingSave = true;
@@ -192,8 +208,13 @@ export class FormationEditComponent implements OnInit {
     }
   }
 
-  acceptedUser(Candidate: any, paidValue: number, ev: any): void {
-    this.loadingSubscription = true;
+  /**
+   * 
+   * @param Candidate - Object candidat (Wordpress)
+   * @param paidValue - 1) Accepted, 2) Refused
+   * @param ev - Event
+   */
+  registerUser(Candidate: any, paidValue: number, ev: any): void {
     this.WPEndpoint.formation().id(this.ID).update({
       'registration': [
         {
@@ -204,6 +225,33 @@ export class FormationEditComponent implements OnInit {
     }).then(resp => {
       this.getSubscription();
     })
+  }
+
+  openSubscriptionForm(): void {
+    $('#subscription-email-modal').modal('show');
+  }
+
+  onSendSubscriber(): void {
+    if (this.subEmailForm.valid) {
+      const Value = this.subEmailForm.value;
+      const formData = new FormData();
+      formData.append('subject', Value.subject);
+      formData.append('message', Value.message);
+      Helpers.setLoading(true);
+      this.Http.post<any>(`${config.itApi}/mail/formation/${this.ID}/subscription`, formData).subscribe(resp => {
+        Helpers.setLoading(false);
+        $('#subscription-email-modal').modal('hide');
+        swal(resp.success ? 'Succès' : "Désolé", resp.data, resp.success ? 'success' : 'warning');
+      }, error => {
+        Helpers.setLoading(false);
+        swal('Désolé', "Une erreur s'est produit, Veuillez réessayer plus tard. Merci");
+      });
+    } else {
+      (<any>Object).values(this.subEmailForm.controls).forEach(element => {
+        element.markAsDirty();
+      });
+      console.log(this.subEmailForm);
+    }
   }
 
 }
