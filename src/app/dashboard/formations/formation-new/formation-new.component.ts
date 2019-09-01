@@ -1,15 +1,15 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import * as WPAPI from 'wpapi';
-import {config} from "../../../../environments/environment";
-import {AuthService} from "../../../services/auth.service";
-import {NgForm} from "@angular/forms";
+import { config } from "../../../../environments/environment";
+import { AuthService } from "../../../services/auth.service";
+import { NgForm } from "@angular/forms";
 import * as moment from "moment";
 import swal from "sweetalert2";
-import {RequestService} from "../../../services/request.service";
-import {Observable} from "rxjs";
-import {Helpers} from "../../../helpers";
+import { RequestService } from "../../../services/request.service";
+import { Observable } from "rxjs";
+import { Helpers } from "../../../helpers";
 import * as _ from "lodash";
-declare var $:any;
+declare var $: any;
 @Component({
   selector: 'app-formation-new',
   templateUrl: './formation-new.component.html',
@@ -72,6 +72,7 @@ export class FormationNewComponent implements OnInit {
     });
 
   }
+
   customSearchFn(term: string, item: any) {
     var inTerm = [];
     term = term.toLocaleLowerCase();
@@ -85,7 +86,6 @@ export class FormationNewComponent implements OnInit {
     });
     return _.every(inTerm, (boolean) => boolean === true);
   }
-
 
   public onSaveFormation(Form: NgForm): void {
     if (Form.valid) {
@@ -101,10 +101,10 @@ export class FormationNewComponent implements OnInit {
         featured: 0,
         status: "publish"
       }).then(formation => {
-        let _region = _.clone(this.Formation.region) ;
-        let _area =  _.clone(this.Formation.activity_area);
+        let _region = _.clone(this.Formation.region);
+        let _area = _.clone(this.Formation.activity_area);
 
-        this.WPEndpoint.formation().id( formation.id ).update({
+        this.WPEndpoint.formation().id(formation.id).update({
           reference: `FOM${formation.id}`,
           diploma: this.Formation.diploma,
           address: this.Formation.address,
@@ -112,10 +112,10 @@ export class FormationNewComponent implements OnInit {
           date_limit: moment(dateLimit, "DD/MM/YYYY").format("YYYY-MM-DD"),
           duration: this.Formation.duration,
           establish_name: this.Formation.establish,
-          paid: 1,
-          tariff: 'premium',
+          paid: 1, // Actif
+          tariff: 'premium', // 
           tax_values: { region: _region, area: _area }
-        }).then(( response ) => {
+        }).then((response) => {
           $('#new-formation-modal').modal('hide');
           this.loading = false;
           this.Formation = {};

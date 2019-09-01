@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, concat, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { AuthService } from '../../../services/auth.service';
+import swal from 'sweetalert2';
 declare var $: any;
 
 @Component({

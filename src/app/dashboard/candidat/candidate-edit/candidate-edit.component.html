@@ -4,7 +4,7 @@
       <div class="row mb-4">
         <div class="col-4">
           <a class="btn btn-primary btn-sm mr-2" [routerLink]="['/candidat-lists']">Retour</a>
-          <a class="btn btn-secondary btn-sm mr-2" target="_blank" [href]="Candidate.candidate_url">Visualiser
+          <a class="btn btn-secondary btn-sm mr-2" target="_blank" *ngIf="editor.Form.State !== 'pending'" [href]="Candidate.candidate_url">Visualiser
           </a>
         </div>
       </div>
@@ -117,7 +117,7 @@
                 <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
                   <div class="input-group" *ngFor="let cellphone of editor.Form.Cellphones; let i = index">
                     <input class="form-control mb-2" name="{{i}}" [id]="cellphone.id" [(ngModel)]="cellphone.value"
-                      type="text" placeholder="Numére de votre cellulaire" required>
+                      type="text" placeholder="Numére de votre cellulaire">
                     <span class="input-group-btn ml-2">
                       <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
                         title="Enlever ce numero">
