@@ -142,12 +142,12 @@ export class OfferListsComponent implements OnInit {
         },
         {
           data: 'dateLimit', render: (data) => {
-            return moment(data).fromNow();
+            return moment(data, 'YYYYMMDD').format('LLL');
           }
         },
         {
           data: 'date_create', render: (data) => {
-            return moment(data).fromNow();
+            return moment(data).format('LLL');
           }
         },
         {
