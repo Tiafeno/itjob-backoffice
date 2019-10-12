@@ -21,6 +21,7 @@ export class RequestFormationsComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private auth: AuthService,
     private Http: HttpClient
   ) { }
 
@@ -99,6 +100,11 @@ export class RequestFormationsComponent implements OnInit {
 
     $('#request-formation-table').on('click', '.status-formation', e => {
       e.preventDefault();
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.auth.notUserAccess("editor")) return;
+      if (!this.auth.notUserAccess("contributor")) return;
+
       let data = $(e.currentTarget).data();
       let status: number = data.status;
       let __formation: any = getElementData(e);
@@ -163,6 +169,10 @@ export class RequestFormationsComponent implements OnInit {
 
     $('#request-formation-table').on('click', '.remove-formation', e => {
       e.preventDefault();
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.auth.notUserAccess("editor")) return;
+      if (!this.auth.notUserAccess("contributor")) return;
+
       let __formation: any = getElementData(e);
       swal({
         title: 'Confirmation',

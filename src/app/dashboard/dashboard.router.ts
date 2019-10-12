@@ -93,10 +93,10 @@ export const DashboardRouter: Route[] = [
       { path: "company-lists", component: CompanyListsComponent },
       { path: "settings", component: SettingsComponent, canActivate: [AdminGuard] },
       { path: 'taxonomy/:term', component: TaxonomyComponent },
-      { path: 'blogs', component: BlogsComponent },
-      { path: 'newsletters', component: NewslettersComponent },
-      { path: 'ads', component: AdsComponent },
-      { path: 'history', component: PaiementHistoryComponent}
+      { path: 'blogs', canActivate: [AdminGuard], component: BlogsComponent },
+      { path: 'newsletters', canActivate: [AdminGuard], component: NewslettersComponent },
+      { path: 'ads', canActivate: [AdminGuard], component: AdsComponent },
+      { path: 'history', canActivate: [AdminGuard], component: PaiementHistoryComponent}
     ]
   },
 ]

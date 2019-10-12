@@ -1,13 +1,13 @@
-import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {HttpClient} from "@angular/common/http";
+import { AfterViewInit, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AuthService } from "../../services/auth.service";
+import { HttpClient } from "@angular/common/http";
 import * as moment from "moment";
 import * as WPAPI from 'wpapi';
 import * as _ from 'lodash';
-import {config} from "../../../environments/environment";
-import {NgForm} from "@angular/forms";
+import { config } from "../../../environments/environment";
+import { NgForm } from "@angular/forms";
 import * as toastr from 'toastr';
-import {Helpers} from "../../helpers";
+import { Helpers } from "../../helpers";
 import swal from "sweetalert2";
 
 declare var $: any;
@@ -37,13 +37,13 @@ export class AdsComponent implements OnInit, AfterViewInit {
       endpoint: config.apiEndpoint,
     });
     let currentUser = this.auth.getCurrentUser();
-    this.WPEndpoint.setHeaders({Authorization: `Bearer ${currentUser.token}`});
+    this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
     const top = [
-      {size: '1120x210', label: '1120 x 210'}
+      { size: '1120x210', label: '1120 x 210' }
     ];
     const sidebar = [
-      {size: '354x330', label: '354 x 330'},
-      {size: '354x570', label: '354 x 570 (Large)'}
+      { size: '354x330', label: '354 x 330' },
+      { size: '354x570', label: '354 x 570 (Large)' }
     ];
     this.schemes = [
       {
@@ -218,12 +218,12 @@ export class AdsComponent implements OnInit, AfterViewInit {
       processing: true,
       serverSide: true,
       columns: [
-        {data: 'id_ads'},
-        {data: 'title'},
-        {data: 'start', render: (data) => moment(data).format('LLLL')},
-        {data: 'end', render: (data) => moment(data).format('LLLL')},
-        {data: 'position', render: (data) => data},
-        {data: 'create', render: (data) => moment(data).fromNow()},
+        { data: 'id_ads' },
+        { data: 'title' },
+        { data: 'start', render: (data) => moment(data).format('LLLL') },
+        { data: 'end', render: (data) => moment(data).format('LLLL') },
+        { data: 'position', render: (data) => data },
+        { data: 'create', render: (data) => moment(data).fromNow() },
         {
           data: null,
           render: (data, type, row) => `
@@ -261,7 +261,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
 
     // On select row
     this.table.on('select', (e, dt, type, indexes) => {
-      let data = dt.row({selected: true}).data();
+      let data = dt.row({ selected: true }).data();
       this.Editor = _.clone(data);
       Helpers.setLoading(true);
       this.WPEndpoint.media().id(parseInt(data.id_attachment)).then(resp => {
@@ -287,6 +287,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
       // Réfuser l'accès au commercial de modifier cette option
       if (!this.auth.notUserAccess("contributor")) return;
       if (!this.auth.notUserAccess("editor")) return;
+
       swal({
         title: 'Confirmation',
         html: `Vous voulez vraiment supprimer la publicité ?<br> <b>${__ads.title}</b>`,
@@ -297,7 +298,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
       }).then((result) => {
         if (result.value) {
           Helpers.setLoading(true);
-          this.Http.delete(`${config.itApi}/ads/${__ads.id_ads}`, {responseType: 'json'})
+          this.Http.delete(`${config.itApi}/ads/${__ads.id_ads}`, { responseType: 'json' })
             .subscribe(resp => {
               if (resp) {
                 swal('Succès', "Publicité effacer avec succès", 'info');
@@ -331,6 +332,12 @@ export class AdsComponent implements OnInit, AfterViewInit {
   }
 
   public onNewAds(Form: NgForm): void {
+
+    // Réfuser l'accès au commercial de modifier cette option
+    if (!this.auth.notUserAccess("editor")) return;
+    if (!this.auth.notUserAccess("contributor")) return;
+
+
     if (!Form.valid) {
       toastr.error('La formulaire est invalid');
     }
@@ -340,7 +347,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
       let fileElement: any = document.querySelector('#new-event-file');
       const fileUpload = fileElement.files[0];
       this.WPEndpoint.media()
-      // Specify a path to the file you want to upload, or a Buffer
+        // Specify a path to the file you want to upload, or a Buffer
         .file(fileUpload)
         .create({
           title: value.link, // Ajouter le lien dans le titre
@@ -382,6 +389,11 @@ export class AdsComponent implements OnInit, AfterViewInit {
   }
 
   public onEditAds(Form: NgForm): void {
+
+    // Réfuser l'accès au commercial de modifier cette option
+    if (!this.auth.notUserAccess("editor")) return;
+    if (!this.auth.notUserAccess("contributor")) return;
+
     if (Form.valid) {
       const data: any = Form.value;
       this.loading = true;
@@ -405,6 +417,11 @@ export class AdsComponent implements OnInit, AfterViewInit {
   }
 
   private updateAds(Data: any): void {
+
+    // Réfuser l'accès au commercial de modifier cette option
+    if (!this.auth.notUserAccess("editor")) return;
+    if (!this.auth.notUserAccess("contributor")) return;
+
     if (!_.isEmpty(Data)) {
       const ads: any = Data;
       let args = {

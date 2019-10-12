@@ -101,6 +101,7 @@ export class PublicityComponent implements OnInit, AfterViewInit {
   }
 
   loadCalendar(): void {
+    const self = this;
     var CalendarApp = function () {
       this.$body = $("body");
       this.$calendar = $('#calendar');
@@ -126,8 +127,12 @@ export class PublicityComponent implements OnInit, AfterViewInit {
 
     // Update event
     CalendarApp.prototype.updateEvent = function (calEvent, revertFunc) {
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!self.authService.notUserAccess("editor")) return;
+      if (!self.authService.notUserAccess("contributor")) return;
+
       // The same can be done for eventDrop and eventResize
-      console.log(calEvent);
       var $this = this;
       $this.$eventModal.modal();
       // fill in the values
@@ -202,6 +207,8 @@ export class PublicityComponent implements OnInit, AfterViewInit {
             }
           });
 
+        } else {
+          toastr.error('Formulaire invalide');
         }
       });
     }
@@ -370,6 +377,11 @@ export class PublicityComponent implements OnInit, AfterViewInit {
     var companyId: any = 0;
     $('#newEventForm').submit((event) => {
       event.preventDefault();
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!self.authService.notUserAccess("editor")) return;
+      if (!self.authService.notUserAccess("contributor")) return;
+
       if ($(event.currentTarget).valid()) {
         var fileElement: any = document.querySelector('#new-event-file');
         var fileUpload = fileElement.files[0];

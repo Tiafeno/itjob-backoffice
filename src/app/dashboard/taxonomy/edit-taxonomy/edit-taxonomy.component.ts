@@ -162,6 +162,11 @@ export class EditTaxonomyComponent implements OnInit {
    }
 
    public onRemove(Fm: NgForm): void | boolean {
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.authService.notUserAccess("editor")) return;
+      if (!this.authService.notUserAccess("contributor")) return;
+
       if (!Fm.valid) return false;
       let modelValue = Fm.value;
       let formData = new FormData();

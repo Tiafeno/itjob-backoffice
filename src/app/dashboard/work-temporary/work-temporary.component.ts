@@ -6,6 +6,7 @@ import * as moment from "moment";
 import {config} from "../../../environments/environment";
 import * as _ from "lodash";
 import {Router} from "@angular/router";
+import { AuthService } from 'src/app/services/auth.service';
 declare var $:any;
 
 @Component({
@@ -17,6 +18,7 @@ export class WorkTemporaryComponent implements OnInit {
   public table: any;
   constructor(
     private Http: HttpClient,
+    private auth: AuthService,
     private router: Router
   ) { }
 
@@ -97,6 +99,11 @@ export class WorkTemporaryComponent implements OnInit {
 
     $('#works-table').on('click', '.status-work', e => {
       e.preventDefault();
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.auth.notUserAccess("editor")) return;
+      if (!this.auth.notUserAccess("contributor")) return;
+
       let data = $(e.currentTarget).data();
       let status: number = data.status;
       let __works: any = getElementData(e);
@@ -138,6 +145,11 @@ export class WorkTemporaryComponent implements OnInit {
 
     $('#works-table').on('click', '.remove-work', e => {
       e.preventDefault();
+      
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.auth.notUserAccess("editor")) return;
+      if (!this.auth.notUserAccess("contributor")) return;
+
       let __works: any = getElementData(e);
       swal({
         title: 'Confirmation',
