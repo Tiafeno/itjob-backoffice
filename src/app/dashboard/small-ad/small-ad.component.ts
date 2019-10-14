@@ -6,7 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import swal from "sweetalert2";
 import * as _ from "lodash";
 import {Router} from "@angular/router";
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 declare var $:any;
 
 @Component({
