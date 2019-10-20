@@ -36,42 +36,42 @@ export class PublicityComponent implements OnInit, AfterViewInit {
     this.schemes = [
       {
         position: 'position-1',
-        name: 'Home Top (position-1)',
+        name: 'HOME Top (position-1)',
         sizes: _.clone(top)
       },
       {
         position: 'position-2',
-        name: 'Home Side Right (position-2)',
+        name: 'HOME Side Right (position-2)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-3',
-        name: 'Archive CV Top (position-3)',
+        name: 'HOME CV Top (position-3)',
         sizes: _.clone(top)
       },
       {
         position: 'position-4',
-        name: 'Archive CV Side Right (position-4)',
+        name: 'HOME CV Side Right (position-4)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-5',
-        name: 'Archive Offer Top (position-5)',
+        name: 'HOME Offer Top (position-5)',
         sizes: _.clone(top)
       },
       {
         position: 'position-6',
-        name: 'Archive Offer Side Right (position-6)',
+        name: 'HOME Offer Side Right (position-6)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-7',
-        name: 'Single Offer (position-7)',
+        name: 'Detail Offer (position-7)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-8',
-        name: 'Single CV (position-8)',
+        name: 'Detail CV (position-8)',
         sizes: _.clone(sidebar)
       },
       {

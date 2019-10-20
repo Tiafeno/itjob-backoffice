@@ -48,102 +48,102 @@ export class AdsComponent implements OnInit, AfterViewInit {
     this.schemes = [
       {
         position: 'position-1',
-        name: 'Home Top (position-1)',
+        name: 'Accueil en haut (position-1)',
         sizes: _.clone(top)
       },
       {
         position: 'position-2',
-        name: 'Home Side Right (position-2)',
+        name: 'Accueil côté droit (position-2)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-3',
-        name: 'Archive CV Top (position-3)',
+        name: 'Page CV en haut (position-3)',
         sizes: _.clone(top)
       },
       {
         position: 'position-4',
-        name: 'Archive CV Side Right (position-4)',
+        name: 'Page CV côté droit (position-4)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-5',
-        name: 'Archive Offer Top (position-5)',
+        name: 'Page offre en haut (position-5)',
         sizes: _.clone(top)
       },
       {
         position: 'position-6',
-        name: 'Archive Offer Side Right (position-6)',
+        name: 'Page offre côté droit (position-6)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-7',
-        name: 'Single Offer (position-7)',
+        name: ' Offre en aperçu (position-7)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-8',
-        name: 'Single CV (position-8)',
+        name: 'CV en aperçu (position-8)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-9',
-        name: 'Inscription Particular (position-9)',
+        name: 'Inscription particulier (position-9)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-10',
-        name: 'Inscription Professional (position-10)',
+        name: 'Inscription professionnel (position-10)',
         sizes: _.clone(sidebar)
       },
-      {
-        position: 'position-11',
-        name: 'Search Side Right (position-11)',
-        sizes: _.clone(sidebar)
-      },
+      // {
+      //   position: 'position-11',
+      //   name: 'Search Side Right (position-11)',
+      //   sizes: _.clone(sidebar)
+      // },
       {
         position: 'position-12',
-        name: 'Archive Travail Temporaire Top (position-12)',
+        name: 'Page Travail Temp. en haut (position-12)',
         sizes: _.clone(top)
       },
       {
         position: 'position-13',
-        name: 'Archive Travail Temporaire Side Right (position-13)',
+        name: 'Page Travail Temp. côté droit (position-13)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-14',
-        name: 'Single Travail Temporaire Side Right (position-14)',
+        name: 'Travail Temp. en aperçu (position-14)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-15',
-        name: 'Archive Formation Top (position-15)',
+        name: 'Page Formation en haut (position-15)',
         sizes: _.clone(top)
       },
       {
         position: 'position-16',
-        name: 'Archive Formation Side Right (position-16)',
+        name: 'Page Formation côté droit (position-16)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-17',
-        name: 'Single Formation Side Right (position-17)',
+        name: 'Formation en aperçu (position-17)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-18',
-        name: 'Archive Annonce Top (position-18)',
+        name: 'Page Annonce en haut (position-18)',
         sizes: _.clone(top)
       },
       {
         position: 'position-19',
-        name: 'Archive Annonce Side Right (position-19)',
+        name: 'Page Annonce côté droit (position-19)',
         sizes: _.clone(sidebar)
       },
       {
         position: 'position-20',
-        name: 'Single Annonce Side Right (position-20)',
+        name: 'Annonce en aperçu (position-20)',
         sizes: _.clone(sidebar)
       },
     ];
@@ -339,7 +339,7 @@ export class AdsComponent implements OnInit, AfterViewInit {
 
 
     if (!Form.valid) {
-      toastr.error('La formulaire est invalid');
+      toastr.error('Le formulaire est invalide');
     }
     else {
       this.loading = true;
