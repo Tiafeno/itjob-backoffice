@@ -41,7 +41,7 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
     this.position = _.isNull(offer.featuredPosition) ? 0 : offer.featuredPosition;
     this.currentPosition = offer.featuredPosition;
     if (this.currentPosition && !_.isNull(offer.featuredDateLimit)) {
-      this.dateLimit = moment(offer.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
+      this.dateLimit = moment.unix(offer.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
     }
     this.postId = offer.ID;
     $('#edit-featured-offer-modal').modal('show');
