@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import swal from "sweetalert2";
 import * as _ from "lodash";
 import {Router} from "@angular/router";
+import { AuthService } from '../../services/auth.service';
 declare var $:any;
 
 @Component({
@@ -17,6 +18,7 @@ export class SmallAdComponent implements OnInit {
   public table: any;
   constructor(
     private Http: HttpClient,
+    private authService: AuthService,
     private router: Router
   ) {
 
@@ -99,6 +101,11 @@ export class SmallAdComponent implements OnInit {
 
     $('#small-ad-table').on('click', '.status-ad', e => {
       e.preventDefault();
+
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.authService.notUserAccess("editor")) return;
+      if (!this.authService.notUserAccess("contributor")) return;
+
       let data = $(e.currentTarget).data();
       let status: number = data.status;
       let __smallAd: any = getElementData(e);
@@ -139,6 +146,11 @@ export class SmallAdComponent implements OnInit {
 
     $('#small-ad-table').on('click', '.remove-ad', e => {
       e.preventDefault();
+      
+      // Réfuser l'accès au commercial de modifier cette option
+      if (!this.authService.notUserAccess("editor")) return;
+      if (!this.authService.notUserAccess("contributor")) return;
+
       let __smallAd: any = getElementData(e);
       swal({
         title: 'Confirmation',

@@ -37,13 +37,13 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">NIF </label>
             <input class="form-control form-control-solid" name="nif" [(ngModel)]="editor.nif" type="text" placeholder="NIF"
-              autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+              autocomplete="off" >
           </div>
 
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Numéro statistique </label>
             <input class="form-control form-control-solid" name="stat" [(ngModel)]="editor.stat" type="text"
-              placeholder="Numéro statistique" autocomplete="off" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+              placeholder="Numéro statistique" autocomplete="off" >
           </div>
         </div>
 
@@ -60,7 +60,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Nom & Prénom du résponsable</label>
             <input class="form-control form-control-solid" autocomplete="off" name="name" [(ngModel)]="editor.name"
-              type="text" placeholder="Nom du résponsable" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" required>
+              type="text" placeholder="Nom du résponsable" required>
           </div>
         </div>
 
@@ -68,7 +68,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Téléphone Fix</label>
             <input class="form-control form-control-solid" name="phone" [(ngModel)]="editor.phone" type="text"
-                   placeholder="Numero fixe" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" autocomplete="off">
+                   placeholder="Numero fixe" autocomplete="off">
           </div>
         </div>
 
@@ -79,7 +79,7 @@
             <div class="mb-2" ngModelGroup="cellphones" #cellphonesCtrl="ngModelGroup">
               <div class="input-group" *ngFor="let cellphone of editor.cellphones; let i = index">
                 <input class="form-control mb-2" name="{{i}}" [(ngModel)]="cellphone.value" type="text"
-                placeholder="Numére de votre cellulaire" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+                placeholder="Numére de votre cellulaire" >
                 <span class="input-group-btn ml-2">
                   <button class="btn btn-warning btn-icon-only btn-circle btn-sm" (click)="onRemoveCellphone(cellphone.id)"
                     title="Enlever ce numero">
@@ -99,7 +99,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse email</label>
             <input class="form-control form-control-solid" autocomplete="off" name="email" [disabled]="true"
-              [(ngModel)]="editor.email" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" type="text" placeholder="Addresse email de l'entreprise" required>
+              [(ngModel)]="editor.email" type="text" placeholder="Addresse email de l'entreprise" required>
           </div>
         </div>
 
@@ -107,7 +107,7 @@
           <div class="col-sm-6 form-group mb-4">
             <label class="font-bold">Adresse</label>
             <input class="form-control form-control-solid" name="address" [(ngModel)]="editor.address" type="text"
-              placeholder="Adresse de l'entreprise" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}" autocomplete="off" required>
+              placeholder="Adresse de l'entreprise"  autocomplete="off" required>
           </div>
 
           <div class="col-sm-6 form-group mb-4">

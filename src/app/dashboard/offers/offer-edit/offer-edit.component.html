@@ -141,36 +141,36 @@
         <div class="col-lg-5">
           <div class="ibox">
             <div class="ibox-body">
-              <h5 class="font-strong mb-4" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+              <h5 class="font-strong mb-4" >
                 <span>{{Offer.__info.title}}</span>
               </h5>
               <div class="row align-items-center mb-3">
                 <div class="col-4 text-light">Nom du responsable</div>
-                <div class="col-8" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+                <div class="col-8" >
                   <span>{{Offer.__info.name}}</span>
                 </div>
               </div>
               <div class="row align-items-center mb-3">
                 <div class="col-4 text-light">Adresse de l'entreprise</div>
-                <div class="col-8" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+                <div class="col-8">
                   <span>{{Offer.__info.address}}</span>
                 </div>
               </div>
               <div class="row align-items-center mb-3">
                 <div class="col-4 text-light">Email</div>
-                <div class="col-8" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+                <div class="col-8" >
                   <span>{{Offer.__info.email}}</span>
                 </div>
               </div>
               <div class="row align-items-center">
                 <div class="col-4 text-light">Numéro de téléphone</div>
-                <div class="col-8" [ngClass]="{'no-access': authService.getRole() === 'editor' || authService.getRole() === 'contributor'}">
+                <div class="col-8">
                   <span>{{Offer.__info.phone}}</span>
                 </div>
               </div>
               <div class="row mt-4">
                 <div class="col-12">
-                  <button class="btn btn-outline-pink btn-sm btn-square" (click)="editCompany($event)">Modifier
+                  <button class="btn btn-outline-pink btn-sm btn-square" (click)="editCompany($event)" [disabled]="authService.getRole() !== 'administrator'">Modifier
                     l'entreprise</button>
                 </div>
               </div>

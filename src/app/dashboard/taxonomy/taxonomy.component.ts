@@ -54,8 +54,10 @@ export class TaxonomyComponent implements OnInit {
 
    onEdit(term: any): void {
       // Réfuser l'accès au commercial de modifier cette option
-      if (this.taxonomy === 'language')
+      if (this.taxonomy === 'language') {
          if (!this.authService.notUserAccess('contributor')) return;
+      }
+         
       this.edit = _.cloneDeep(term);
       setTimeout(() => {
          this.EditComponent.open();

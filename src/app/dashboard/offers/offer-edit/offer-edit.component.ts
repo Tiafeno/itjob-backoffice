@@ -116,7 +116,7 @@ export class OfferEditComponent implements OnInit {
             this.Editor.town = _.isObject(town) ? town.term_id : null;
             this.Editor.offer_status = Offer.activated && Offer.offer_status === 'publish' ? 1 : (Offer.offer_status === 'pending' ? "pending" : 0);
             this.Editor.rateplan = _.isNull(Offer.rateplan) || _.isEmpty(Offer.rateplan) ? 'standard' : Offer.rateplan;
-            this.Editor.dateLimit = moment(Offer.dateLimit, 'DD/MM/YYYY').format('DD/MM/YYYY');
+            this.Editor.dateLimit = moment(Offer.dateLimit, 'YYYYMMDD').format('DD/MM/YYYY');
             // Load script
             Helpers.setLoading(false);
             this.loadingForm = true;
@@ -166,7 +166,7 @@ export class OfferEditComponent implements OnInit {
       if (editForm.valid) {
          this.loadingSave = true;
          const Value = editForm.value;
-         Value.date_limit = moment(Value.date_limit, 'DD/MM/YYYY').format('DD/MM/YYYY')
+         Value.date_limit = moment(Value.date_limit, 'DD/MM/YYYY').format('YYYYMMDD')
          this.offerServices
             .saveOffer(Value)
             .subscribe(() => {

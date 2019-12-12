@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import * as WPAPI from 'wpapi';
 import { dateTimePickerFr, config } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
-declare var $:any;
+declare var $: any;
 
 @Component({
   selector: 'app-featured-offer',
@@ -31,7 +31,7 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
       endpoint: config.apiEndpoint,
     });
     let currentUser = this.auth.getCurrentUser();
-    this.WPEndpoint.setHeaders({Authorization: `Bearer ${currentUser.token}`});
+    this.WPEndpoint.setHeaders({ Authorization: `Bearer ${currentUser.token}` });
     var namespace = 'wp/v2'; // use the WP API namespace
     var route = '/offers/(?P<id>\\d+)'; // route string - allows optional ID parameter
     this.WPEndpoint.offer = this.WPEndpoint.registerRoute(namespace, route);
@@ -41,7 +41,7 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
     this.position = _.isNull(offer.featuredPosition) ? 0 : offer.featuredPosition;
     this.currentPosition = offer.featuredPosition;
     if (this.currentPosition && !_.isNull(offer.featuredDateLimit)) {
-      this.dateLimit = moment(offer.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
+      this.dateLimit = moment.unix(offer.featuredDateLimit).format('YYYY-MM-DD HH:mm:ss')
     }
     this.postId = offer.ID;
     $('#edit-featured-offer-modal').modal('show');
@@ -55,17 +55,17 @@ export class FeaturedOfferComponent implements OnInit, AfterViewInit {
       this.warning = true;
       return false;
     }
-      this.loading = true;
-      let date = moment(this.dateLimit).utcOffset('+0300').format("YYYY-MM-DD HH:mm:ss");
-      this.WPEndpoint.offer().id(this.postId).update({
-        itjob_offer_featured: this.position ? 1 : 0,
-        itjob_offer_featured_position: this.position ? this.position : null,
-        itjob_offer_featured_datelimit: date,
-      }).then(offer => {
-        this.loading = false;
-        $('#edit-featured-offer-modal').modal('hide');
-        this.refresh.emit();
-      });
+    this.loading = true;
+    let date = moment(this.dateLimit).utcOffset('+0300').format("YYYY-MM-DD HH:mm:ss");
+    this.WPEndpoint.offer().id(this.postId).update({
+      itjob_offer_featured: this.position ? 1 : 0,
+      itjob_offer_featured_position: this.position ? this.position : null,
+      itjob_offer_featured_datelimit: date,
+    }).then(offer => {
+      this.loading = false;
+      $('#edit-featured-offer-modal').modal('hide');
+      this.refresh.emit();
+    });
   }
 
   ngOnInit(): void {
