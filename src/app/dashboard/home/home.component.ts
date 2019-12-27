@@ -13,9 +13,14 @@ declare var $: any;
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  public Dashboard: any = {};
+  public Dashboard: {
+    candidate: {percent?: any},
+    company: {percent?: any},
+    offer: {percent?: any}
+  };
   public loading: boolean = false;
   public tinySettings: any = {};
+  private $data = [];
   constructor(
     private requestServices: RequestService,
     private errnoService: ErrorService
@@ -30,15 +35,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .subscribe(
         response => {
           this.Dashboard = _.cloneDeep(response);
-          let candidate = this.Dashboard.candidate;
-          let company = this.Dashboard.company
-          let offer = this.Dashboard.offer;
+          let candidate: any = this.Dashboard.candidate;
+          let company: any = this.Dashboard.company
+          let offer: any = this.Dashboard.offer;
           this.Dashboard.candidate.percent = (parseInt(candidate.countActive) * 100) / parseInt(candidate.count);
           this.Dashboard.company.percent = (parseInt(company.countActive) * 100) / parseInt(company.count);
           this.Dashboard.offer.percent = (parseInt(offer.countActive) * 100) / parseInt(offer.count);
-          this.loading = false;
-          Helpers.setLoading(false);
-          this.loadScript();
+
+          this.requestServices.getStats()
+            .subscribe(stats => {
+              this.loading = false;
+              Helpers.setLoading(false);
+
+              this.loadScript();
+            });
         },
         error => {
           this.errnoService.handler(error);
@@ -61,7 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       var canvas: any = document.getElementById("visitors_chart");
       var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
       var visitors_chart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
           labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
           datasets: [
@@ -107,23 +117,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
       let visitors_data = {
         1: {
           data: [
-            [20, 18, 40, 50, 35, 24, 40],
             [28, 48, 40, 35, 70, 33, 32],
-            [64, 54, 60, 65, 52, 85, 48],
           ],
           labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         },
         2: {
           data: [
-            [35, 20, 40, 24, 28, 38, 40],
             [55, 35, 32, 14, 40, 33, 22],
-            [84, 62, 45, 70, 50, 85, 42],
           ],
           labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         },
         3: {
           data: [
-            [50, 30, 25, 33, 28, 34, 45, 30, 55, 28, 42, 54],
             [45, 35, 28, 64, 40, 30, 32, 60, 50, 29, 33, 48],
             [54, 62, 35, 80, 40, 85, 42, 30, 41, 73, 68, 57],
           ],

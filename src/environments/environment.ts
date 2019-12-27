@@ -36,5 +36,7 @@ export const config = {
   apiEndpoint: 'https://itjob.local.mg/wp-json',
   wpApi: 'https://itjob.local.mg/wp-json/wp/v2',
   itApi: 'https://itjob.local.mg/wp-json/it-api',
-  api: 'https://itjob.local.mg/wp-json/api'
+  api: 'https://itjob.local.mg/wp-json/api',
+  wpPublicApi: 'https://public-api.wordpress.com/rest/v1.1/sites',
+  $site: 156321021
 };

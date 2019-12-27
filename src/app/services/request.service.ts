@@ -44,6 +44,10 @@ export class RequestService {
     return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json'});
   }
 
+  public getStats(): Observable<any> {
+    return this.http.get(`${config.wpPublicApi}/${config.$site}/stats`, {responseType: 'json'});
+  }
+
   getCategorie(): Observable<any> {
     return this.http.get(`${config.wpApi}/categorie?per_page=100`, { responseType: 'json'});
   }

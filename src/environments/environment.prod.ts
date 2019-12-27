@@ -31,5 +31,7 @@ export const config = {
   apiEndpoint: 'https://www.itjobmada.com/wp-json',
   wpApi: 'https://www.itjobmada.com/wp-json/wp/v2',
   itApi: 'https://www.itjobmada.com/wp-json/it-api',
-  api: 'https://www.itjobmada.com/wp-json/api'
+  api: 'https://www.itjobmada.com/wp-json/api',
+  wpPublicApi: 'https://public-api.wordpress.com/rest/v1.1/sites',
+  $site: 156321021
 };
