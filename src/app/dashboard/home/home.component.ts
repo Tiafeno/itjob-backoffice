@@ -48,6 +48,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
               Helpers.setLoading(false);
 
               this.loadScript();
+            }, error => {
+              this.loading = false;
+              Helpers.setLoading(false);
+              this.loadScript();
             });
         },
         error => {
