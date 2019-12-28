@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share'
 import { Router } from '@angular/router';
 import * as _ from 'lodash';
-declare var utf8:any;
+declare var utf8: any;
 
 @Injectable()
 export class RequestService {
@@ -41,15 +41,22 @@ export class RequestService {
   }
 
   public collectTaxonomies(): Observable<any> {
-    return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json'});
+    return this.http.get(`${config.wpApi}/taxonomies`, { responseType: 'json' });
   }
 
+  /**
+   * Recuperer les donnee statistiques des visiteurs
+   */
   public getStats(): Observable<any> {
-    return this.http.get(`${config.wpPublicApi}/${config.$site}/stats`, {responseType: 'json'});
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let reqHeader = new HttpHeaders({
+      'Authorization': 'Bearer ' + currentUser.com_itjobmada_api
+    });
+    return this.http.get(`${config.wpPublicApi}/${config.$site}/stats`, { responseType: 'json', headers: reqHeader });
   }
 
   getCategorie(): Observable<any> {
-    return this.http.get(`${config.wpApi}/categorie?per_page=100`, { responseType: 'json'});
+    return this.http.get(`${config.wpApi}/categorie?per_page=100`, { responseType: 'json' });
   }
 
   getTown(): Observable<any> {
@@ -61,16 +68,16 @@ export class RequestService {
       this.observableCity = this.http.get(`${config.itApi}/taxonomies/city`, {
         observe: 'response'
       })
-      .map(response =>  {
-        this.observableCity = null;
-        if (response.status === 400) {
-          return 'Request failed.';
-        } else if (response.status === 200) {
-          this.dataCity = response.body;
-          return this.dataCity;
-        }
-      })
-      .share();
+        .map(response => {
+          this.observableCity = null;
+          if (response.status === 400) {
+            return 'Request failed.';
+          } else if (response.status === 200) {
+            this.dataCity = response.body;
+            return this.dataCity;
+          }
+        })
+        .share();
       return this.observableCity;
     }
   }
@@ -84,16 +91,16 @@ export class RequestService {
       this.observableRegion = this.http.get(`${config.itApi}/taxonomies/region`, {
         observe: 'response'
       })
-      .map(response =>  {
-        this.observableRegion = null;
-        if (response.status === 400) {
-          return 'Request failed.';
-        } else if (response.status === 200) {
-          this.dataRegion = response.body;
-          return this.dataRegion;
-        }
-      })
-      .share();
+        .map(response => {
+          this.observableRegion = null;
+          if (response.status === 400) {
+            return 'Request failed.';
+          } else if (response.status === 200) {
+            this.dataRegion = response.body;
+            return this.dataRegion;
+          }
+        })
+        .share();
       return this.observableRegion;
     }
   }
@@ -107,16 +114,16 @@ export class RequestService {
       this.observableArea = this.http.get(`${config.itApi}/taxonomies/branch_activity`, {
         observe: 'response'
       })
-      .map(response =>  {
-        this.observableArea = null;
-        if (response.status === 400) {
-          return 'Request failed.';
-        } else if (response.status === 200) {
-          this.dataArea = response.body;
-          return this.dataArea;
-        }
-      })
-      .share();
+        .map(response => {
+          this.observableArea = null;
+          if (response.status === 400) {
+            return 'Request failed.';
+          } else if (response.status === 200) {
+            this.dataArea = response.body;
+            return this.dataArea;
+          }
+        })
+        .share();
       return this.observableArea;
     }
   }
