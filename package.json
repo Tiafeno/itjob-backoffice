@@ -26,7 +26,7 @@
     "@toverux/ngx-sweetalert2": "^3.4.0",
     "@types/jspdf": "^1.2.2",
     "@types/typeahead": "^0.11.32",
-    "ajv": "^6.0.0",
+    "ajv": "^6.12.3",
     "alertifyjs": "^1.11.2",
     "animate.css": "^3.5.2",
     "bootstrap": ">=4.1.3",
