@@ -57,7 +57,7 @@
     "jquery-sparkline": "^2.4.0",
     "jquery-ui": "^1.12.1",
     "jquery-validation": "^1.19.5",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "jszip": "^3.1.5",
     "jvectormap": "^2.0.4",
     "lightbox2": "^2.10.0",
