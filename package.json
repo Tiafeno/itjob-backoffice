@@ -58,7 +58,7 @@
     "jquery-ui": "^1.12.1",
     "jquery-validation": "^1.19.5",
     "jspdf": "^1.5.3",
-    "jszip": "^3.1.5",
+    "jszip": "^3.7.0",
     "jvectormap": "^2.0.4",
     "lightbox2": "^2.10.0",
     "lodash": "^4.17.21",
